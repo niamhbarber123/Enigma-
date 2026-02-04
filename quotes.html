@@ -1,62 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <meta charset="UTF-8">
-  <title>Quotes</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quotes</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="app">
+<header>
+  <h1>Words to hold onto</h1>
+</header>
 
-  <div class="header">
-    <h1>Gentle words</h1>
-    <p>Tap to save what resonates</p>
+<main>
+  <div class="card" onclick="saveQuote(this)">
+    “You are allowed to be both a masterpiece and a work in progress.” – Sophia Bush
   </div>
-
-  <div class="content quote-grid">
-
-    <div class="quote-tile" onclick="saveQuote(this)">
-      You are allowed to take up space.
-      <span>— Audre Lorde</span>
-    </div>
-
-    <div class="quote-tile" onclick="saveQuote(this)">
-      Do the best you can until you know better.
-      <span>— Maya Angelou</span>
-    </div>
-
-    <div class="quote-tile" onclick="saveQuote(this)">
-      Rest is productive.
-      <span>— Tricia Hersey</span>
-    </div>
-
-    <div class="quote-tile" onclick="saveQuote(this)">
-      Feelings are valid, even when they are uncomfortable.
-      <span>— Brené Brown</span>
-    </div>
-
+  <div class="card" onclick="saveQuote(this)">
+    “No one can make you feel inferior without your consent.” – Eleanor Roosevelt
   </div>
+  <div class="card" onclick="saveQuote(this)">
+    “Do what you feel in your heart to be right.” – Eleanor Roosevelt
+  </div>
+</main>
 
-  <nav class="navbar">
-    <a href="index.html"><span>🏠</span>Home</a>
-    <a href="quotes.html" class="active"><span>💬</span>Quotes</a>
-    <a href="tap.html"><span>🎨</span>Calm</a>
-  </nav>
-
-</div>
+<nav class="bottom-nav">
+  <a href="index.html">🏠<span>Home</span></a>
+  <a href="breathe.html">💨<span>Breathe</span></a>
+  <a href="checkin.html">🌿<span>Check-in</span></a>
+  <a class="active" href="quotes.html">💬<span>Quotes</span></a>
+  <a href="help.html">🆘<span>Help</span></a>
+</nav>
 
 <script>
 function saveQuote(el) {
-  let saved = JSON.parse(localStorage.getItem("favouriteQuotes") || "[]");
-  const text = el.innerText;
-
-  if (!saved.includes(text)) {
-    saved.push(text);
-    localStorage.setItem("favouriteQuotes", JSON.stringify(saved));
-    el.style.background = "#d8cdea";
-  }
+  localStorage.setItem("favouriteQuote", el.innerText);
+  alert("Saved 💜");
 }
 </script>
 
