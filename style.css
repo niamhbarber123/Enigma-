@@ -1,4 +1,4 @@
-/* 🌸 Enigma Base Reset */
+/* 🌸 Base Reset */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -6,12 +6,12 @@
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-/* 🌿 App Wrapper */
 body {
   background: #f6f4f9;
   color: #4a4458;
 }
 
+/* 🌿 App Wrapper */
 .app {
   max-width: 420px;
   min-height: 100vh;
@@ -19,7 +19,7 @@ body {
   background: #faf9fc;
   display: flex;
   flex-direction: column;
-  padding-bottom: 90px; /* space for navbar */
+  padding-bottom: 110px; /* space for navbar */
 }
 
 /* 🌿 Header */
@@ -39,7 +39,7 @@ body {
   color: #7a7190;
 }
 
-/* 🌿 Main Content */
+/* 🌿 Content */
 .content {
   flex: 1;
   padding: 24px;
@@ -91,7 +91,6 @@ textarea {
   background: #eee9f6;
   padding: 14px;
   border-radius: 12px;
-  font-size: 1rem;
 }
 
 /* 🌿 Progress Cards */
@@ -99,21 +98,25 @@ textarea {
   background: #eee9f6;
   padding: 18px;
   border-radius: 14px;
+  text-align: center;
   font-size: 1.05rem;
+}
+
+/* 🌬️ BREATHE PAGE — SCOPED ONLY */
+.breathe-page .breathe-content {
+  align-items: center;
   text-align: center;
 }
 
-/* 🌬️ Breathing Page */
-.breathe-content {
+.breathe-page .circle-wrapper {
+  height: 260px;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 30px;
-  padding-top: 40px;
+  overflow: hidden;
 }
 
-.breathing-circle {
+.breathe-page .breathing-circle {
   width: 170px;
   height: 170px;
   border-radius: 50%;
@@ -121,7 +124,7 @@ textarea {
   animation: breathe 10s ease-in-out infinite;
 }
 
-#breathText {
+.breathe-page #breathText {
   font-size: 1.4rem;
   color: #5a4b7a;
   font-weight: 500;
@@ -159,6 +162,7 @@ textarea {
   display: flex;
   justify-content: space-around;
   padding: 10px 0 14px;
+  z-index: 1000;
 }
 
 .navbar a {
