@@ -1,26 +1,22 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Daily Reminder</title>
+  <meta charset="UTF-8">
+  <title>Reminders · Enigma</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-<div class="container">
-  <h2>Daily Reminder</h2>
-  <p>Choose a gentle daily nudge.</p>
+  <div class="container">
+    <h2>Daily Reminder</h2>
+    <p>Choose a gentle nudge.</p>
 
-  <button onclick="setReminder()">Enable Reminder</button>
-  <p id="status"></p>
+    <button>Drink water</button>
+    <button>Breathe</button>
+    <button>Step outside</button>
 
-  <a href="index.html">← Home</a>
-</div>
-
-<script>
-function setReminder() {
-  localStorage.setItem("enigmaReminder", "true");
-  document.getElementById("status").innerText =
-    "Reminder set. Visit Enigma daily 🌿";
-}
-</script>
+    <a href="index.html">← Home</a>
+  </div>
 </body>
 </html>
