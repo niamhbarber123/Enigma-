@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Saved Quotes</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <h1>Your Saved Quotes</h1>
+</header>
+
+<main id="quotes"></main>
+
+<nav class="bottom-nav">
+  <a href="index.html">🏠<span>Home</span></a>
+  <a href="quotes.html">💬<span>Quotes</span></a>
+  <a href="help.html">🆘<span>Help</span></a>
+</nav>
+
+<script src="app.js"></script>
+<script>
+const container = document.getElementById("quotes");
+const quotes = JSON.parse(localStorage.getItem("quotes")) || [];
+
+if (quotes.length === 0) {
+  container.innerHTML = "<div class='card'>No saved quotes yet 💜</div>";
+}
+
+quotes.forEach(q => {
+  const div = document.createElement("div");
+  div.className = "card";
+  div.innerText = q;
+  container.appendChild(div);
+});
+</script>
+
+</body>
+</html>
