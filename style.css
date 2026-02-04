@@ -1,181 +1,197 @@
-/* =========================
-   Enigma Colour Palette
-========================= */
-:root {
-  --lavender: #E6E1F2;
-  --sage: #DDE8E1;
-  --deep-lavender: #9A94B3;
-  --text-main: #3E3A4F;
-  --white: #FFFFFF;
-}
-
-/* =========================
-   Global Reset & Scaling
-========================= */
+/* 🌸 Enigma Base Reset */
 * {
   box-sizing: border-box;
-}
-
-html, body {
-  height: 100%;
   margin: 0;
-}
-
-body {
+  padding: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: linear-gradient(to bottom, var(--lavender), var(--sage));
-  color: var(--text-main);
-  font-size: 16px; /* IMPORTANT: prevents tiny text */
 }
 
-/* =========================
-   App Wrapper (CRITICAL)
-========================= */
+/* 🌿 App Wrapper */
+body {
+  background: #f6f4f9;
+  color: #4a4458;
+}
+
 .app {
   max-width: 420px;
-  margin: 0 auto;
   min-height: 100vh;
+  margin: 0 auto;
+  background: #faf9fc;
   display: flex;
   flex-direction: column;
+  padding-bottom: 90px; /* space for navbar */
 }
 
-/* =========================
-   Header
-========================= */
+/* 🌿 Header */
 .header {
-  padding: 28px 22px 18px;
+  padding: 30px 24px 10px;
   text-align: center;
 }
 
 .header h1 {
-  margin: 0;
-  font-size: 26px;
-  font-weight: 600;
+  font-size: 1.9rem;
+  color: #5a4b7a;
+  margin-bottom: 6px;
 }
 
 .header p {
-  margin-top: 6px;
-  font-size: 15px;
-  opacity: 0.85;
+  font-size: 1rem;
+  color: #7a7190;
 }
 
-/* =========================
-   Main Content
-========================= */
+/* 🌿 Main Content */
 .content {
   flex: 1;
-  padding: 22px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
-/* =========================
-   Inputs & Textareas
-========================= */
-input,
-textarea {
-  width: 100%;
-  padding: 16px;
-  margin-bottom: 18px;
-  border-radius: 18px;
-  border: none;
-  font-size: 16px;
-  background: var(--white);
-  color: var(--text-main);
-}
-
-textarea {
-  min-height: 130px;
-  resize: none;
-}
-
-/* =========================
-   Buttons
-========================= */
+/* 🌿 Buttons */
 .primary-btn {
-  width: 100%;
-  padding: 18px;
-  border-radius: 22px;
+  padding: 16px;
+  font-size: 1.1rem;
+  border-radius: 14px;
   border: none;
-  background: var(--deep-lavender);
-  color: white;
-  font-size: 17px;
+  background: #c9b7e2;
+  color: #3f3658;
   font-weight: 500;
   cursor: pointer;
 }
 
-.primary-btn:active {
-  transform: scale(0.97);
+.primary-btn:hover {
+  background: #b8a3da;
 }
 
-/* =========================
-   Cards (Home / Progress / Quotes)
-========================= */
-.progress-card,
-.quote-box {
-  background: var(--white);
-  border-radius: 22px;
-  padding: 22px;
-  margin-bottom: 16px;
-  font-size: 16px;
+/* 🌿 Inputs */
+input,
+textarea {
+  width: 100%;
+  padding: 14px;
+  font-size: 1rem;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  resize: none;
 }
 
-/* =========================
-   Lists (Wins)
-========================= */
+textarea {
+  min-height: 140px;
+}
+
+/* 🌿 Lists */
 .list {
   list-style: none;
-  padding: 0;
-  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .list li {
-  background: var(--white);
-  border-radius: 18px;
-  padding: 16px;
-  margin-bottom: 12px;
-  font-size: 15px;
+  background: #eee9f6;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 1rem;
 }
 
-/* =========================
-   Quote Styling
-========================= */
-blockquote {
-  margin: 0;
-  font-style: italic;
-  font-size: 16px;
+/* 🌿 Progress Cards */
+.progress-card {
+  background: #eee9f6;
+  padding: 18px;
+  border-radius: 14px;
+  font-size: 1.05rem;
+  text-align: center;
 }
 
-.author {
-  margin-top: 12px;
-  font-size: 14px;
-  opacity: 0.7;
-}
-
-/* =========================
-   Bottom Navigation (FIXED SIZE)
-========================= */
-.navbar {
+/* 🌬️ Breathing Page */
+.breathe-content {
   display: flex;
-  background: var(--white);
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
-  padding: 8px 0 10px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  padding-top: 40px;
+}
+
+.breathing-circle {
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #d6c9ef, #b8a3da);
+  animation: breathe 10s ease-in-out infinite;
+}
+
+#breathText {
+  font-size: 1.4rem;
+  color: #5a4b7a;
+  font-weight: 500;
+}
+
+/* 🌬️ Breathing Animation */
+@keyframes breathe {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  40% {
+    transform: scale(1.5);
+    opacity: 1;
+  }
+  60% {
+    transform: scale(1.5);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+}
+
+/* 🧭 Bottom Navigation */
+.navbar {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 420px;
+  background: #ffffff;
+  border-top: 1px solid #e2dff0;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0 14px;
 }
 
 .navbar a {
-  flex: 1;
-  text-align: center;
   text-decoration: none;
-  color: var(--deep-lavender);
-  font-size: 14px; /* BIGGER TEXT */
-  padding: 10px 0;
+  color: #7a7190;
+  font-size: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
 }
 
 .navbar a span {
-  display: block;
-  font-size: 24px; /* BIGGER ICONS */
-  margin-bottom: 4px;
+  font-size: 1.4rem;
 }
 
 .navbar a.active {
+  color: #5a4b7a;
   font-weight: 600;
-  color: var(--text-main);
+}
+
+/* 🔐 Login Page */
+.login-container {
+  padding: 40px 24px;
+  text-align: center;
+}
+
+.login-container h1 {
+  font-size: 2rem;
+  margin-bottom: 12px;
+}
+
+.login-container p {
+  margin-bottom: 24px;
+  color: #7a7190;
 }
