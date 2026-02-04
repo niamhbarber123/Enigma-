@@ -1,32 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Journal – Enigma</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Journal</title>
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/Enigma-/apple-touch-icon.png">
+  <link rel="apple-touch-icon-precomposed" href="/Enigma-/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/Enigma-/icon.png">
+  <link rel="manifest" href="/Enigma-/manifest.json">
+  <meta name="apple-mobile-web-app-title" content="Enigma">
+  <meta name="application-name" content="Enigma">
+  <meta name="theme-color" content="#b8a6d9">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <link rel="stylesheet" href="/Enigma-/style.css?v=30">
 </head>
 
-<body>
-<div class="app">
+<body class="page-wrap">
 
-  <div class="header">
+  <header class="page-header">
     <h1>Journal</h1>
-    <p>Write freely. No pressure.</p>
-  </div>
+    <p>A gentle place to write</p>
+  </header>
 
-  <div class="content">
-    <textarea placeholder="What’s on your mind today?"></textarea>
-    <button class="primary-btn">Save Entry</button>
-  </div>
+  <main class="page">
+    <div class="card">
+      <textarea id="journalText" placeholder="Write what’s on your mind..."></textarea>
+      <button class="primary" onclick="saveJournalEntry()">Save entry</button>
+      <div class="gentle-text" id="journalMsg"></div>
+    </div>
 
-  <nav class="navbar">
-    <a href="index.html"><span>🏠</span>Home</a>
-    <a href="journal.html" class="active"><span>📓</span>Journal</a>
-    <a href="wins.html"><span>✨</span>Wins</a>
-    <a href="progress.html"><span>📊</span>Progress</a>
+    <div id="journalList"></div>
+  </main>
+
+  <nav class="bottom-nav">
+    <a href="/Enigma-/index.html"><div class="nav-ico">🏠</div><span>Home</span></a>
+    <a href="/Enigma-/breathe.html"><div class="nav-ico">🌬️</div><span>Breathe</span></a>
+    <a class="active" href="/Enigma-/journal.html"><div class="nav-ico">📖</div><span>Journal</span></a>
+    <a href="/Enigma-/checkin.html"><div class="nav-ico">🌿</div><span>Check-in</span></a>
+    <a href="/Enigma-/progress.html"><div class="nav-ico">📊</div><span>Progress</span></a>
+    <a href="/Enigma-/quotes.html"><div class="nav-ico">💬</div><span>Quotes</span></a>
   </nav>
 
-</div>
+  <script src="/Enigma-/app.js"></script>
 </body>
 </html>
