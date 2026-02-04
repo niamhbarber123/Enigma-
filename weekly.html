@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Weekly Reflection</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app">
+  <div class="header">
+    <h1>Weekly reflection</h1>
+    <p>A gentle look back</p>
+  </div>
+
+  <div class="content">
+    <textarea id="reflection"
+      placeholder="What felt hard? What helped? What are you proud of?"
+    ></textarea>
+
+    <button class="primary-btn" onclick="saveReflection()">
+      Save reflection
+    </button>
+
+    <p class="gentle-text" id="saved"></p>
+  </div>
+
+  <nav class="navbar">
+    <a href="index.html"><span>🏠</span>Home</a>
+    <a href="weekly.html" class="active"><span>📝</span>Reflect</a>
+  </nav>
+</div>
+
+<script>
+function saveReflection() {
+  const text = document.getElementById("reflection").value;
+  const week = new Date().toDateString();
+  localStorage.setItem("weeklyReflection", JSON.stringify({ week, text }));
+  document.getElementById("saved").innerText =
+    "Saved 🌿 Thank you for reflecting.";
+}
+</script>
+
+</body>
+</html>
