@@ -1,17 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Check-in</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Check-in</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<header>
-  <h1>Daily Check-in</h1>
-  <p>How are you feeling today?</p>
-</header>
+<header><h1>Daily Check-in</h1></header>
 
 <main>
   <select id="mood" class="card">
@@ -20,22 +17,17 @@
     <option>😔 Low</option>
     <option>😣 Anxious</option>
   </select>
-
-  <button onclick="saveCheckin()">Save check-in</button>
+  <button onclick="saveCheckin()">Save</button>
 </main>
 
 <nav class="bottom-nav">
   <a href="index.html">🏠</a>
-  <a href="breathe.html">💨</a>
   <a class="active" href="checkin.html">🌿</a>
   <a href="progress.html">📊</a>
   <a href="help.html">🆘</a>
 </nav>
 
 <script src="app.js"></script>
-<script>
-reminderMessage();
-</script>
-
+<script>reminderCheck();</script>
 </body>
 </html>
