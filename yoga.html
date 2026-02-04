@@ -1,24 +1,59 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Yoga</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Yoga</title>
+
+  <link rel="icon" href="icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-title" content="Enigma">
+  <meta name="application-name" content="Enigma">
+  <meta name="theme-color" content="#b8a6d9">
+
+  <link rel="stylesheet" href="style.css?v=6">
 </head>
-<body>
 
-<header><h1>Yoga & Meditation</h1></header>
+<body class="page-wrap">
 
-<main>
-  <div class="card">5-minute grounding meditation</div>
-  <div class="card">Gentle stretch & breathing</div>
-</main>
+  <header class="page-header">
+    <h1>Gentle yoga</h1>
+    <p>Move softly. Breathe deeply.</p>
+  </header>
 
-<nav class="bottom-nav">
-  <a href="index.html">🏠</a>
-  <a class="active" href="yoga.html">🧘</a>
-</nav>
+  <main class="page">
+    <div class="yoga-step">
+      <h3>🌿 Seated breathing</h3>
+      <p>Inhale for 4, exhale for 6. Repeat 5 times.</p>
+    </div>
 
+    <div class="yoga-step">
+      <h3>🌸 Neck release</h3>
+      <p>Slowly tilt ear to shoulder. Swap sides. No forcing.</p>
+    </div>
+
+    <div class="yoga-step">
+      <h3>🕊️ Child’s pose</h3>
+      <p>Fold forward and rest. Stay for 1 minute.</p>
+    </div>
+
+    <div class="yoga-step">
+      <h3>☁️ Body scan</h3>
+      <p>Notice sensations from head to toes with no judgement.</p>
+    </div>
+
+    <button class="primary" onclick="alert('Well done 🧘 You took time for yourself.')">Completed</button>
+  </main>
+
+  <nav class="bottom-nav">
+    <a href="index.html"><div class="nav-ico">🏠</div><span>Home</span></a>
+    <a href="breathe.html"><div class="nav-ico">🌬️</div><span>Breathe</span></a>
+    <a href="checkin.html"><div class="nav-ico">🌿</div><span>Check-in</span></a>
+    <a href="quotes.html"><div class="nav-ico">💬</div><span>Quotes</span></a>
+    <a href="help.html"><div class="nav-ico">🆘</div><span>Help</span></a>
+  </nav>
+
+  <script src="app.js"></script>
 </body>
 </html>
