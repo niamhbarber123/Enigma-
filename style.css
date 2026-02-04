@@ -65,3 +65,32 @@ select {
 .home-bg {
   background: url("icon.png") center/200px no-repeat;
 }
+/* ===== TAP TO COLOUR ===== */
+
+.palette {
+  display: flex;
+  justify-content: space-around;
+  margin: 15px 0;
+}
+
+.colour {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #ddd;
+}
+
+.colour-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 6px;
+  margin: 20px auto;
+  max-width: 320px;
+}
+
+.cell {
+  width: 100%;
+  padding-bottom: 100%;
+  background: #f2f2f2;
+  border-radius: 6px;
+}
