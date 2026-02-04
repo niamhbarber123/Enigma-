@@ -1,27 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Check-In</title>
+  <meta charset="UTF-8">
+  <title>Check-In · Enigma</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-<div class="container">
-  <h2>How are you feeling?</h2>
+  <div class="container">
+    <h2>Daily Check-In</h2>
+    <p>How are you feeling right now?</p>
 
-  <button onclick="saveMood('Calm')">Calm</button>
-  <button onclick="saveMood('Okay')">Okay</button>
-  <button onclick="saveMood('Low')">Low</button>
-  <button onclick="saveMood('Anxious')">Anxious</button>
+    <button>😌 Calm</button>
+    <button>🙂 Okay</button>
+    <button>😕 Low</button>
+    <button>😣 Overwhelmed</button>
 
-  <p id="saved"></p>
-  <a href="index.html">← Home</a>
-</div>
-
-<script>
-function saveMood(mood) {
-  localStorage.setItem("enigmaMood", mood);
-  document.getElementById("saved").innerText = "Saved: " + mood;
-}
-</script>
+    <a href="index.html">← Home</a>
+  </div>
 </body>
 </html>
