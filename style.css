@@ -256,3 +256,12 @@ textarea {
   font-size: 0.8rem;
   color: #7a728a;
 }
+.progress-box {
+  background: #efeaf7;
+  padding: 24px;
+  border-radius: 18px;
+  text-align: center;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
