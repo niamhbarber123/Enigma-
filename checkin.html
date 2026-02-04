@@ -10,6 +10,7 @@
 
 <header>
   <h1>Daily Check-in</h1>
+  <p>How are you feeling today?</p>
 </header>
 
 <main>
@@ -20,17 +21,21 @@
     <option>😣 Anxious</option>
   </select>
 
-  <button onclick="saveCheckin()">Save</button>
+  <button onclick="saveCheckin()">Save check-in</button>
 </main>
 
 <nav class="bottom-nav">
   <a href="index.html">🏠</a>
   <a href="breathe.html">💨</a>
   <a class="active" href="checkin.html">🌿</a>
-  <a href="quotes.html">💬</a>
+  <a href="progress.html">📊</a>
   <a href="help.html">🆘</a>
 </nav>
 
 <script src="app.js"></script>
+<script>
+reminderMessage();
+</script>
+
 </body>
 </html>
