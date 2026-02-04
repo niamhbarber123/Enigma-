@@ -13,23 +13,37 @@
 </header>
 
 <main>
-  <div class="card">Mood: <span id="mood"></span></div>
-  <div class="card" id="rec"></div>
+  <div class="card">
+    🌿 Mood today: <strong id="mood"></strong>
+  </div>
+
+  <div class="card">
+    🔥 Current streak: <strong id="streak"></strong> days
+  </div>
+
+  <div class="card" id="recommendation"></div>
 </main>
 
 <nav class="bottom-nav">
   <a href="index.html">🏠</a>
   <a href="breathe.html">💨</a>
   <a href="checkin.html">🌿</a>
-  <a href="quotes.html">💬</a>
+  <a class="active" href="progress.html">📊</a>
   <a href="help.html">🆘</a>
 </nav>
 
 <script src="app.js"></script>
 <script>
 document.getElementById("mood").innerText =
-  localStorage.getItem("dailyMood") || "Not yet checked in";
-document.getElementById("rec").innerText = getRecommendation();
+  localStorage.getItem("dailyMood") || "Not checked in";
+
+document.getElementById("streak").innerText =
+  localStorage.getItem("streak") || "0";
+
+document.getElementById("recommendation").innerText =
+  getRecommendation();
+
+reminderMessage();
 </script>
 
 </body>
