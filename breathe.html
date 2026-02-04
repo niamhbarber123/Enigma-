@@ -1,34 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Breathe</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
 <div class="app">
-
   <div class="header">
     <h1>Breathe</h1>
-    <p>Slow your body and mind</p>
+    <p>Inhale… Exhale…</p>
   </div>
 
-  <div class="breathe-container">
-    <div class="breathe-circle"></div>
-    <div class="breathe-text">Inhale… Exhale…</div>
-    <button class="complete-btn">Completed ✓</button>
+  <div class="content">
+    <div class="breathe-wrapper">
+      <div class="breathe-circle"></div>
+    </div>
+    <button class="primary-btn" onclick="done()">Completed</button>
   </div>
 
-  <nav class="navbar">
-    <a href="index.html"><span>🏠</span>Home</a>
-    <a href="breathe.html" class="active"><span>🌬️</span>Breathe</a>
-    <a href="journal.html"><span>📓</span>Journal</a>
-    <a href="wins.html"><span>✨</span>Wins</a>
-    <a href="progress.html"><span>📊</span>Progress</a>
-  </nav>
-
+  <nav class="navbar">…same nav…</nav>
 </div>
-</body>
-</html>
+
+<script>
+function done(){
+  let c = Number(localStorage.getItem("breath")||0);
+  localStorage.setItem("breath", c+1);
+  alert("Well done 🌿");
+}
+</script>
