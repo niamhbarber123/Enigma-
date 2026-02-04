@@ -2,50 +2,30 @@
 <html>
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Yoga</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="app">
+<header>
+  <h1>Gentle Yoga</h1>
+  <p>Move slowly. Breathe deeply.</p>
+</header>
 
-  <div class="header">
-    <h1>Gentle yoga</h1>
-    <p>Move slowly. Breathe deeply.</p>
-  </div>
+<main>
+  <div class="card">🧘‍♀️ Seated breathing – 3 minutes</div>
+  <div class="card">🌿 Neck & shoulder release</div>
+  <div class="card">✨ Body scan meditation</div>
+</main>
 
-  <div class="content">
-
-    <div class="yoga-card">
-      🌿 Seated breathing — inhale 4, exhale 6
-    </div>
-
-    <div class="yoga-card">
-      🌸 Neck release — slow circles, no force
-    </div>
-
-    <div class="yoga-card">
-      🕊️ Child’s pose — rest for 1 minute
-    </div>
-
-    <div class="yoga-card">
-      ☁️ Body scan — notice without judging
-    </div>
-
-    <button class="primary-btn" onclick="completeYoga()">Completed</button>
-
-  </div>
-
-</div>
-
-<script>
-function completeYoga() {
-  let count = Number(localStorage.getItem("yogaDone") || 0);
-  localStorage.setItem("yogaDone", count + 1);
-  alert("Well done 🧘 You showed up for yourself.");
-}
-</script>
+<nav class="bottom-nav">
+  <a href="index.html">🏠<span>Home</span></a>
+  <a href="breathe.html">💨<span>Breathe</span></a>
+  <a href="checkin.html">🌿<span>Check-in</span></a>
+  <a href="quotes.html">💬<span>Quotes</span></a>
+  <a href="help.html">🆘<span>Help</span></a>
+</nav>
 
 </body>
 </html>
