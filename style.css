@@ -15,6 +15,10 @@ body {
   color: var(--text-main);
 }
 
+html, body {
+  height: 100%;
+}
+
 .app {
   max-width: 420px;
   margin: 0 auto;
