@@ -21,6 +21,23 @@
     <a class="home-card" href="yoga.html">🧘 Yoga</a>
     <a class="home-card" href="tap.html">🎨 Calm</a>
     <a class="home-card" href="progress.html">📊 Progress</a>
+    <div class="home-card" id="recommendation"></div>
+
+<script>
+const last = JSON.parse(localStorage.getItem("dailyCheckin"));
+const rec = document.getElementById("recommendation");
+
+if (last) {
+  const suggestions = {
+    calm: "🧘 Gentle yoga might feel nice today",
+    okay: "💬 Read a quote that resonates",
+    low: "🌬️ Try a slow breathing exercise",
+    anxious: "🎨 Tap-to-calm can help settle your body"
+  };
+  rec.innerText = suggestions[last.mood];
+}
+</script>
+
   </div>
 
   <nav class="navbar">
