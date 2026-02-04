@@ -1,45 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tap to colour</title>
 
-  <link rel="icon" href="icon.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-  <link rel="manifest" href="manifest.json">
+  <!-- icons / PWA -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/Enigma-/apple-touch-icon.png">
+  <link rel="apple-touch-icon-precomposed" href="/Enigma-/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/Enigma-/icon.png">
+  <link rel="manifest" href="/Enigma-/manifest.json">
   <meta name="apple-mobile-web-app-title" content="Enigma">
   <meta name="application-name" content="Enigma">
   <meta name="theme-color" content="#b8a6d9">
+  <meta name="apple-mobile-web-app-capable" content="yes">
 
-  <link rel="stylesheet" href="style.css?v=10">
+  <link rel="stylesheet" href="/Enigma-/style.css?v=40">
 </head>
 
 <body class="page-wrap">
 
   <header class="page-header">
     <h1>Tap to colour</h1>
-    <p>Choose a design, pick a colour, tap to fill.</p>
+    <p>Choose a design, then tap to fill.</p>
   </header>
 
   <main class="page">
 
-    <!-- DESIGN PICKER -->
+    <!-- DESIGN + MODE -->
     <div class="card">
       <div class="section-title">Choose a design</div>
+      <div class="design-grid" id="designGrid"></div>
 
-      <div class="design-grid" id="designGrid">
-        <!-- injected by JS -->
+      <div class="mode-row">
+        <button class="mode-btn active" id="modeNumberBtn" type="button" onclick="setColourMode('number')">
+          🔢 Colour by number
+        </button>
+        <button class="mode-btn" id="modeFreeBtn" type="button" onclick="setColourMode('free')">
+          🎨 Free colour
+        </button>
       </div>
 
-      <div class="gentle-text">Your progress is saved automatically for each design.</div>
+      <div class="gentle-text">Your progress saves automatically for each design.</div>
     </div>
 
-    <!-- PALETTE + TOOLS -->
+    <!-- PALETTE -->
     <div class="card">
       <div class="section-title">Colours</div>
-
-      <div class="palette" id="palette"></div>
+      <div class="palette-grid" id="palette"></div>
 
       <div class="tool-row">
         <button class="tool-btn" type="button" onclick="enigmaUndo()">↩︎ Undo</button>
@@ -48,27 +56,29 @@
       </div>
     </div>
 
-    <!-- GRID -->
+    <!-- BOARD -->
     <div class="card">
-      <div class="section-title">Colour board</div>
+      <div class="section-title">Board</div>
       <div class="grid-wrap">
-        <div id="grid" class="colour-grid"></div>
+        <div id="grid" class="colour-grid big"></div>
       </div>
 
-      <button class="primary" type="button" onclick="saveArt()">Save progress</button>
+      <button class="primary" type="button" onclick="markColouringComplete()">Completed</button>
       <div class="gentle-text" id="saveMsg"></div>
     </div>
 
   </main>
 
+  <!-- Consistent nav -->
   <nav class="bottom-nav">
-    <a href="index.html"><div class="nav-ico">🏠</div><span>Home</span></a>
-    <a href="breathe.html"><div class="nav-ico">🌬️</div><span>Breathe</span></a>
-    <a href="checkin.html"><div class="nav-ico">🌿</div><span>Check-in</span></a>
-    <a href="quotes.html"><div class="nav-ico">💬</div><span>Quotes</span></a>
-    <a href="help.html"><div class="nav-ico">🆘</div><span>Help</span></a>
+    <a href="/Enigma-/index.html"><div class="nav-ico">🏠</div><span>Home</span></a>
+    <a href="/Enigma-/breathe.html"><div class="nav-ico">🌬️</div><span>Breathe</span></a>
+    <a href="/Enigma-/journal.html"><div class="nav-ico">📖</div><span>Journal</span></a>
+    <a href="/Enigma-/checkin.html"><div class="nav-ico">🌿</div><span>Check-in</span></a>
+    <a href="/Enigma-/progress.html"><div class="nav-ico">📊</div><span>Progress</span></a>
+    <a class="active" href="/Enigma-/game.html"><div class="nav-ico">🎨</div><span>Colour</span></a>
   </nav>
 
-  <script src="app.js"></script>
+  <script src="/Enigma-/app.js"></script>
 </body>
 </html>
