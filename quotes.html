@@ -1,33 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Quotes</title>
+  <meta charset="UTF-8">
+  <title>Quotes · Enigma</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-<div class="container">
-  <h2>Words to Ground You</h2>
-  <p id="quote"></p>
+  <div class="container">
+    <h2>Quotes</h2>
+    <p>“You do not have to be perfect to be worthy.”</p>
+    <p>— Brené Brown</p>
 
-  <button onclick="newQuote()">New Quote</button>
-  <a href="index.html">← Home</a>
-</div>
-
-<script>
-const quotes = [
-  "Caring for myself is self-preservation. — Audre Lorde",
-  "No need to hurry. No need to sparkle. — Virginia Woolf",
-  "You are worthy of love and belonging. — Brené Brown",
-  "Do the best you can until you know better. — Maya Angelou",
-  "Your story matters. — Michelle Obama"
-];
-
-function newQuote() {
-  document.getElementById("quote").innerText =
-    quotes[Math.floor(Math.random() * quotes.length)];
-}
-
-newQuote();
-</script>
+    <a href="index.html">← Home</a>
+  </div>
 </body>
 </html>
