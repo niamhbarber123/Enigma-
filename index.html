@@ -4,45 +4,42 @@
   <meta charset="UTF-8">
   <title>Enigma</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <!-- PWA -->
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#C3BDD9">
-
-  <!-- Styles -->
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
   <div class="container">
 
-    <h1>Enigma</h1>
-    <p id="dailyMessage"></p>
+    <div class="brand">
+      <img src="icon.png" alt="Enigma icon" class="icon">
+      <h1>Enigma</h1>
+      <p class="tagline">A quiet place to land.</p>
+    </div>
 
-    <a href="checkin.html"><button>Daily Check-In</button></a>
-    <a href="breathe.html"><button>Breathe</button></a>
-    <a href="journal.html"><button>Journal</button></a>
-    <a href="wins.html"><button>Small Wins</button></a>
-    <a href="history.html"><button>Progress</button></a>
-    <a href="quotes.html"><button>Quotes</button></a>
-    <a href="reminders.html"><button>Daily Reminder</button></a>
+    <div class="card primary">
+      <p class="card-title">Breathe</p>
+      <p class="card-text">Slow down your body</p>
+      <a href="breathe.html">Open →</a>
+    </div>
 
-    <a href="privacy.html">Privacy</a>
+    <div class="card">
+      <p class="card-title">Journal</p>
+      <p class="card-text">Let it out safely</p>
+      <a href="journal.html">Open →</a>
+    </div>
+
+    <div class="card">
+      <p class="card-title">Small wins</p>
+      <p class="card-text">Notice what you managed</p>
+      <a href="wins.html">Open →</a>
+    </div>
+
+    <div class="quiet-links">
+      <a href="quotes.html">Words</a>
+      <a href="history.html">Progress</a>
+      <a href="privacy.html">Privacy</a>
+    </div>
 
   </div>
-
-  <script>
-    const messages = [
-      "You are allowed to take today slowly.",
-      "Small steps still count.",
-      "You don’t need to have it all figured out.",
-      "Pause. Breathe. Begin again.",
-      "Rest is not falling behind.",
-      "Showing up is enough today."
-    ];
-
-    document.getElementById("dailyMessage").innerText =
-      messages[Math.floor(Math.random() * messages.length)];
-  </script>
 </body>
 </html>
