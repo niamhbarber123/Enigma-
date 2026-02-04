@@ -227,3 +227,32 @@ body {
   text-align: center;
 }
 
+textarea {
+  width: 100%;
+  min-height: 90px;
+  padding: 14px;
+  border-radius: 14px;
+  border: none;
+  background: #f4f1f8;
+  margin: 16px 0;
+}
+
+.gentle-text {
+  text-align: center;
+  color: #6b5a7a;
+  margin-top: 12px;
+}
+
+.yoga-card {
+  background: #efeaf7;
+  padding: 16px;
+  border-radius: 18px;
+  margin-bottom: 14px;
+}
+
+.quote-tile span {
+  display: block;
+  margin-top: 8px;
+  font-size: 0.8rem;
+  color: #7a728a;
+}
