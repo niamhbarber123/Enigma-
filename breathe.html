@@ -10,16 +10,28 @@
 <body>
 <div class="app">
 
+  <!-- Header -->
   <div class="header">
     <h1>Breathe</h1>
     <p>Follow the rhythm. Nothing else matters.</p>
   </div>
 
+  <!-- Content -->
   <div class="content breathe-content">
-    <div class="breathing-circle"></div>
+
+    <div class="circle-wrapper">
+      <div class="breathing-circle"></div>
+    </div>
+
     <p id="breathText">Inhale</p>
+
+    <button class="primary-btn" onclick="completeBreathing()">
+      Completed
+    </button>
+
   </div>
 
+  <!-- Bottom Navigation -->
   <nav class="navbar">
     <a href="index.html"><span>🏠</span>Home</a>
     <a href="journal.html"><span>📓</span>Journal</a>
@@ -29,17 +41,33 @@
 
 </div>
 
+<!-- Script -->
 <script>
-  const text = document.getElementById("breathText");
+  const breathText = document.getElementById("breathText");
 
   function breathingCycle() {
-    text.textContent = "Inhale";
-    setTimeout(() => text.textContent = "Hold", 4000);
-    setTimeout(() => text.textContent = "Exhale", 6000);
+    breathText.textContent = "Inhale";
+
+    setTimeout(() => {
+      breathText.textContent = "Hold";
+    }, 4000);
+
+    setTimeout(() => {
+      breathText.textContent = "Exhale";
+    }, 6000);
   }
 
+  // Start breathing loop
   breathingCycle();
   setInterval(breathingCycle, 10000);
+
+  // Log completion
+  function completeBreathing() {
+    const current = Number(localStorage.getItem("breathingDone")) || 0;
+    localStorage.setItem("breathingDone", current + 1);
+
+    alert("Well done. Take that calm with you 🌿");
+  }
 </script>
 
 </body>
