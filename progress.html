@@ -1,32 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Progress</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Progress</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<header>
-  <h1>Your Progress</h1>
-</header>
+<header><h1>Your Progress</h1></header>
 
 <main>
-  <div class="card">
-    🌿 Mood today: <strong id="mood"></strong>
-  </div>
-
-  <div class="card">
-    🔥 Current streak: <strong id="streak"></strong> days
-  </div>
-
-  <div class="card" id="recommendation"></div>
+  <div class="card">Mood: <b id="mood"></b></div>
+  <div class="card">🔥 Streak: <b id="streak"></b> days</div>
+  <div class="card" id="rec"></div>
 </main>
 
 <nav class="bottom-nav">
   <a href="index.html">🏠</a>
-  <a href="breathe.html">💨</a>
   <a href="checkin.html">🌿</a>
   <a class="active" href="progress.html">📊</a>
   <a href="help.html">🆘</a>
@@ -34,17 +25,10 @@
 
 <script src="app.js"></script>
 <script>
-document.getElementById("mood").innerText =
-  localStorage.getItem("dailyMood") || "Not checked in";
-
-document.getElementById("streak").innerText =
-  localStorage.getItem("streak") || "0";
-
-document.getElementById("recommendation").innerText =
-  getRecommendation();
-
-reminderMessage();
+mood.innerText = localStorage.getItem("dailyMood") || "None";
+streak.innerText = localStorage.getItem("streak") || 0;
+rec.innerText = getRecommendation();
+reminderCheck();
 </script>
-
 </body>
 </html>
