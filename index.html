@@ -1,35 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Enigma</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Enigma – Wellbeing</title>
   <link rel="stylesheet" href="style.css">
+
+  <!-- Redirect to login if no user -->
+  <script>
+    if (!localStorage.getItem("enigmaUser")) {
+      window.location.href = "login.html";
+    }
+  </script>
 </head>
 
 <body>
-  <div class="container">
+  <div class="app">
 
-    <h1>Enigma</h1>
-    <p class="subtitle">A calm place to pause.</p>
+    <header class="header">
+      <h1>Enigma</h1>
+      <p>Your calm, safe space</p>
+    </header>
 
-    <div class="card">
-      <a class="button" href="breathe.html">Breathe</a>
-      <a class="button" href="journal.html">Journal</a>
-      <a class="button" href="wins.html">Small Wins</a>
-      <a class="button" href="quotes.html">Daily Quote</a>
-      <a class="button" href="progress.html">Progress</a>
+    <main class="content">
+
+      <div class="progress-card">
+        🌬️ Take a moment to breathe
+      </div>
+
+      <div class="progress-card">
+        📖 Write what’s on your mind
+      </div>
+
+      <div class="progress-card">
+        ✨ Celebrate a small win
+      </div>
+
+      <div class="progress-card">
+        🌿 Track gentle progress
+      </div>
+
+    </main>
+
+    <!-- Bottom Navigation -->
+    <div class="navbar">
+      <a href="index.html" class="active">
+        <span>🏠</span>
+        Home
+      </a>
+      <a href="breathe.html">
+        <span>🌬️</span>
+        Breathe
+      </a>
+      <a href="journal.html">
+        <span>📖</span>
+        Journal
+      </a>
+      <a href="wins.html">
+        <span>✨</span>
+        Wins
+      </a>
+      <a href="progress.html">
+        <span>🌿</span>
+        Progress
+      </a>
     </div>
 
   </div>
 
-  <div class="navbar">
-    <a href="index.html" class="active"><span>🏠</span>Home</a>
-    <a href="breathe.html"><span>🌬️</span>Breathe</a>
-    <a href="journal.html"><span>📖</span>Journal</a>
-    <a href="wins.html"><span>✨</span>Wins</a>
-    <a href="progress.html"><span>🌿</span>Progress</a>
-  </div>
-
+  <script src="storage.js"></script>
 </body>
 </html>
