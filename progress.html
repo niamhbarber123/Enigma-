@@ -1,48 +1,34 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Your Progress</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Progress</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="app">
-  <div class="header">
-    <h1>Your progress</h1>
-    <p>No pressure. Just patterns.</p>
-  </div>
+<header>
+  <h1>Your Progress</h1>
+</header>
 
-  <div class="content">
-    <div id="moodDisplay" class="progress-box"></div>
-  </div>
+<main>
+  <div class="card">Mood today: <strong id="mood"></strong></div>
+  <div class="card">Favourite quote saved 💜</div>
+  <div class="card">Breathing completed today 🌬️</div>
+</main>
 
-  <nav class="navbar">
-    <a href="index.html"><span>🏠</span>Home</a>
-    <a href="progress.html" class="active"><span>📊</span>Progress</a>
-  </nav>
-</div>
+<nav class="bottom-nav">
+  <a href="index.html">🏠<span>Home</span></a>
+  <a href="breathe.html">💨<span>Breathe</span></a>
+  <a href="checkin.html">🌿<span>Check-in</span></a>
+  <a href="quotes.html">💬<span>Quotes</span></a>
+  <a href="help.html">🆘<span>Help</span></a>
+</nav>
 
 <script>
-const entry = JSON.parse(localStorage.getItem("dailyCheckin"));
-
-const moods = {
-  calm: "😌 Calm",
-  okay: "🙂 Okay",
-  low: "😔 Low",
-  anxious: "😟 Anxious"
-};
-
-const box = document.getElementById("moodDisplay");
-
-if (entry) {
-  box.innerText =
-    `Last check-in:\n${moods[entry.mood]} on ${entry.date}`;
-} else {
-  box.innerText =
-    "No check-ins yet 🌱";
-}
+document.getElementById("mood").innerText =
+  localStorage.getItem("dailyMood") || "Not checked in yet";
 </script>
 
 </body>
