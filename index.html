@@ -3,10 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Enigma – Wellbeing</title>
+  <title>Enigma</title>
   <link rel="stylesheet" href="style.css">
 
-  <!-- Redirect to login if no user -->
   <script>
     if (!localStorage.getItem("enigmaUser")) {
       window.location.href = "login.html";
@@ -15,59 +14,35 @@
 </head>
 
 <body>
-  <div class="app">
+<div class="app">
 
-    <header class="header">
-      <h1>Enigma</h1>
-      <p>Your calm, safe space</p>
-    </header>
+  <header class="header">
+    <h1>Enigma</h1>
+    <p id="welcome"></p>
+  </header>
 
-    <main class="content">
+  <main class="content">
+    <div class="progress-card">🌬️ Breathe & reset</div>
+    <div class="progress-card">📖 Journal your thoughts</div>
+    <div class="progress-card">✨ Capture small wins</div>
+    <div class="progress-card">🌿 Track gentle progress</div>
+  </main>
 
-      <div class="progress-card">
-        🌬️ Take a moment to breathe
-      </div>
-
-      <div class="progress-card">
-        📖 Write what’s on your mind
-      </div>
-
-      <div class="progress-card">
-        ✨ Celebrate a small win
-      </div>
-
-      <div class="progress-card">
-        🌿 Track gentle progress
-      </div>
-
-    </main>
-
-    <!-- Bottom Navigation -->
-    <div class="navbar">
-      <a href="index.html" class="active">
-        <span>🏠</span>
-        Home
-      </a>
-      <a href="breathe.html">
-        <span>🌬️</span>
-        Breathe
-      </a>
-      <a href="journal.html">
-        <span>📖</span>
-        Journal
-      </a>
-      <a href="wins.html">
-        <span>✨</span>
-        Wins
-      </a>
-      <a href="progress.html">
-        <span>🌿</span>
-        Progress
-      </a>
-    </div>
-
+  <div class="navbar">
+    <a class="active"><span>🏠</span>Home</a>
+    <a href="breathe.html"><span>🌬️</span>Breathe</a>
+    <a href="journal.html"><span>📖</span>Journal</a>
+    <a href="wins.html"><span>✨</span>Wins</a>
+    <a href="progress.html"><span>🌿</span>Progress</a>
   </div>
 
-  <script src="storage.js"></script>
+</div>
+
+<script src="storage.js"></script>
+<script>
+const user = getUser();
+document.getElementById("welcome").innerText =
+  `Welcome back, ${user.name}`;
+</script>
 </body>
 </html>
