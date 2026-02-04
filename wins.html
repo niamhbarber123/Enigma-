@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Small Wins</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+  <h2>Small Wins</h2>
+  <p>Small things still count.</p>
+
+  <button onclick="addWin('Got out of bed')">Got out of bed</button>
+  <button onclick="addWin('Drank water')">Drank water</button>
+  <button onclick="addWin('Went outside')">Went outside</button>
+  <button onclick="addWin('Took a break')">Took a break</button>
+  <button onclick="addWin('Reached out to someone')">Reached out</button>
+
+  <p id="status"></p>
+  <a href="index.html">← Home</a>
+</div>
+
+<script>
+function addWin(win) {
+  let wins = JSON.parse(localStorage.getItem("enigmaWins")) || [];
+  wins.push({ text: win, date: new Date().toDateString() });
+  localStorage.setItem("enigmaWins", JSON.stringify(wins));
+  document.getElementById("status").innerText = "Win saved 🌿";
+}
+</script>
+</body>
+</html>q
