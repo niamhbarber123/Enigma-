@@ -1,52 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Daily Check-in</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Progress</title>
 
-  <link rel="icon" href="icon.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" sizes="180x180" href="/Enigma-/apple-touch-icon.png">
+  <link rel="apple-touch-icon-precomposed" href="/Enigma-/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/Enigma-/icon.png">
+  <link rel="manifest" href="/Enigma-/manifest.json">
   <meta name="apple-mobile-web-app-title" content="Enigma">
   <meta name="application-name" content="Enigma">
   <meta name="theme-color" content="#b8a6d9">
+  <meta name="apple-mobile-web-app-capable" content="yes">
 
-  <link rel="stylesheet" href="style.css?v=6">
+  <link rel="stylesheet" href="/Enigma-/style.css?v=30">
 </head>
 
 <body class="page-wrap">
 
   <header class="page-header">
-    <h1>Daily check-in</h1>
-    <p>How are you feeling today?</p>
+    <h1>Your progress</h1>
+    <p>Quiet growth over time</p>
   </header>
 
   <main class="page">
-    <div class="card">
-      <div class="mood-grid">
-        <button class="mood-btn" onclick="pickMood(this,'calm')">😌 Calm</button>
-        <button class="mood-btn" onclick="pickMood(this,'okay')">🙂 Okay</button>
-        <button class="mood-btn" onclick="pickMood(this,'low')">😔 Low</button>
-        <button class="mood-btn" onclick="pickMood(this,'anxious')">😟 Anxious</button>
-      </div>
-    </div>
-
-    <div class="card">
-      <textarea id="checkinNote" placeholder="Anything you'd like to note? (optional)"></textarea>
-      <button class="primary" onclick="saveCheckin()">Save check-in</button>
-      <div id="checkinSavedMsg" class="gentle-text"></div>
-    </div>
+    <div class="card">🌿 Mood today: <b id="pMood">—</b></div>
+    <div class="card">🔥 Check-in streak: <b id="pStreak">0</b> day(s)</div>
+    <div class="card">💬 Saved quotes: <b id="pFavCount">0</b></div>
+    <div class="card">🌬️ Breathed today: <b id="pBreathe">—</b></div>
+    <div class="card" id="pRec">—</div>
   </main>
 
   <nav class="bottom-nav">
-    <a href="index.html"><div class="nav-ico">🏠</div><span>Home</span></a>
-    <a href="breathe.html"><div class="nav-ico">🌬️</div><span>Breathe</span></a>
-    <a class="active" href="checkin.html"><div class="nav-ico">🌿</div><span>Check-in</span></a>
-    <a href="quotes.html"><div class="nav-ico">💬</div><span>Quotes</span></a>
-    <a href="help.html"><div class="nav-ico">🆘</div><span>Help</span></a>
+    <a href="/Enigma-/index.html"><div class="nav-ico">🏠</div><span>Home</span></a>
+    <a href="/Enigma-/breathe.html"><div class="nav-ico">🌬️</div><span>Breathe</span></a>
+    <a href="/Enigma-/journal.html"><div class="nav-ico">📖</div><span>Journal</span></a>
+    <a href="/Enigma-/checkin.html"><div class="nav-ico">🌿</div><span>Check-in</span></a>
+    <a class="active" href="/Enigma-/progress.html"><div class="nav-ico">📊</div><span>Progress</span></a>
+    <a href="/Enigma-/quotes.html"><div class="nav-ico">💬</div><span>Quotes</span></a>
   </nav>
 
-  <script src="app.js"></script>
+  <script src="/Enigma-/app.js"></script>
 </body>
 </html>
