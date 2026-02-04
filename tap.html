@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tap to Calm</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app">
+
+  <div class="header">
+    <h1>Tap to calm</h1>
+    <p>Touch the tiles and breathe</p>
+  </div>
+
+  <div class="content tap-grid">
+    <!-- 16 tiles -->
+    <div class="tap-tile"></div>
+    <div class="tap-tile"></div>
+    <div class="tap-tile"></div>
+    <div class="tap-tile"></div>
+
+    <div class="tap-tile"></div>
+    <div class="tap-tile"></div>
+    <div class="tap-tile"></div>
+    <div class="tap-tile"></div>
+
+    <div class="tap-tile"></div>
+    <div class="tap-tile"></div>
+    <div class="tap-tile"></div>
+    <div class="tap-tile"></div>
+
+    <div class="tap-tile"></div>
+    <div class="tap-tile"></div>
+    <div class="tap-tile"></div>
+    <div class="tap-tile"></div>
+  </div>
+
+  <nav class="navbar">
+    <a href="index.html"><span>🏠</span>Home</a>
+    <a href="breathe.html"><span>🌬️</span>Breathe</a>
+    <a href="journal.html"><span>📓</span>Journal</a>
+    <a href="quotes.html"><span>💬</span>Quotes</a>
+    <a href="tap.html" class="active"><span>🎨</span>Calm</a>
+  </nav>
+
+</div>
+
+<script>
+  const colours = [
+    "#c9b7e2",
+    "#e2d9f3",
+    "#b9d7d5",
+    "#f1d6e5",
+    "#d8e2dc"
+  ];
+
+  document.querySelectorAll(".tap-tile").forEach(tile => {
+    tile.addEventListener("click", () => {
+      const colour = colours[Math.floor(Math.random() * colours.length)];
+      tile.style.background = colour;
+    });
+  });
+</script>
+
+</body>
+</html>
