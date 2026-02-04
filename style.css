@@ -128,3 +128,16 @@ button {
 .bottom-nav a.active {
   color: var(--lavender);
 }
+
+button, .card, a {
+  min-height: 48px;
+}
+
+button:focus, a:focus {
+  outline: 3px solid #b8a6d9;
+}
+
+body {
+  line-height: 1.5;
+}
+
