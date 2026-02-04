@@ -2,49 +2,33 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Enigma – Welcome</title>
-
   <link rel="stylesheet" href="style.css">
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#9A94B3">
 </head>
 
 <body>
   <div class="app">
-
     <header class="header">
       <h1>Welcome to Enigma</h1>
-      <p>Your calm, safe space</p>
+      <p>Your calm space</p>
     </header>
 
     <main class="content">
-      <input id="name" type="text" placeholder="Your name">
-      <input id="email" type="email" placeholder="Email (optional)">
-
-      <button class="primary-btn" onclick="loginUser()">
-        Enter Enigma
-      </button>
+      <input id="name" placeholder="Your name">
+      <input id="email" placeholder="Email (optional)">
+      <button class="primary-btn" onclick="login()">Enter</button>
     </main>
-
   </div>
 
-  <!-- Scripts MUST be at the bottom -->
-  <script src="storage.js"></script>
-
-  <script>
-    function loginUser() {
-      const name = document.getElementById("name").value.trim();
-      const email = document.getElementById("email").value.trim();
-
-      if (!name) {
-        alert("Please enter your name");
-        return;
-      }
-
-      saveUser(name, email);
-      window.location.href = "index.html";
-    }
-  </script>
+<script src="storage.js"></script>
+<script>
+function login() {
+  const name = document.getElementById("name").value;
+  const email = document.getElementById("email").value;
+  if (!name) return alert("Please enter your name");
+  saveUser(name, email);
+  window.location.href = "index.html";
+}
+</script>
 </body>
 </html>
