@@ -172,9 +172,8 @@ body {
   margin-bottom: 6px;
   font-size: 1rem;
 }
-
-
-/* ---------- MOOD ---------- */
+  
+}/* ---------- MOOD ---------- */
 .mood-buttons button {
   width: 100%;
   margin-bottom: 12px;
@@ -190,3 +189,4 @@ body {
   font-size: 1.1rem;
   text-align: center;
 }
+
