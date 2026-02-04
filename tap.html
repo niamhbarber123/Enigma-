@@ -1,39 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>Tap to Calm</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calm Game</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="app">
+<header><h1>Tap to Colour</h1></header>
 
-  <div class="header">
-    <h1>Tap to calm</h1>
-    <p>No goal. Just gentle focus.</p>
+<main>
+  <div class="card" onclick="this.style.background='#cbbfff'">
+    Tap me to colour 🌸
   </div>
+</main>
 
-  <div class="content tap-grid">
-    <div class="tap"></div><div class="tap"></div>
-    <div class="tap"></div><div class="tap"></div>
-    <div class="tap"></div><div class="tap"></div>
-    <div class="tap"></div><div class="tap"></div>
-  </div>
-
-</div>
-
-<script>
-const colours = ["#d8cdea","#e2d9f3","#cfd9d6","#f1d6e5"];
-
-document.querySelectorAll(".tap").forEach(tile => {
-  tile.onclick = () => {
-    tile.style.background =
-      colours[Math.floor(Math.random() * colours.length)];
-  };
-});
-</script>
+<nav class="bottom-nav">
+  <a href="index.html">🏠</a>
+  <a class="active" href="game.html">🎨</a>
+</nav>
 
 </body>
 </html>
