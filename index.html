@@ -1,36 +1,48 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Enigma</title>
-<link rel="icon" href="icon.png">
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enigma</title>
+
+  <link rel="icon" href="icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-title" content="Enigma">
+  <meta name="application-name" content="Enigma">
+  <meta name="theme-color" content="#b8a6d9">
+
+  <link rel="stylesheet" href="style.css?v=6">
 </head>
-<body class="home-bg">
 
-<header>
-  <h1>Enigma</h1>
-  <p>Your calm space</p>
-</header>
+<body class="home-body page-wrap">
 
-<main>
-  <a class="card" href="checkin.html">🌿 Daily Check-in</a>
-  <a class="card" href="breathe.html">🌬️ Breathing</a>
-  <a class="card" href="quotes.html">💬 Quotes</a>
-  <a class="card" href="game.html">🎨 Calm Game</a>
-  <a class="card" href="yoga.html">🧘 Yoga & Meditation</a>
-  <a class="card" href="reminders.html">⏰ Reminders</a>
-</main>
+  <div class="home-icon" aria-hidden="true"></div>
 
-<nav class="bottom-nav">
-  <a class="active" href="index.html">🏠</a>
-  <a href="checkin.html">🌿</a>
-  <a href="progress.html">📊</a>
-  <a href="help.html">🆘</a>
-</nav>
+  <header class="page-header">
+    <h1>Enigma</h1>
+    <p>Your calm space</p>
+  </header>
 
-<script src="app.js"></script>
-<script>reminderCheck();</script>
+  <main class="home-grid">
+    <a class="home-tile" href="checkin.html"><div class="tile-emoji">🌿</div><div class="tile-text">Daily check-in</div></a>
+    <a class="home-tile" href="breathe.html"><div class="tile-emoji">🌬️</div><div class="tile-text">Breathe</div></a>
+    <a class="home-tile" href="quotes.html"><div class="tile-emoji">💬</div><div class="tile-text">Quotes</div></a>
+    <a class="home-tile" href="yoga.html"><div class="tile-emoji">🧘‍♀️</div><div class="tile-text">Yoga</div></a>
+    <a class="home-tile" href="game.html"><div class="tile-emoji">🎨</div><div class="tile-text">Tap to colour</div></a>
+    <a class="home-tile" href="progress.html"><div class="tile-emoji">📊</div><div class="tile-text">Progress</div></a>
+    <a class="home-tile" href="reminders.html"><div class="tile-emoji">⏰</div><div class="tile-text">Reminders</div></a>
+    <a class="home-tile" href="help.html"><div class="tile-emoji">🆘</div><div class="tile-text">Help</div></a>
+  </main>
+
+  <nav class="bottom-nav">
+    <a class="active" href="index.html"><div class="nav-ico">🏠</div><span>Home</span></a>
+    <a href="breathe.html"><div class="nav-ico">🌬️</div><span>Breathe</span></a>
+    <a href="checkin.html"><div class="nav-ico">🌿</div><span>Check-in</span></a>
+    <a href="quotes.html"><div class="nav-ico">💬</div><span>Quotes</span></a>
+    <a href="help.html"><div class="nav-ico">🆘</div><span>Help</span></a>
+  </nav>
+
+  <script src="app.js"></script>
 </body>
 </html>
