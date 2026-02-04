@@ -1,30 +1,62 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Help</title>
-  <link rel="stylesheet" href="style.css">
+
+  <link rel="icon" href="icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-title" content="Enigma">
+  <meta name="application-name" content="Enigma">
+  <meta name="theme-color" content="#b8a6d9">
+
+  <link rel="stylesheet" href="style.css?v=6">
 </head>
-<body>
 
-<header>
-  <h1>Support</h1>
-</header>
+<body class="page-wrap">
 
-<main>
-  <div class="card">📞 Samaritans – 116 123</div>
-  <div class="card">🌐 mind.org.uk</div>
-  <div class="card">🌐 nhs.uk/mental-health</div>
-</main>
+  <header class="page-header">
+    <h1>Help & support</h1>
+    <p>You don’t have to do this alone.</p>
+  </header>
 
-<nav class="bottom-nav">
-  <a href="index.html">🏠</a>
-  <a href="breathe.html">💨</a>
-  <a href="checkin.html">🌿</a>
-  <a href="quotes.html">💬</a>
-  <a class="active" href="help.html">🆘</a>
-</nav>
+  <main class="page">
 
+    <div class="help-card">
+      <strong>Samaritans (UK)</strong><br>
+      Call free 24/7: <strong>116 123</strong><br>
+      <a href="https://www.samaritans.org" target="_blank" rel="noopener">samaritans.org</a>
+    </div>
+
+    <div class="help-card">
+      <strong>Shout (Text Support)</strong><br>
+      Text <strong>SHOUT</strong> to <strong>85258</strong><br>
+      <a href="https://www.giveusashout.org" target="_blank" rel="noopener">giveusashout.org</a>
+    </div>
+
+    <div class="help-card">
+      <strong>NHS mental health support</strong><br>
+      Call <strong>111</strong> (select mental health option where available)<br>
+      <a href="https://www.nhs.uk/mental-health/" target="_blank" rel="noopener">nhs.uk/mental-health</a>
+    </div>
+
+    <div class="help-card">
+      <strong>Emergency</strong><br>
+      If you’re in immediate danger, call <strong>999</strong>.
+    </div>
+
+  </main>
+
+  <nav class="bottom-nav">
+    <a href="index.html"><div class="nav-ico">🏠</div><span>Home</span></a>
+    <a href="breathe.html"><div class="nav-ico">🌬️</div><span>Breathe</span></a>
+    <a href="checkin.html"><div class="nav-ico">🌿</div><span>Check-in</span></a>
+    <a href="quotes.html"><div class="nav-ico">💬</div><span>Quotes</span></a>
+    <a class="active" href="help.html"><div class="nav-ico">🆘</div><span>Help</span></a>
+  </nav>
+
+  <script src="app.js"></script>
 </body>
 </html>
