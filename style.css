@@ -1,4 +1,6 @@
-/* Enigma Palette */
+/* -------------------------
+   Enigma Colour Palette
+-------------------------- */
 :root {
   --lavender: #E6E1F2;
   --sage: #DDE8E1;
@@ -7,18 +9,24 @@
   --white: #FFFFFF;
 }
 
-/* Base */
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-  background: linear-gradient(to bottom, var(--lavender), var(--sage));
-  color: var(--text-main);
+/* -------------------------
+   Global Reset & Sizing
+-------------------------- */
+* {
+  box-sizing: border-box;
 }
 
 html, body {
   height: 100%;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: linear-gradient(to bottom, var(--lavender), var(--sage));
+  color: var(--text-main);
 }
 
+/* -------------------------
+   App Wrapper (CRITICAL)
+-------------------------- */
 .app {
   max-width: 420px;
   margin: 0 auto;
@@ -27,89 +35,132 @@ html, body {
   flex-direction: column;
 }
 
-/* Header */
+/* -------------------------
+   Header
+-------------------------- */
 .header {
-  padding: 24px;
+  padding: 28px 22px 18px;
   text-align: center;
 }
 
 .header h1 {
   margin: 0;
   font-size: 26px;
+  font-weight: 600;
 }
 
 .header p {
   margin-top: 6px;
+  font-size: 14px;
   opacity: 0.8;
 }
 
-/* Content */
+/* -------------------------
+   Main Content
+-------------------------- */
 .content {
   flex: 1;
   padding: 20px;
 }
 
-textarea,
-input {
+/* -------------------------
+   Inputs & Textareas
+-------------------------- */
+input,
+textarea {
   width: 100%;
-  padding: 14px;
-  border-radius: 14px;
-  border: none;
+  padding: 15px;
   margin-bottom: 16px;
+  border-radius: 16px;
+  border: none;
   font-size: 15px;
+  background: var(--white);
+  color: var(--text-main);
 }
 
 textarea {
   min-height: 120px;
+  resize: none;
 }
 
-/* Buttons */
+/* -------------------------
+   Buttons
+-------------------------- */
 .primary-btn {
   width: 100%;
   padding: 16px;
-  border-radius: 18px;
+  border-radius: 20px;
   border: none;
   background: var(--deep-lavender);
   color: white;
   font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
 }
 
-/* Cards */
+.primary-btn:active {
+  transform: scale(0.98);
+}
+
+/* -------------------------
+   Cards (Home / Progress / Quotes)
+-------------------------- */
 .progress-card,
 .quote-box {
   background: var(--white);
-  border-radius: 18px;
+  border-radius: 20px;
   padding: 20px;
   margin-bottom: 14px;
+  font-size: 15px;
 }
 
-/* Lists */
+/* -------------------------
+   Lists (Wins)
+-------------------------- */
 .list {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
 .list li {
   background: var(--white);
-  border-radius: 14px;
-  padding: 12px;
+  border-radius: 16px;
+  padding: 14px;
   margin-bottom: 10px;
+  font-size: 14px;
 }
 
-/* Navbar */
+/* -------------------------
+   Quote Styling
+-------------------------- */
+blockquote {
+  margin: 0;
+  font-style: italic;
+}
+
+.author {
+  margin-top: 10px;
+  font-size: 13px;
+  opacity: 0.7;
+}
+
+/* -------------------------
+   Bottom Navigation
+-------------------------- */
 .navbar {
   display: flex;
-  border-top: 1px solid rgba(0,0,0,0.05);
   background: var(--white);
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .navbar a {
   flex: 1;
-  padding: 10px 0;
+  padding: 10px 0 8px;
   text-align: center;
+  text-decoration: none;
   font-size: 12px;
   color: var(--deep-lavender);
-  text-decoration: none;
 }
 
 .navbar a span {
@@ -120,4 +171,5 @@ textarea {
 
 .navbar a.active {
   font-weight: 600;
+  color: var(--text-main);
 }
