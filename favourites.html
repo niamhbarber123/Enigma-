@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Saved Quotes</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app">
+  <div class="header">
+    <h1>Your saved quotes</h1>
+    <p>Words you chose</p>
+  </div>
+
+  <div class="content quote-grid" id="savedQuotes"></div>
+
+  <nav class="navbar">
+    <a href="index.html"><span>🏠</span>Home</a>
+    <a href="favourites.html" class="active"><span>💜</span>Saved</a>
+  </nav>
+</div>
+
+<script>
+const saved = JSON.parse(localStorage.getItem("favouriteQuotes") || "[]");
+const container = document.getElementById("savedQuotes");
+
+saved.forEach(q => {
+  const div = document.createElement("div");
+  div.className = "quote-tile";
+  div.innerText = q;
+  container.appendChild(div);
+});
+</script>
+
+</body>
+</html>
