@@ -1,33 +1,49 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>Progress – Enigma</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>Your Progress</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-<div class="app">
 
+<div class="app">
   <div class="header">
-    <h1>Your Progress</h1>
-    <p>Quiet growth over time.</p>
+    <h1>Your progress</h1>
+    <p>No pressure. Just patterns.</p>
   </div>
 
   <div class="content">
-    <div class="progress-card">Journal entries: 0</div>
-    <div class="progress-card">Small wins logged: 0</div>
-    <div class="progress-card">Days checked in: 0</div>
+    <div id="moodDisplay" class="progress-box"></div>
   </div>
 
   <nav class="navbar">
     <a href="index.html"><span>🏠</span>Home</a>
-    <a href="journal.html"><span>📓</span>Journal</a>
-    <a href="wins.html"><span>✨</span>Wins</a>
     <a href="progress.html" class="active"><span>📊</span>Progress</a>
   </nav>
-
 </div>
+
+<script>
+const entry = JSON.parse(localStorage.getItem("dailyCheckin"));
+
+const moods = {
+  calm: "😌 Calm",
+  okay: "🙂 Okay",
+  low: "😔 Low",
+  anxious: "😟 Anxious"
+};
+
+const box = document.getElementById("moodDisplay");
+
+if (entry) {
+  box.innerText =
+    `Last check-in:\n${moods[entry.mood]} on ${entry.date}`;
+} else {
+  box.innerText =
+    "No check-ins yet 🌱";
+}
+</script>
+
 </body>
 </html>
