@@ -1,62 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>Enigma</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <div class="checkin">
-  🌱 <strong>Daily check-in:</strong><br>
-  How are you feeling right now — physically or mentally?
-</div>
-
-
-  <!-- App icon / PWA -->
-  <link rel="manifest" href="manifest.json">
-  <link rel="apple-touch-icon" href="icon-192.png">
-
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>Enigma</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-<div class="app">
 
+<div class="app">
   <div class="header">
     <h1>Enigma</h1>
-    <p>Welcome back, Niamh</p>
+    <p>Your calm space</p>
   </div>
 
-  <div class="content home-content">
-
-    <a class="home-card" href="breathe.html">
-      <span>🌬️</span>
-      <p>Breathe & reset</p>
-    </a>
-
-    <a class="home-card" href="journal.html">
-      <span>📓</span>
-      <p>Journal your thoughts</p>
-    </a>
-
-    <a class="home-card" href="wins.html">
-      <span>✨</span>
-      <p>Capture small wins</p>
-    </a>
-
-    <a class="home-card" href="progress.html">
-      <span>🌿</span>
-      <p>Track gentle progress</p>
-    </a>
-
+  <div class="content home-grid">
+    <a class="home-card" href="checkin.html">🌱 Daily check-in</a>
+    <a class="home-card" href="breathe.html">🌬️ Breathe</a>
+    <a class="home-card" href="quotes.html">💬 Quotes</a>
+    <a class="home-card" href="yoga.html">🧘 Yoga</a>
+    <a class="home-card" href="tap.html">🎨 Calm</a>
+    <a class="home-card" href="progress.html">📊 Progress</a>
   </div>
 
   <nav class="navbar">
-    <a href="index.html" class="active"><span>🏠</span>Home</a>
+    <a href="index.html"><span>🏠</span>Home</a>
     <a href="breathe.html"><span>🌬️</span>Breathe</a>
-    <a href="journal.html"><span>📓</span>Journal</a>
-    <a href="wins.html"><span>✨</span>Wins</a>
-    <a href="progress.html"><span>📊</span>Progress</a>
+    <a href="checkin.html"><span>🌱</span>Check-in</a>
+    <a href="quotes.html"><span>💬</span>Quotes</a>
+    <a href="help.html"><span>🆘</span>Help</a>
   </nav>
-
 </div>
+
 </body>
 </html>
