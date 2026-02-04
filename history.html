@@ -1,36 +1,20 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Your Progress</title>
+  <meta charset="UTF-8">
+  <title>Progress · Enigma</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-<div class="container">
-  <h2>Your Progress</h2>
-  <p>Noticing patterns, not judging them.</p>
+  <div class="container">
+    <h2>Progress</h2>
+    <p>Small steps over time.</p>
 
-  <div id="history"></div>
+    <p>(Progress history will appear here)</p>
 
-  <a href="index.html">← Home</a>
-</div>
-
-<script>
-const historyDiv = document.getElementById("history");
-
-const mood = localStorage.getItem("enigmaMood");
-if (mood) {
-  historyDiv.innerHTML += `<p><strong>Last mood:</strong> ${mood}</p>`;
-}
-
-const wins = JSON.parse(localStorage.getItem("enigmaWins")) || [];
-if (wins.length > 0) {
-  historyDiv.innerHTML += "<p><strong>Recent wins:</strong></p>";
-  wins.slice(-5).forEach(w =>
-    historyDiv.innerHTML += `<p>• ${w.text}</p>`
-  );
-} else {
-  historyDiv.innerHTML += "<p>No wins logged yet — that’s okay.</p>";
-}
-</script>
+    <a href="index.html">← Home</a>
+  </div>
 </body>
 </html>
