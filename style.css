@@ -1,90 +1,82 @@
+:root {
+  --lavender: #b8a6d9;
+  --lavender-soft: #efe9f8;
+  --text: #4a4458;
+  --white: #ffffff;
+}
+
 * {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 body {
-  background: #faf9fc;
-  color: #4a4458;
-}
-
-.app {
+  margin: 0;
+  background: linear-gradient(#faf7ff, #f3eefb);
+  color: var(--text);
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
 }
 
 /* ---------- HEADER ---------- */
-.header {
-  padding: 20px;
+
+header {
+  text-align: center;
+  padding: 24px 16px 8px;
 }
 
-.header h1 {
-  font-size: 1.8rem;
+header h1 {
+  margin: 0;
+  font-size: 32px;
+  color: var(--lavender);
 }
 
-.header p {
+header p {
   margin-top: 6px;
-  color: #7a728a;
+  opacity: 0.8;
 }
 
-/* ---------- CONTENT ---------- */
-.content {
-  flex: 1;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+/* ---------- ICON BACKGROUND ---------- */
+
+.icon-bg {
+  background: url("icon.png") center/120px no-repeat;
+  opacity: 0.08;
+  height: 140px;
+  margin: 10px 0;
 }
 
-/* ---------- HOME ---------- */
-.home-card {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  background: #efeaf7;
-  padding: 18px;
-  border-radius: 18px;
-  text-decoration: none;
-  color: #4a4458;
-  font-size: 1.1rem;
-}
+/* ---------- MAIN CONTENT ---------- */
 
-.home-card span {
-  font-size: 1.6rem;
-}
-
-.home-card:active {
-  transform: scale(0.98);
-  background: #e2daf3;
-}
-
-/* ---------- DAILY CHECK-IN ---------- */
-.checkin {
-  background: #f4f1fa;
+main {
   padding: 16px;
-  border-radius: 18px;
-  font-size: 0.95rem;
+  padding-bottom: 90px; /* space for nav */
+}
+
+.card {
+  display: block;
+  background: var(--lavender-soft);
+  border-radius: 16px;
+  padding: 18px;
+  margin-bottom: 14px;
+  text-decoration: none;
+  color: var(--text);
+  font-size: 18px;
+  text-align: center;
 }
 
 /* ---------- BREATHE ---------- */
+
 .breathe-container {
-  flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  gap: 20px;
-  overflow: hidden;
+  gap: 24px;
 }
 
-.breathe-circle {
-  width: 180px;
-  height: 180px;
+.circle {
+  width: 160px;
+  height: 160px;
   border-radius: 50%;
-  background: #c9b7e2;
+  background: var(--lavender);
   animation: breathe 8s ease-in-out infinite;
 }
 
@@ -94,174 +86,45 @@ body {
   100% { transform: scale(1); }
 }
 
-.breathe-text {
-  font-size: 1.1rem;
-  color: #6b647c;
-}
+/* ---------- BUTTON ---------- */
 
-.complete-btn {
-  margin-top: 10px;
-  padding: 12px 20px;
-  border-radius: 16px;
+button {
+  background: var(--lavender);
   border: none;
-  background: #c9b7e2;
   color: white;
-  font-size: 1rem;
+  padding: 14px 24px;
+  font-size: 16px;
+  border-radius: 14px;
 }
 
-/* ---------- NAV ---------- */
-.navbar {
+/* ---------- BOTTOM NAV ---------- */
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 70px;
+  background: white;
+  border-top: 1px solid #ddd;
   display: flex;
   justify-content: space-around;
-  padding: 12px 0;
-  background: #ffffff;
-  border-top: 1px solid #e5e1ef;
+  align-items: center;
 }
 
-.navbar a {
+.bottom-nav a {
   text-decoration: none;
-  font-size: 0.75rem;
-  color: #7a728a;
+  color: var(--text);
+  font-size: 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
 }
 
-.navbar span {
-  font-size: 1.2rem;
+.bottom-nav a span {
+  font-size: 11px;
+  margin-top: 2px;
 }
 
-.navbar a.active {
-  color: #5b4a82;
+.bottom-nav a.active {
+  color: var(--lavender);
 }
-
-/* ---------- HELP ---------- */
-.help {
-  background: #f4f1fa;
-  padding: 18px;
-  border-radius: 18px;
-  font-size: 0.9rem;
-}
-
-.help h3 {
-  margin-bottom: 8px;
-}
-/* ---------- TAP TO CALM ---------- */
-.tap-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
-}
-
-.tap-tile {
-  background: #efeaf7;
-  aspect-ratio: 1 / 1;
-  border-radius: 16px;
-  transition: background 0.3s ease;
-}
-/* ---------- YOGA ---------- */
-.yoga-card {
-  background: #efeaf7;
-  padding: 16px;
-  border-radius: 18px;
-  margin-bottom: 14px;
-}
-
-.yoga-card h3 {
-  margin-bottom: 6px;
-  font-size: 1rem;
-}
-  
-}/* ---------- MOOD ---------- */
-.mood-buttons button {
-  width: 100%;
-  margin-bottom: 12px;
-  padding: 16px;
-  font-size: 1rem;
-  border-radius: 16px;
-  background: #efeaf7;
-  border: none;
-}
-
-.recommendation {
-  margin-top: 20px;
-  font-size: 1.1rem;
-  text-align: center;
-}
-/* ---------- DAILY CHECK-IN ---------- */
-.checkin textarea {
-  width: 100%;
-  min-height: 90px;
-  padding: 14px;
-  border-radius: 14px;
-  border: none;
-  background: #f4f1f8;
-  margin: 16px 0;
-  font-family: inherit;
-}
-
-.mood-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-}
-
-.mood-grid button {
-  padding: 16px;
-  border-radius: 16px;
-  border: none;
-  background: #efeaf7;
-  font-size: 1rem;
-}
-
-.mood-grid button.active {
-  background: #d8cdea;
-  font-weight: 600;
-}
-
-.gentle-text {
-  margin-top: 14px;
-  font-size: 0.9rem;
-  color: #6b5a7a;
-  text-align: center;
-}
-
-textarea {
-  width: 100%;
-  min-height: 90px;
-  padding: 14px;
-  border-radius: 14px;
-  border: none;
-  background: #f4f1f8;
-  margin: 16px 0;
-}
-
-.gentle-text {
-  text-align: center;
-  color: #6b5a7a;
-  margin-top: 12px;
-}
-
-.yoga-card {
-  background: #efeaf7;
-  padding: 16px;
-  border-radius: 18px;
-  margin-bottom: 14px;
-}
-
-.quote-tile span {
-  display: block;
-  margin-top: 8px;
-  font-size: 0.8rem;
-  color: #7a728a;
-}
-.progress-box {
-  background: #efeaf7;
-  padding: 24px;
-  border-radius: 18px;
-  text-align: center;
-  font-size: 1.1rem;
-  line-height: 1.6;
-}
-
