@@ -1,33 +1,52 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Check-in</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Check-in</title>
+
+  <link rel="icon" href="icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-title" content="Enigma">
+  <meta name="application-name" content="Enigma">
+  <meta name="theme-color" content="#b8a6d9">
+
+  <link rel="stylesheet" href="style.css?v=6">
 </head>
-<body>
 
-<header><h1>Daily Check-in</h1></header>
+<body class="page-wrap">
 
-<main>
-  <select id="mood" class="card">
-    <option>😊 Good</option>
-    <option>😐 Okay</option>
-    <option>😔 Low</option>
-    <option>😣 Anxious</option>
-  </select>
-  <button onclick="saveCheckin()">Save</button>
-</main>
+  <header class="page-header">
+    <h1>Daily check-in</h1>
+    <p>How are you feeling today?</p>
+  </header>
 
-<nav class="bottom-nav">
-  <a href="index.html">🏠</a>
-  <a class="active" href="checkin.html">🌿</a>
-  <a href="progress.html">📊</a>
-  <a href="help.html">🆘</a>
-</nav>
+  <main class="page">
+    <div class="card">
+      <div class="mood-grid">
+        <button class="mood-btn" onclick="pickMood(this,'calm')">😌 Calm</button>
+        <button class="mood-btn" onclick="pickMood(this,'okay')">🙂 Okay</button>
+        <button class="mood-btn" onclick="pickMood(this,'low')">😔 Low</button>
+        <button class="mood-btn" onclick="pickMood(this,'anxious')">😟 Anxious</button>
+      </div>
+    </div>
 
-<script src="app.js"></script>
-<script>reminderCheck();</script>
+    <div class="card">
+      <textarea id="checkinNote" placeholder="Anything you'd like to note? (optional)"></textarea>
+      <button class="primary" onclick="saveCheckin()">Save check-in</button>
+      <div id="checkinSavedMsg" class="gentle-text"></div>
+    </div>
+  </main>
+
+  <nav class="bottom-nav">
+    <a href="index.html"><div class="nav-ico">🏠</div><span>Home</span></a>
+    <a href="breathe.html"><div class="nav-ico">🌬️</div><span>Breathe</span></a>
+    <a class="active" href="checkin.html"><div class="nav-ico">🌿</div><span>Check-in</span></a>
+    <a href="quotes.html"><div class="nav-ico">💬</div><span>Quotes</span></a>
+    <a href="help.html"><div class="nav-ico">🆘</div><span>Help</span></a>
+  </nav>
+
+  <script src="app.js"></script>
 </body>
 </html>
