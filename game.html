@@ -1,106 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tap to Colour</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tap to colour</title>
+
+  <link rel="icon" href="icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-title" content="Enigma">
+  <meta name="application-name" content="Enigma">
+  <meta name="theme-color" content="#b8a6d9">
+
+  <link rel="stylesheet" href="style.css?v=6">
 </head>
-<body>
 
-<header>
-  <h1>Tap to Colour</h1>
-  <p>Choose an image and colour at your own pace</p>
-</header>
+<body class="page-wrap">
 
-<main>
+  <header class="page-header">
+    <h1>Tap to colour</h1>
+    <p>Choose an image and colour at your own pace</p>
+  </header>
 
-  <!-- IMAGE PICKER -->
-  <div class="card">
-    <label for="imageSelect"><b>Choose image</b></label>
-    <select id="imageSelect" onchange="loadImage()">
-      <option value="mandala">Mandala</option>
-      <option value="flower">Flower</option>
-      <option value="leaf">Leaf</option>
-      <option value="moon">Moon</option>
-      <option value="abstract">Abstract Calm</option>
-    </select>
-  </div>
+  <main class="page">
 
-  <!-- COLOUR PALETTE -->
-  <div class="palette">
-    <div class="colour" style="background:#cbbfff" onclick="setColour('#cbbfff')"></div>
-    <div class="colour" style="background:#e6d9ff" onclick="setColour('#e6d9ff')"></div>
-    <div class="colour" style="background:#b8e0d2" onclick="setColour('#b8e0d2')"></div>
-    <div class="colour" style="background:#f4c2c2" onclick="setColour('#f4c2c2')"></div>
-    <div class="colour" style="background:#ffffff" onclick="setColour('#ffffff')"></div>
-  </div>
+    <div class="card">
+      <div class="picker-row">
+        <strong style="min-width:110px;">Choose image</strong>
+        <select id="imageSelect">
+          <option value="mandala">Mandala</option>
+          <option value="flower">Flower</option>
+          <option value="leaf">Leaf</option>
+          <option value="moon">Moon</option>
+          <option value="abstract">Abstract calm</option>
+          <option value="waves">Waves</option>
+          <option value="stars">Stars</option>
+          <option value="petals">Petals</option>
+          <option value="sunrise">Sunrise</option>
+          <option value="garden">Garden</option>
+        </select>
+      </div>
 
-  <!-- CANVAS -->
-  <div class="colour-grid" id="grid"></div>
+      <div id="palette" class="palette"></div>
+      <div class="gentle-text">Tap a colour, then tap tiles.</div>
+    </div>
 
-  <button onclick="saveArt()">Save progress</button>
+    <div id="grid" class="colour-grid"></div>
 
-</main>
+    <button class="primary" onclick="saveArt()">Save progress</button>
 
-<nav class="bottom-nav">
-  <a href="index.html">🏠</a>
-  <a class="active" href="game.html">🎨</a>
-  <a href="help.html">🆘</a>
-</nav>
+  </main>
 
-<script>
-/* =========================
-   TAP TO COLOUR GAME
-========================= */
+  <nav class="bottom-nav">
+    <a href="index.html"><div class="nav-ico">🏠</div><span>Home</span></a>
+    <a href="breathe.html"><div class="nav-ico">🌬️</div><span>Breathe</span></a>
+    <a href="checkin.html"><div class="nav-ico">🌿</div><span>Check-in</span></a>
+    <a href="quotes.html"><div class="nav-ico">💬</div><span>Quotes</span></a>
+    <a href="help.html"><div class="nav-ico">🆘</div><span>Help</span></a>
+  </nav>
 
-let currentColour = "#cbbfff";
-let currentImage = "mandala";
-const grid = document.getElementById("grid");
-
-function setColour(colour) {
-  currentColour = colour;
-}
-
-function createGrid() {
-  grid.innerHTML = "";
-  for (let i = 0; i < 64; i++) {
-    const cell = document.createElement("div");
-    cell.className = "cell";
-    cell.addEventListener("click", () => {
-      cell.style.background = currentColour;
-      saveCell(i, currentColour);
-    });
-    grid.appendChild(cell);
-  }
-}
-
-function saveCell(index, colour) {
-  let data = JSON.parse(localStorage.getItem("colourGame")) || {};
-  if (!data[currentImage]) data[currentImage] = {};
-  data[currentImage][index] = colour;
-  localStorage.setItem("colourGame", JSON.stringify(data));
-}
-
-function loadImage() {
-  currentImage = document.getElementById("imageSelect").value;
-  createGrid();
-
-  let data = JSON.parse(localStorage.getItem("colourGame")) || {};
-  if (data[currentImage]) {
-    Object.keys(data[currentImage]).forEach(i => {
-      grid.children[i].style.background = data[currentImage][i];
-    });
-  }
-}
-
-function saveArt() {
-  alert("Saved 💜 You can come back anytime.");
-}
-
-createGrid();
-loadImage();
-</script>
-
+  <script src="app.js"></script>
 </body>
 </html>
