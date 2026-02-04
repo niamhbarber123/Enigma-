@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Daily Reminder</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+  <h2>Daily Reminder</h2>
+  <p>Choose a gentle daily nudge.</p>
+
+  <button onclick="setReminder()">Enable Reminder</button>
+  <p id="status"></p>
+
+  <a href="index.html">← Home</a>
+</div>
+
+<script>
+function setReminder() {
+  localStorage.setItem("enigmaReminder", "true");
+  document.getElementById("status").innerText =
+    "Reminder set. Visit Enigma daily 🌿";
+}
+</script>
+</body>
+</html>
