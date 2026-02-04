@@ -1,71 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <meta charset="UTF-8">
-  <title>Daily Check-In</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Check-in</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="app">
+<header>
+  <h1>Daily Check-in</h1>
+  <p>How are you feeling today?</p>
+</header>
 
-  <div class="header">
-    <h1>Daily check-in</h1>
-    <p>How are you feeling today?</p>
-  </div>
+<main>
+  <select id="mood" class="card">
+    <option>😊 Good</option>
+    <option>😐 Okay</option>
+    <option>😔 Low</option>
+    <option>😣 Anxious</option>
+  </select>
 
-  <div class="content">
+  <button onclick="saveCheckin()">Save check-in</button>
+</main>
 
-    <div class="mood-grid">
-      <button onclick="selectMood(this,'calm')">😌 Calm</button>
-      <button onclick="selectMood(this,'okay')">🙂 Okay</button>
-      <button onclick="selectMood(this,'low')">😔 Low</button>
-      <button onclick="selectMood(this,'anxious')">😟 Anxious</button>
-    </div>
-
-    <textarea id="note" placeholder="Anything you'd like to note? (optional)"></textarea>
-
-    <button class="primary-btn" onclick="saveCheckin()">Save check-in</button>
-
-    <p id="confirm" class="gentle-text"></p>
-
-  </div>
-
-  <nav class="navbar">
-    <a href="index.html"><span>🏠</span>Home</a>
-    <a href="checkin.html" class="active"><span>🌱</span>Check-in</a>
-    <a href="breathe.html"><span>🌬️</span>Breathe</a>
-    <a href="quotes.html"><span>💬</span>Quotes</a>
-    <a href="help.html"><span>🆘</span>Help</a>
-  </nav>
-
-</div>
+<nav class="bottom-nav">
+  <a href="index.html">🏠<span>Home</span></a>
+  <a href="breathe.html">💨<span>Breathe</span></a>
+  <a class="active" href="checkin.html">🌿<span>Check-in</span></a>
+  <a href="quotes.html">💬<span>Quotes</span></a>
+  <a href="help.html">🆘<span>Help</span></a>
+</nav>
 
 <script>
-let mood = "";
-
-function selectMood(btn, m) {
-  mood = m;
-  document.querySelectorAll(".mood-grid button").forEach(b => b.classList.remove("active"));
-  btn.classList.add("active");
-}
-
 function saveCheckin() {
-  if (!mood) {
-    alert("Please choose how you're feeling 💜");
-    return;
-  }
-
-  const entry = {
-    date: new Date().toDateString(),
-    mood: mood,
-    note: document.getElementById("note").value
-  };
-
-  localStorage.setItem("dailyCheckin", JSON.stringify(entry));
-  document.getElementById("confirm").innerText =
-    "Saved 🌿 Be gentle with yourself today.";
+  const mood = document.getElementById("mood").value;
+  localStorage.setItem("dailyMood", mood);
+  alert("Check-in saved 💜");
 }
 </script>
 
