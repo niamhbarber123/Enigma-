@@ -10,21 +10,23 @@
 <body>
   <div class="container">
     <h2>Breathe</h2>
-    <p>Slow your breath. Nothing else is needed right now.</p>
+    <p id="breathText">Inhale</p>
 
-    <div style="
-      width:140px;
-      height:140px;
-      border-radius:50%;
-      background:#C3BDD9;
-      margin:30px auto;
-      animation: breathe 8s infinite;
-    "></div>
+    <div class="circle"></div>
 
     <a href="index.html">← Home</a>
   </div>
 
   <style>
+    .circle {
+      width: 140px;
+      height: 140px;
+      margin: 30px auto;
+      border-radius: 50%;
+      background: #C6BFE3;
+      animation: breathe 8s infinite;
+    }
+
     @keyframes breathe {
       0% { transform: scale(1); }
       50% { transform: scale(1.3); }
@@ -35,7 +37,8 @@
   <script>
     let inhale = true;
     setInterval(() => {
-      document.querySelector("p").innerText = inhale ? "Exhale" : "Inhale";
+      document.getElementById("breathText").innerText =
+        inhale ? "Exhale" : "Inhale";
       inhale = !inhale;
     }, 4000);
   </script>
