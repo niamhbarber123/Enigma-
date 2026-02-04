@@ -2,22 +2,83 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Check-In · Enigma</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Daily Check-In</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-  <div class="container">
-    <h2>Daily Check-In</h2>
-    <p>How are you feeling right now?</p>
 
-    <button>😌 Calm</button>
-    <button>🙂 Okay</button>
-    <button>😕 Low</button>
-    <button>😣 Overwhelmed</button>
+<div class="app">
 
-    <a href="index.html">← Home</a>
+  <div class="header">
+    <h1>Daily check-in</h1>
+    <p>How are you feeling today?</p>
   </div>
+
+  <div class="content checkin">
+
+    <div class="mood-grid">
+      <button onclick="selectMood('Calm')">😌 Calm</button>
+      <button onclick="selectMood('Okay')">🙂 Okay</button>
+      <button onclick="selectMood('Low')">😔 Low</button>
+      <button onclick="selectMood('Anxious')">😟 Anxious</button>
+    </div>
+
+    <textarea
+      id="checkinNote"
+      placeholder="Anything you’d like to note today? (optional)"
+    ></textarea>
+
+    <button class="primary-btn" onclick="saveCheckin()">
+      Save today’s check-in
+    </button>
+
+    <p class="gentle-text" id="savedMsg"></p>
+
+  </div>
+
+  <nav class="navbar">
+    <a href="index.html">🏠 Home</a>
+    <a href="checkin.html" class="active">🌱 Check-in</a>
+    <a href="breathe.html">🌬️ Breathe</a>
+    <a href="journal.html">📓 Journal</a>
+    <a href="quotes.html">💬 Quotes</a>
+  </nav>
+
+</div>
+
+<script>
+let selectedMood = "";
+
+function selectMood(mood) {
+  selectedMood = mood;
+  document.querySelectorAll(".mood-grid button").forEach(btn => {
+    btn.classList.remove("active");
+  });
+  event.target.classList.add("active");
+}
+
+function saveCheckin() {
+  if (!selectedMood) {
+    alert("Please choose how you’re feeling 💜");
+    return;
+  }
+
+  const note = document.getElementById("checkinNote").value;
+  const today = new Date().toLocaleDateString();
+
+  const checkin = {
+    date: today,
+    mood: selectedMood,
+    note: note
+  };
+
+  localStorage.setItem("dailyCheckin", JSON.stringify(checkin));
+
+  document.getElementById("savedMsg").innerText =
+    "Saved 🌿 Thank you for checking in with yourself.";
+}
+</script>
+
 </body>
 </html>
