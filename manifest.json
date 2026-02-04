@@ -1,0 +1,15 @@
+{
+  "name": "Enigma",
+  "short_name": "Enigma",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#F4F1EC",
+  "theme_color": "#C3BDD9",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
