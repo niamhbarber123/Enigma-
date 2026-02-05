@@ -17,11 +17,18 @@
     <!-- Enigma + Word of the Day inline -->
     <div class="brand-row">
       <h1 class="brand-title">Enigma</h1>
+
       <div class="wotd" aria-live="polite">
-        <div class="wotd-label">Word of the day</div>
+        <div class="wotd-top">
+          <div class="wotd-label">Word of the day</div>
+          <button id="wotdHelpBtn" class="wotd-help" type="button" aria-label="Word of the day help">?</button>
+        </div>
+
         <div class="wotd-word" id="wotdWord">—</div>
       </div>
     </div>
+
+    <!-- description line -->
     <p id="wotdDef" class="brand-sub">Your calm space</p>
   </header>
 
@@ -40,39 +47,8 @@
       <a class="home-pill" href="sounds.html"><span class="pill-ico">🎵</span><span class="pill-text">Music</span></a>
     </div>
 
-    <!-- Distraction section (typing required to count “Answered”) -->
-    <div class="card" id="distractionCard">
-      <div class="section-title">Distraction</div>
-      <div class="gentle-text" id="distractionIntro">
-        Gentle questions to interrupt a spiral. Type any answer (even one word) to continue — or Skip.
-      </div>
-
-      <div id="distractionQuestion" class="distraction-question">
-        Tap Start to begin.
-      </div>
-
-      <div class="gentle-text" id="distractionMeta">
-        Answered: <span id="distractionAnsweredCount">0</span>
-      </div>
-
-      <div style="margin-top:12px;">
-        <input id="distractionInput" class="input" type="text"
-               placeholder="Type your answer here…" autocomplete="off" inputmode="text" />
-        <div class="gentle-text" id="distractionHint" style="margin-top:8px;">
-          Next requires typing. Skip if you’d rather not answer.
-        </div>
-      </div>
-
-      <div class="tool-row" style="margin-top:14px;">
-        <button class="tool-btn primary" id="distractionStartBtn" type="button">Start</button>
-        <button class="tool-btn" id="distractionNextBtn" type="button" style="display:none;">Next</button>
-      </div>
-
-      <div class="tool-row">
-        <button class="tool-btn" id="distractionSkipBtn" type="button" style="display:none;">Skip</button>
-        <button class="tool-btn danger" id="distractionEndBtn" type="button" style="display:none;">End</button>
-      </div>
-    </div>
+    <!-- Distraction card (if you already have it, keep yours; this is optional placeholder) -->
+    <div class="card" id="distractionCard" style="display:none;"></div>
 
     <a class="home-help" href="help.html">
       <span class="pill-ico">🆘</span><span class="pill-text">Need help right now?</span>
