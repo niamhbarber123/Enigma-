@@ -7,64 +7,43 @@
 
   <link rel="icon" href="icon.png" />
   <link rel="apple-touch-icon" href="icon.png" />
-  <link rel="stylesheet" href="style.css?v=10160" />
+  <link rel="stylesheet" href="style.css?v=50001" />
 </head>
 
 <body class="page-wrap">
-  <button id="themeFab" class="theme-toggle-top" type="button">🌙</button>
+  <button id="themeFab" class="theme-toggle-top" type="button" aria-label="Toggle night mode">🌙</button>
 
   <header class="page-header">
     <button class="back-btn" type="button" onclick="enigmaBack()">←</button>
     <h1>Music</h1>
-    <p>Choose a mood, then tap a track</p>
+    <p>Pick a mood and open calming tracks</p>
   </header>
 
   <main class="page" id="musicPage">
 
-    <!-- MOODS -->
     <div class="card">
-      <div class="section-title">Your mood</div>
+      <div class="section-title">Mood</div>
       <div id="moodChips" class="chip-row"></div>
-      <div class="gentle-text" id="moodLabel">Showing: All</div>
     </div>
 
-    <!-- MINUTES -->
+    <div class="card">
+      <div class="section-title">Tracks</div>
+      <div id="musicList" class="music-list"></div>
+    </div>
+
     <div class="card">
       <div class="section-title">Minutes listened</div>
-
-      <div style="display:flex; gap:24px; font-weight:900; font-size:20px;">
-        <div>
-          <span id="minsToday">0</span><br>
-          <small>Today</small>
-        </div>
-        <div>
-          <span id="minsTotal">0</span><br>
-          <small>Total</small>
-        </div>
-      </div>
-
-      <div class="tool-row" style="margin-top:14px;">
-        <button id="startListenBtn" class="tool-btn primary" type="button">
-          Start listening
-        </button>
-        <button id="endListenBtn" class="tool-btn danger" type="button">
-          End session
-        </button>
-      </div>
-
-      <div class="gentle-text" id="listenStatus">
-        No active session.
-      </div>
-    </div>
-
-    <!-- TRACKS -->
-    <div class="card">
-      <div class="section-title">Pick a track</div>
-      <div id="musicList" class="music-list"></div>
-
       <div class="gentle-text">
-        Tip: on iPhone, links open best when tapped (they open in a new tab).
+        Today: <strong><span id="minsToday">0</span></strong> min<br/>
+        Total: <strong><span id="minsTotal">0</span></strong> min
       </div>
+
+      <div class="tool-row" style="margin-top:12px;">
+        <button id="startListenBtn" class="tool-btn primary" type="button">Start session</button>
+        <button id="endListenBtn" class="tool-btn danger" type="button">End session</button>
+      </div>
+
+      <div id="listenStatus" class="gentle-text" style="margin-top:10px;">No active session.</div>
     </div>
 
   </main>
@@ -79,6 +58,6 @@
     <a href="progress.html"><div class="nav-ico">📈</div><span>Progress</span></a>
   </nav>
 
-  <script src="app.js?v=10160"></script>
+  <script src="app.js?v=50001" defer></script>
 </body>
 </html>
