@@ -1,460 +1,81 @@
-/* =========================
-   TAP TO COLOUR – GAME (Complex designs + real CBN vs Free)
-========================= */
+x<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Tap to Colour • Enigma</title>
 
-const DESIGNS = ["Mandala Pro","Bloom Pro","Mosaic","Butterfly Pro","Wavescape"];
+  <link rel="icon" href="icon.png" />
+  <link rel="apple-touch-icon" href="icon.png" />
+  <link rel="stylesheet" href="style.css?v=40001" />
+</head>
 
-const PALETTE = [
-  "#6B4FA3","#9B7BD0","#C3B2EA","#F1EAFE",
-  "#4F6BD8","#7AA6F9","#9DD1FF",
-  "#2E8B8B","#63BFAF","#A7E2D3",
-  "#2C7A4B","#66B36A","#B8E6A7",
-  "#F2D46D","#F5B86B","#E98E7A",
-  "#F2A7B8","#D46AA6","#6A6A74","#B9B9C6"
-];
+<body class="page-wrap">
+  <button id="themeFab" class="theme-toggle-top" type="button" aria-label="Toggle night mode">🌙</button>
 
-// Colour-by-number mapping (1–8)
-const CBN_COLORS = {
-  1:"#6B4FA3", // deep lavender
-  2:"#9B7BD0", // lavender
-  3:"#4F6BD8", // blue
-  4:"#2E8B8B", // teal
-  5:"#2C7A4B", // green
-  6:"#F2D46D", // yellow
-  7:"#E98E7A", // coral
-  8:"#D46AA6"  // rose
-};
+  <header class="page-header">
+    <button class="back-btn" type="button" onclick="enigmaBack()">←</button>
+    <h1>Tap to Colour</h1>
+    <p>Pick a design, then colour gently</p>
+  </header>
 
-let currentDesign = null;
-let currentColor = null;
-let mode = "cbn"; // cbn | free
-let selectedNumber = 1; // for CBN mode
-let erasing = false;
-const history = []; // { el, prevFill, saveKey, id }
+  <main class="page" id="gamePage">
 
-function initGame(){
-  const page = document.getElementById("gamePage");
-  const mount = document.getElementById("canvasMount");
-  const chipsWrap = document.getElementById("designChips");
-  const paletteWrap = document.getElementById("paletteDots");
-  const cbnBtn = document.getElementById("modeCbnBtn");
-  const freeBtn = document.getElementById("modeFreeBtn");
-  const status = document.getElementById("gameStatus");
+    <!-- DESIGN SELECTION -->
+    <div class="card">
+      <div class="section-title">Choose a design</div>
+      <div id="designChips" class="chip-row"></div>
+      <div class="gentle-text" id="gameStatus">Select a design to begin.</div>
+    </div>
 
-  if (!page || !mount || !chipsWrap || !paletteWrap) return;
+    <!-- MODE -->
+    <div class="card">
+      <div class="section-title">Mode</div>
 
-  // Ensure we have a number chip row (inject if missing)
-  let numberRow = document.getElementById("numberChips");
-  if (!numberRow) {
-    numberRow = document.createElement("div");
-    numberRow.id = "numberChips";
-    numberRow.className = "number-row";
-    // place it just under the mode buttons card if possible
-    const modeCard = cbnBtn?.closest(".card");
-    if (modeCard) modeCard.appendChild(numberRow);
-    else page.prepend(numberRow);
-  }
+      <div class="chip-row">
+        <button id="modeCbnBtn" class="chip active" type="button">Colour-by-number</button>
+        <button id="modeFreeBtn" class="chip" type="button">Free colour</button>
+      </div>
 
-  currentDesign = localStorage.getItem("enigmaDesignV3") || "Mandala Pro";
-  currentColor  = localStorage.getItem("enigmaColorV3") || PALETTE[0];
-  mode          = localStorage.getItem("enigmaModeV3") || "cbn";
-  selectedNumber= parseInt(localStorage.getItem("enigmaCBNNumber") || "1", 10);
-  selectedNumber= isNaN(selectedNumber) ? 1 : Math.max(1, Math.min(8, selectedNumber));
+      <!-- (Optional) number chips get injected here by the upgraded JS -->
+      <div class="gentle-text">Free colour hides numbers.</div>
+    </div>
 
-  function setStatus(msg){
-    if (status) status.textContent = msg;
-  }
+    <!-- PALETTE + TOOLS -->
+    <div class="card">
+      <div class="section-title">Palette</div>
+      <div id="paletteDots" class="palette-dots"></div>
 
-  function saveKeyForDesign(){
-    return `enigmaFillV3_${currentDesign}`;
-  }
+      <div class="tool-row">
+        <button id="undoBtn" class="tool-btn" type="button">Undo</button>
+        <button id="eraserBtn" class="tool-btn" type="button">Eraser</button>
+      </div>
 
-  function loadSavedFills(){
-    try { return JSON.parse(localStorage.getItem(saveKeyForDesign()) || "{}"); }
-    catch { return {}; }
-  }
+      <div class="tool-row">
+        <button id="clearBtn" class="tool-btn danger" type="button">Clear</button>
+        <button id="completeBtn" class="tool-btn primary" type="button">Completed ✅</button>
+      </div>
+    </div>
 
-  function saveFills(obj){
-    localStorage.setItem(saveKeyForDesign(), JSON.stringify(obj));
-  }
+    <!-- DESIGN AREA -->
+    <div class="card">
+      <div class="section-title">Design</div>
+      <div id="canvasMount" class="design-mount"></div>
+      <div class="gentle-text">Tap sections to fill with your selected colour.</div>
+    </div>
 
-  function applyModeUI(){
-    const isFree = mode === "free";
-    page.classList.toggle("free-mode", isFree);
-    cbnBtn?.classList.toggle("active", !isFree);
-    freeBtn?.classList.toggle("active", isFree);
-    numberRow.style.display = isFree ? "none" : "flex";
-    setStatus(isFree
-      ? "Free colour: pick any colour and tap any section."
-      : `Colour-by-number: pick number ${selectedNumber} then tap matching sections.`
-    );
-  }
+  </main>
 
-  function renderDesignChips(){
-    chipsWrap.innerHTML = "";
-    DESIGNS.forEach(name=>{
-      const b = document.createElement("button");
-      b.type = "button";
-      b.className = "chip" + (name === currentDesign ? " active" : "");
-      b.textContent = name;
-      b.onclick = ()=>{
-        currentDesign = name;
-        localStorage.setItem("enigmaDesignV3", currentDesign);
-        history.length = 0;
-        renderDesignChips();
-        loadDesign();
-      };
-      chipsWrap.appendChild(b);
-    });
-  }
+  <nav class="bottom-nav">
+    <a href="index.html"><div class="nav-ico">🏠</div><span>Home</span></a>
+    <a href="breathe.html"><div class="nav-ico">🌬️</div><span>Breathe</span></a>
+    <a href="journal.html"><div class="nav-ico">📖</div><span>Journal</span></a>
+    <a href="quotes.html"><div class="nav-ico">💬</div><span>Quotes</span></a>
+    <a class="active" href="game.html"><div class="nav-ico">🎨</div><span>Colour</span></a>
+    <a href="sounds.html"><div class="nav-ico">🎵</div><span>Music</span></a>
+    <a href="progress.html"><div class="nav-ico">📈</div><span>Progress</span></a>
+  </nav>
 
-  function renderPalette(){
-    paletteWrap.innerHTML = "";
-    PALETTE.forEach(col=>{
-      const dot = document.createElement("button");
-      dot.type = "button";
-      dot.className = "color-dot" + (col === currentColor ? " selected" : "");
-      dot.style.background = col;
-      dot.onclick = ()=>{
-        currentColor = col;
-        localStorage.setItem("enigmaColorV3", currentColor);
-        erasing = false;
-        document.getElementById("eraserBtn")?.classList.remove("active");
-        renderPalette();
-      };
-      paletteWrap.appendChild(dot);
-    });
-  }
-
-  function renderNumberChips(){
-    numberRow.innerHTML = "";
-    for (let n = 1; n <= 8; n++){
-      const b = document.createElement("button");
-      b.type = "button";
-      b.className = "number-chip" + (n === selectedNumber ? " active" : "");
-      b.innerHTML = `#${n}`;
-      b.style.border = `2px solid rgba(90,75,122,0.14)`;
-      b.onclick = ()=>{
-        selectedNumber = n;
-        localStorage.setItem("enigmaCBNNumber", String(selectedNumber));
-        renderNumberChips();
-        applyModeUI();
-      };
-      numberRow.appendChild(b);
-    }
-  }
-
-  function getPaintColour(el){
-    if (erasing) return "#ffffff";
-    if (mode === "free") return currentColor;
-    // CBN mode: use the number’s colour and only allow if matches
-    const num = parseInt(el.getAttribute("data-num") || "0", 10);
-    if (num !== selectedNumber) return null;
-    return CBN_COLORS[selectedNumber] || currentColor;
-  }
-
-  function wireSVGInteractions(){
-    const fills = loadSavedFills();
-
-    mount.querySelectorAll(".fill").forEach(el=>{
-      const id = el.getAttribute("data-id");
-      if (!id) return;
-
-      // restore fill
-      if (fills[id]) el.setAttribute("fill", fills[id]);
-      else el.setAttribute("fill", "#ffffff");
-
-      el.addEventListener("click", (e)=>{
-        e.preventDefault();
-
-        const paint = getPaintColour(el);
-        if (!paint) {
-          // In CBN mode, give gentle feedback
-          if (mode === "cbn") {
-            setStatus(`That section is #${el.getAttribute("data-num")} — choose that number to colour it.`);
-          }
-          return;
-        }
-
-        const prevFill = el.getAttribute("fill") || "#ffffff";
-        history.push({ el, prevFill, saveKey: saveKeyForDesign(), id });
-
-        el.setAttribute("fill", paint);
-        fills[id] = paint;
-        saveFills(fills);
-
-        // quick feedback
-        if (mode === "cbn") setStatus(`Coloured #${selectedNumber} ✅`);
-      }, { passive:false });
-    });
-  }
-
-  function loadDesign(){
-    mount.innerHTML = SVG_DESIGNS[currentDesign] || `<div class="gentle-text">Design missing.</div>`;
-    wireSVGInteractions();
-    applyModeUI();
-  }
-
-  // Tools
-  document.getElementById("undoBtn")?.addEventListener("click", ()=>{
-    const last = history.pop();
-    if (!last) return;
-    last.el.setAttribute("fill", last.prevFill);
-
-    const fills = loadSavedFills();
-    fills[last.id] = last.prevFill;
-    saveFills(fills);
-  });
-
-  document.getElementById("eraserBtn")?.addEventListener("click", ()=>{
-    erasing = !erasing;
-    document.getElementById("eraserBtn")?.classList.toggle("active", erasing);
-    setStatus(erasing ? "Eraser on: tap a section to clear it." : "Eraser off.");
-  });
-
-  document.getElementById("clearBtn")?.addEventListener("click", ()=>{
-    if (!confirm("Clear this design?")) return;
-    localStorage.removeItem(saveKeyForDesign());
-    history.length = 0;
-    loadDesign();
-  });
-
-  document.getElementById("completeBtn")?.addEventListener("click", ()=>{
-    const key = "enigmaColourCompletesV3";
-    const data = JSON.parse(localStorage.getItem(key) || "{}");
-    const day = todayKey();
-    data[day] = (data[day] || 0) + 1;
-    localStorage.setItem(key, JSON.stringify(data));
-    alert("Saved ✅");
-  });
-
-  cbnBtn?.addEventListener("click", ()=>{
-    mode = "cbn";
-    localStorage.setItem("enigmaModeV3", mode);
-    applyModeUI();
-  });
-
-  freeBtn?.addEventListener("click", ()=>{
-    mode = "free";
-    localStorage.setItem("enigmaModeV3", mode);
-    applyModeUI();
-  });
-
-  // Render all
-  renderDesignChips();
-  renderPalette();
-  renderNumberChips();
-  loadDesign();
-}
-
-/* ---------- Complex SVG designs (many sections + numbers) ---------- */
-const SVG_DESIGNS = {
-  "Mandala Pro": mandalaProSVG(),
-  "Bloom Pro": bloomProSVG(),
-  "Mosaic": mosaicSVG(),
-  "Butterfly Pro": butterflyProSVG(),
-  "Wavescape": wavescapeSVG()
-};
-
-function mandalaProSVG(){
-  // 24 petals + inner rings (data-num cycles 1..8)
-  let petals = "";
-  for (let i=0;i<24;i++){
-    const a = (i * (Math.PI*2/24));
-    const x = 160 + 95*Math.cos(a);
-    const y = 160 + 95*Math.sin(a);
-    const num = (i % 8) + 1;
-    petals += `
-      <ellipse class="fill stroke" data-id="p${i}" data-num="${num}"
-        cx="${x}" cy="${y}" rx="20" ry="42" transform="rotate(${i*15} ${x} ${y})" fill="#fff"/>
-      <text class="number-overlay" x="${x}" y="${y}" text-anchor="middle" dominant-baseline="middle">${num}</text>
-    `;
-  }
-
-  // 3 rings split into arcs
-  let rings = "";
-  for (let i=0;i<16;i++){
-    const num = (i % 8) + 1;
-    const rot = i*22.5;
-    rings += `
-      <path class="fill stroke" data-id="r${i}" data-num="${num}"
-        d="M160 70
-           C210 75, 245 110, 250 160
-           C245 210, 210 245, 160 250
-           C110 245, 75 210, 70 160
-           C75 110, 110 75, 160 70 Z"
-        transform="rotate(${rot} 160 160) scale(0.62) translate(98 98)"
-        fill="#fff"/>
-      <text class="number-overlay" x="160" y="104" text-anchor="middle" dominant-baseline="middle"
-        transform="rotate(${rot} 160 160)">${num}</text>
-    `;
-  }
-
-  return `
-  <svg viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg">
-    <rect width="320" height="320" fill="rgba(255,255,255,0)"/>
-    <circle cx="160" cy="160" r="148" fill="rgba(255,255,255,0)" class="stroke"/>
-    ${petals}
-    ${rings}
-    <circle class="fill stroke" data-id="c0" data-num="1" cx="160" cy="160" r="34" fill="#fff"/>
-    <text class="number-overlay" x="160" y="160" text-anchor="middle" dominant-baseline="middle">1</text>
-  </svg>`;
-}
-
-function bloomProSVG(){
-  // layered flower with 18 petals + leaves + center cells
-  let petals = "";
-  for (let i=0;i<18;i++){
-    const a = (i * (Math.PI*2/18));
-    const x = 160 + 86*Math.cos(a);
-    const y = 160 + 86*Math.sin(a);
-    const num = (i % 8) + 1;
-    petals += `
-      <path class="fill stroke" data-id="bp${i}" data-num="${num}"
-        d="M${x} ${y}
-           C${x-22} ${y-18}, ${x-26} ${y-52}, ${x} ${y-62}
-           C${x+26} ${y-52}, ${x+22} ${y-18}, ${x} ${y} Z"
-        transform="rotate(${i*20} ${x} ${y})"
-        fill="#fff"/>
-      <text class="number-overlay" x="${x}" y="${y-18}" text-anchor="middle" dominant-baseline="middle">${num}</text>
-    `;
-  }
-
-  // leaves
-  const leaves = `
-    <path class="fill stroke" data-id="bl1" data-num="4" d="M70 245 C110 210, 140 220, 150 260 C120 275, 95 275, 70 245 Z" fill="#fff"/>
-    <text class="number-overlay" x="112" y="250" text-anchor="middle" dominant-baseline="middle">4</text>
-    <path class="fill stroke" data-id="bl2" data-num="5" d="M250 245 C210 210, 180 220, 170 260 C200 275, 225 275, 250 245 Z" fill="#fff"/>
-    <text class="number-overlay" x="208" y="250" text-anchor="middle" dominant-baseline="middle">5</text>
-  `;
-
-  // center honeycomb-ish
-  let center = "";
-  const centers = [
-    {id:"bc0",x:160,y:160,n:1,r:26},
-    {id:"bc1",x:132,y:150,n:2,r:18},
-    {id:"bc2",x:188,y:150,n:3,r:18},
-    {id:"bc3",x:160,y:132,n:6,r:18},
-    {id:"bc4",x:160,y:188,n:7,r:18},
-    {id:"bc5",x:140,y:188,n:8,r:18},
-    {id:"bc6",x:180,y:188,n:4,r:18}
-  ];
-  centers.forEach(c=>{
-    center += `
-      <circle class="fill stroke" data-id="${c.id}" data-num="${c.n}" cx="${c.x}" cy="${c.y}" r="${c.r}" fill="#fff"/>
-      <text class="number-overlay" x="${c.x}" y="${c.y}" text-anchor="middle" dominant-baseline="middle">${c.n}</text>
-    `;
-  });
-
-  return `
-  <svg viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg">
-    <rect width="320" height="320" fill="rgba(255,255,255,0)"/>
-    ${petals}
-    ${leaves}
-    ${center}
-  </svg>`;
-}
-
-function mosaicSVG(){
-  // geometric mosaic: 30+ polygons
-  let polys = "";
-  const cells = [];
-  // simple deterministic tiling (no randomness)
-  let id = 0;
-  for (let r=0;r<5;r++){
-    for (let c=0;c<6;c++){
-      const x = 35 + c*48;
-      const y = 55 + r*48;
-      const n = ((id % 8) + 1);
-      cells.push({id:`m${id++}`, n, pts:`${x},${y} ${x+42},${y+6} ${x+36},${y+44} ${x+4},${y+38}` , tx:x+22, ty:y+24});
-      cells.push({id:`m${id++}`, n:(((id)%8)+1), pts:`${x+8},${y+44} ${x+44},${y+36} ${x+40},${y+80} ${x+6},${y+74}` , tx:x+24, ty:y+60});
-    }
-  }
-  cells.forEach(cell=>{
-    polys += `
-      <polygon class="fill stroke" data-id="${cell.id}" data-num="${cell.n}" points="${cell.pts}" fill="#fff"/>
-      <text class="number-overlay" x="${cell.tx}" y="${cell.ty}" text-anchor="middle" dominant-baseline="middle">${cell.n}</text>
-    `;
-  });
-
-  return `
-  <svg viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg">
-    <rect width="320" height="320" fill="rgba(255,255,255,0)"/>
-    ${polys}
-  </svg>`;
-}
-
-function butterflyProSVG(){
-  // butterfly with multiple wing sections
-  const parts = [
-    {id:"bb1",n:1,d:"M160 160 C120 85, 55 110, 70 180 C90 250, 140 235, 160 205 Z", tx:108, ty:170},
-    {id:"bb2",n:2,d:"M160 160 C200 85, 265 110, 250 180 C230 250, 180 235, 160 205 Z", tx:212, ty:170},
-    {id:"bb3",n:3,d:"M160 170 C120 145, 90 165, 95 205 C102 248, 130 255, 160 225 Z", tx:124, ty:210},
-    {id:"bb4",n:4,d:"M160 170 C200 145, 230 165, 225 205 C218 248, 190 255, 160 225 Z", tx:196, ty:210},
-    {id:"bb5",n:5,d:"M150 120 h20 v130 h-20 z", tx:160, ty:190}
-  ];
-
-  let out = "";
-  parts.forEach(p=>{
-    out += `
-      <path class="fill stroke" data-id="${p.id}" data-num="${p.n}" d="${p.d}" fill="#fff"/>
-      <text class="number-overlay" x="${p.tx}" y="${p.ty}" text-anchor="middle" dominant-baseline="middle">${p.n}</text>
-    `;
-  });
-
-  // add small spots
-  for(let i=0;i<10;i++){
-    const x = 95 + (i%5)*18;
-    const y = 120 + Math.floor(i/5)*18;
-    const n = (i%8)+1;
-    out += `
-      <circle class="fill stroke" data-id="bs${i}" data-num="${n}" cx="${x}" cy="${y}" r="8" fill="#fff"/>
-      <text class="number-overlay" x="${x}" y="${y}" text-anchor="middle" dominant-baseline="middle">${n}</text>
-    `;
-  }
-
-  return `
-  <svg viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg">
-    <rect width="320" height="320" fill="rgba(255,255,255,0)"/>
-    ${out}
-  </svg>`;
-}
-
-function wavescapeSVG(){
-  // waves + hills + sun, broken into many fill regions
-  const regions = [
-    {id:"wsky",n:2,tag:"rect",attrs:`x="20" y="20" width="280" height="120" rx="22"` , tx:50, ty:50},
-    {id:"wsun",n:6,tag:"circle",attrs:`cx="245" cy="70" r="32"` , tx:245, ty:70},
-    {id:"wh1",n:5,tag:"path",attrs:`d="M20 150 C80 120, 120 130, 160 150 C210 175, 250 170, 300 145 L300 210 L20 210 Z"` , tx:160, ty:175},
-    {id:"wh2",n:4,tag:"path",attrs:`d="M20 205 C70 175, 120 190, 160 205 C210 225, 250 220, 300 195 L300 270 L20 270 Z"` , tx:160, ty:235},
-    {id:"ww1",n:3,tag:"path",attrs:`d="M30 255 C70 235, 100 275, 140 255 C175 238, 205 278, 245 255 C270 240, 295 265, 300 265 L300 300 L20 300 L20 265 C25 265, 25 260, 30 255 Z"` , tx:165, ty:280}
-  ];
-
-  let out = "";
-  regions.forEach(r=>{
-    out += `<${r.tag} class="fill stroke" data-id="${r.id}" data-num="${r.n}" ${r.attrs} fill="#fff"/>`;
-    out += `<text class="number-overlay" x="${r.tx}" y="${r.ty}" text-anchor="middle" dominant-baseline="middle">${r.n}</text>`;
-  });
-
-  // extra wave bubbles for complexity
-  for(let i=0;i<12;i++){
-    const x=60 + (i*20);
-    const y=245 + (i%3)*14;
-    const n=(i%8)+1;
-    out += `
-      <circle class="fill stroke" data-id="wb${i}" data-num="${n}" cx="${x}" cy="${y}" r="8" fill="#fff"/>
-      <text class="number-overlay" x="${x}" y="${y}" text-anchor="middle" dominant-baseline="middle">${n}</text>
-    `;
-  }
-
-  return `
-  <svg viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg">
-    <rect width="320" height="320" fill="rgba(255,255,255,0)"/>
-    ${out}
-  </svg>`;
-}
-
-/* Ensure init runs (safe if other pages) */
-document.addEventListener("DOMContentLoaded", () => {
-  initGame();
-});
+  <script src="app.js?v=40001" defer></script>
+</body>
+</html>
