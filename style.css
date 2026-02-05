@@ -1,8 +1,9 @@
 /* =========================================================
-   Enigma • style.css (FULL)
-   - Night mode
-   - Header row with Word of the Day
-   - Calm lavender palette
+   Enigma • style.css (FULL CLEAN + FIXES)
+   Fixes:
+   - Bigger back button + better placement
+   - Bottom nav always shows all items (scrollable if needed)
+   - Quotes render in separate boxes (quote-tile cards)
 ========================================================= */
 
 :root{
@@ -37,17 +38,16 @@ body.night .card,
 body.night .home-card,
 body.night .home-pill,
 body.night .home-help,
+body.night .quote-tile,
 body.night input,
 body.night .chip,
-body.night .music-btn,
-body.night .wotd{
+body.night .music-btn{
   background:rgba(255,255,255,0.10) !important;
   color:rgba(245,242,255,0.92) !important;
   border-color:rgba(255,255,255,0.12) !important;
 }
 body.night .gentle-text,
-body.night .page-header p,
-body.night .wotd-label{
+body.night .page-header p{
   color:rgba(245,242,255,0.65) !important;
 }
 body.night .bottom-nav{
@@ -73,112 +73,65 @@ body.night .bottom-nav a.active{ color:#fff; }
 
 /* ---------- Header ---------- */
 .page-header{
-  padding:56px 20px 12px;
+  padding:78px 20px 14px; /* slightly tighter + allows fixed back button */
   text-align:center;
   position:relative;
 }
-
-/* Theme button */
-.theme-toggle-top{
-  position:fixed;
-  right:14px;
-  top:calc(14px + env(safe-area-inset-top));
-  width:52px;
-  height:52px;
-  border-radius:999px;
-  border:none;
-  background:rgba(255,255,255,0.86);
-  box-shadow:var(--shadow);
-  font-size:22px;
-  z-index:50;
-}
-.theme-toggle-top:active{ transform:scale(0.98); }
-body.night .theme-toggle-top{
-  background:rgba(255,255,255,0.12);
-  box-shadow:0 10px 24px rgba(0,0,0,0.35);
-}
-
-/* ---------- Brand row (Enigma + Word of Day inline) ---------- */
-.brand-row{
-  display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
-  gap:12px;
-  max-width:680px;
-  margin:0 auto;
-  text-align:left;
-}
-
-.brand-title{
+.page-header h1{
   margin:0;
   font-size:30px;
   font-weight:900;
   letter-spacing:0.2px;
   color:#5a4b7a;
-  line-height:1.05;
 }
-body.night .brand-title{ color:rgba(245,242,255,0.92); }
-
-.brand-sub{
-  margin:10px auto 0;
-  max-width:680px;
-  text-align:left;
+.page-header p{
+  margin:8px 0 0;
   font-size:14px;
   color:var(--muted);
 }
+body.night .page-header h1{ color:rgba(245,242,255,0.92); }
 
-/* Word of the day box */
-.wotd{
-  min-width:170px;
-  max-width:240px;
-  background:rgba(255,255,255,0.90);
-  border:1px solid rgba(184,166,217,0.18);
-  border-radius:18px;
-  padding:10px 12px;
-  box-shadow:0 8px 18px rgba(0,0,0,0.06);
-}
-
-.wotd-top{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  width:100%;
-}
-
-.wotd-label{
-  font-size:12px;
-  font-weight:900;
-  color:rgba(90,75,122,0.70);
-}
-
-.wotd-word{
-  margin-top:4px;
-  font-size:18px;
-  font-weight:900;
-  color:#5a4b7a;
-  line-height:1.2;
-}
-
-.wotd-help{
-  width:26px;
-  height:26px;
+/* ---------- Back button (FIX: bigger + moved) ---------- */
+.back-btn{
+  position:fixed;
+  left:14px;
+  top:calc(14px + env(safe-area-inset-top));
+  width:56px;
+  height:56px;
   border-radius:999px;
-  border:1px solid rgba(184,166,217,0.25);
-  background:rgba(239,233,248,0.95);
-  box-shadow:0 8px 18px rgba(0,0,0,0.06);
+  border:none;
+  background:rgba(255,255,255,0.90);
+  box-shadow:var(--shadow);
+  font-size:22px;
   font-weight:900;
-  color:#5a4b7a;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  color:var(--ink);
+  z-index:70;
 }
-.wotd-help:active{ transform:scale(0.98); }
-
-body.night .wotd-help{
-  background:rgba(255,255,255,0.10);
-  border-color:rgba(255,255,255,0.12);
+.back-btn:active{ transform:scale(0.98); }
+body.night .back-btn{
+  background:rgba(255,255,255,0.12);
   color:rgba(245,242,255,0.92);
+  box-shadow:0 10px 24px rgba(0,0,0,0.35);
+}
+
+/* ---------- Theme button ---------- */
+.theme-toggle-top{
+  position:fixed;
+  right:14px;
+  top:calc(14px + env(safe-area-inset-top));
+  width:56px;
+  height:56px;
+  border-radius:999px;
+  border:none;
+  background:rgba(255,255,255,0.90);
+  box-shadow:var(--shadow);
+  font-size:22px;
+  z-index:70;
+}
+.theme-toggle-top:active{ transform:scale(0.98); }
+body.night .theme-toggle-top{
+  background:rgba(255,255,255,0.12);
+  box-shadow:0 10px 24px rgba(0,0,0,0.35);
 }
 
 /* ---------- Card ---------- */
@@ -187,7 +140,7 @@ body.night .wotd-help{
   border-radius:var(--radius-xl);
   padding:16px;
   box-shadow:var(--shadow);
-  margin:12px 0;
+  margin:14px 0;
   border:1px solid rgba(184,166,217,0.18);
 }
 .section-title{
@@ -202,8 +155,29 @@ body.night .wotd-help{
   margin-top:8px;
 }
 
+/* ---------- Chips ---------- */
+.chip-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+}
+.chip{
+  border:none;
+  padding:10px 14px;
+  border-radius:999px;
+  background:rgba(239,233,248,0.90);
+  box-shadow:0 6px 16px rgba(0,0,0,0.06);
+  font-weight:800;
+  color:#5a4b7a;
+}
+.chip.active{
+  background:var(--lavender);
+  color:#fff;
+}
+.chip:active{ transform:scale(0.99); }
+
 /* ---------- Inputs ---------- */
-.input, input[type="search"], input[type="text"]{
+input[type="search"], input[type="text"], .input{
   width:100%;
   padding:14px 14px;
   border-radius:16px;
@@ -233,22 +207,33 @@ body.night .wotd-help{
   font-size:16px;
   color:#5a4b7a;
 }
+.tool-btn:active{ transform:scale(0.99); }
 .tool-btn.primary{ background:rgba(184,166,217,0.38); }
 .tool-btn.danger{ background:rgba(255,213,199,0.85); color:#5a4b7a; }
-.tool-btn:active{ transform:scale(0.99); }
+.tool-btn.active{
+  background:var(--lavender) !important;
+  color:#fff !important;
+}
 
-/* ---------- Bottom nav ---------- */
+/* ---------- Bottom nav (FIX: always shows all items) ---------- */
 .bottom-nav{
   position:fixed;
   left:0; right:0; bottom:0;
   background:rgba(255,255,255,0.92);
   border-top:1px solid rgba(184,166,217,0.25);
-  display:flex;
-  justify-content:space-around;
-  padding:10px 6px calc(10px + env(safe-area-inset-bottom));
-  z-index:40;
+  z-index:60;
   backdrop-filter: blur(10px);
+
+  /* key fix */
+  display:flex;
+  align-items:flex-end;
+  gap:6px;
+  padding:10px 10px calc(10px + env(safe-area-inset-bottom));
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
 }
+.bottom-nav::-webkit-scrollbar{ display:none; }
+
 .bottom-nav a{
   text-decoration:none;
   color:rgba(90,75,122,0.62);
@@ -257,15 +242,160 @@ body.night .wotd-help{
   flex-direction:column;
   align-items:center;
   gap:4px;
-  min-width:44px;
+  min-width:58px;           /* prevents “2-item only” look */
+  flex:0 0 auto;            /* don’t shrink away */
+  padding:6px 4px;
+  border-radius:12px;
 }
 .bottom-nav .nav-ico{ font-size:18px; line-height:1; }
 .bottom-nav a.active{
   color:#5a4b7a;
   font-weight:900;
+  background:rgba(184,166,217,0.18);
 }
 
-/* ---------- Home hero background ---------- */
+/* =========================================================
+   BREATHE — smooth animation + no clipping
+========================================================= */
+.breathe-stage{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding: 18px 0 8px;
+}
+.breathe-ring{
+  width: min(280px, 72vw);
+  height: min(280px, 72vw);
+  border-radius: 999px;
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.95), rgba(184,166,217,0.18));
+  border: 2px solid rgba(90,75,122,0.35); /* darker outline */
+  box-shadow: 0 18px 36px rgba(0,0,0,0.10);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow: visible;
+}
+.breathe-circle{
+  width: 150px;
+  height: 150px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.92), rgba(124,96,170,0.65));
+  box-shadow: inset 0 18px 36px rgba(0,0,0,0.08), 0 18px 38px rgba(90,75,122,0.18);
+  transform: scale(0.86);
+  transition: transform 4s ease-in-out, filter 300ms ease;
+  will-change: transform;
+}
+
+/* phase colour differences (JS toggles inhale/exhale) */
+.breathe-circle.inhale{
+  transform: scale(1.16);
+  filter: saturate(1.15) brightness(1.02);
+}
+.breathe-circle.exhale{
+  transform: scale(0.82);
+  filter: saturate(0.95) brightness(0.98);
+}
+
+/* =========================================================
+   QUOTES — separate boxes/cards (FIX)
+========================================================= */
+.quote-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:12px;
+  margin-top:14px;
+}
+
+.quote-tile{
+  position:relative;
+  background:rgba(255,255,255,0.92);
+  border-radius:18px;
+  padding:14px 14px 12px;
+  padding-right: 112px;
+  box-shadow:var(--shadow);
+  border:1px solid rgba(184,166,217,0.25);
+  touch-action: pan-y;
+}
+
+.quote-tile .quote-text{
+  font-weight:900;
+  color:#5a4b7a;
+  line-height:1.35;
+  font-size:16px;
+}
+
+.quote-tile small{
+  display:block;
+  margin-top:8px;
+  color:rgba(90,75,122,0.72);
+  font-weight:800;
+}
+
+.quote-tile.saved{
+  border:2px solid rgba(184,166,217,0.75);
+  box-shadow:0 14px 30px rgba(90,75,122,0.14);
+}
+
+.quote-save-btn{
+  position:absolute;
+  right:12px;
+  top:12px;
+  border:none;
+  border-radius:999px;
+  padding:10px 12px;
+  font-weight:900;
+  background:rgba(239,233,248,0.95);
+  box-shadow:var(--shadow);
+  color:#5a4b7a;
+}
+.quote-save-btn:active{ transform:scale(0.99); }
+.quote-save-btn.saved{
+  background: var(--lavender);
+  color:#fff;
+}
+
+/* =========================================================
+   MUSIC/YOGA lists — keep as buttons
+========================================================= */
+.music-list{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+.music-btn{
+  width:100%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:16px 16px;
+  border:none;
+  border-radius:20px;
+  background:rgba(255,255,255,0.9);
+  border:1px solid rgba(184,166,217,0.18);
+  box-shadow:var(--shadow);
+  font-weight:900;
+  font-size:16px;
+  color:#5a4b7a;
+  text-align:left;
+  text-decoration:none;
+}
+.music-btn span:last-child{
+  font-size:18px;
+  opacity:0.7;
+}
+.music-btn:active{ transform:scale(0.99); }
+
+.music-list:empty::before{
+  content:"Loading…";
+  display:block;
+  padding: 10px 2px;
+  color: rgba(90,75,122,0.65);
+  font-weight: 700;
+}
+
+/* =========================================================
+   HOME helpers (keep yours)
+========================================================= */
 .home-page{ position:relative; padding-top:6px !important; }
 
 .home-hero{
@@ -359,228 +489,8 @@ body.night .wotd-help{
 
 /* Small screen tightening */
 @media (max-height: 740px){
-  .page-header{ padding:50px 20px 10px; }
+  .page-header{ padding:70px 20px 12px; }
   .page{ padding-bottom:calc(112px + env(safe-area-inset-bottom)); }
+  .card{ padding:14px; }
   .home-hero{ margin: -18px auto -132px; }
-  .brand-title{ font-size:28px; }
-  .wotd{ min-width:160px; }
-}
-/* =========================
-   BREATHE – CLEAR & CALM
-========================= */
-
-.breathe-card{
-  text-align:center;
-}
-
-/* Phase text (BREATHE IN / OUT) */
-.breath-phase{
-  font-size:26px;
-  font-weight:900;
-  margin-bottom:12px;
-  color:#4a3a6a;
-}
-
-/* Supporting text */
-.breath-tip{
-  font-size:15px;
-  font-weight:700;
-  color:rgba(74,58,106,0.7);
-  margin:12px 0 18px;
-}
-
-/* Stage */
-.breathe-stage{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  padding:16px 0;
-}
-
-/* Outer ring */
-.breathe-ring{
-  width:260px;
-  height:260px;
-  border-radius:50%;
-  background:rgba(230,220,250,0.55);
-  border:2px solid rgba(90,75,122,0.35); /* darker line */
-  box-shadow:0 22px 50px rgba(90,75,122,0.22);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  overflow:visible;
-}
-
-/* Inner breathing circle */
-.breathe-circle{
-  width:150px;
-  height:150px;
-  border-radius:50%;
-  transform:scale(0.85);
-  transition:transform 4s ease-in-out, background 2s ease-in-out;
-  box-shadow:
-    inset 0 20px 40px rgba(0,0,0,0.08),
-    0 20px 50px rgba(90,75,122,0.25);
-}
-
-/* INHALE */
-.breathe-circle.inhale{
-  transform:scale(1.15);
-  background:radial-gradient(
-    circle at 30% 30%,
-    #ffffff,
-    #7b5bd6
-  );
-}
-
-/* EXHALE */
-.breathe-circle.exhale{
-  transform:scale(0.8);
-  background:radial-gradient(
-    circle at 30% 30%,
-    #ffffff,
-    #4aa3a1
-  );
-}
-
-/* Dark mode tweaks */
-body.night .breath-phase{
-  color:#ffffff;
-}
-body.night .breath-tip{
-  color:rgba(255,255,255,0.65);
-}
-body.night .breathe-ring{
-  border-color:rgba(255,255,255,0.35);
-}
-/* =========================
-   HOME: tighter layout (no scrolling)
-========================= */
-body.home .page-header{
-  padding: 38px 20px 10px; /* smaller */
-}
-
-body.home .page{
-  padding: 8px 18px calc(98px + env(safe-area-inset-bottom));
-}
-
-.home-hero{
-  width: min(560px, 92vw);
-  height: min(560px, 92vw);
-  margin: -10px auto -130px; /* pulls everything up */
-  opacity: 0.12;
-}
-
-.home-card{
-  margin: 0 auto 10px;
-  padding: 14px;
-}
-
-.home-card-title{ font-size: 21px; }
-
-.home-grid-tight{
-  margin: 6px auto 10px !important;
-  gap: 10px !important;
-}
-
-.home-pill-btn{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:10px;
-  text-decoration:none;
-  color:#5a4b7a;
-  font-weight:900;
-  font-size:16px;
-  background:rgba(255,255,255,0.90);
-  border:1px solid rgba(184,166,217,0.18);
-  border-radius:999px;
-  padding: 12px 12px;
-  box-shadow: var(--shadow);
-}
-
-.home-pill-btn:active{ transform:scale(0.99); }
-
-.home-help{
-  padding: 12px 12px;
-  margin-top: 4px;
-}
-
-/* =========================
-   Word of the day tile (home)
-========================= */
-.wotd-tile{
-  grid-column: 1 / -1;     /* spans both columns */
-  justify-content:space-between;
-  padding: 12px 14px;
-}
-
-.wotd-mini{
-  display:block;
-  margin-top:4px;
-  font-size:13px;
-  font-weight:800;
-  color: rgba(90,75,122,0.70);
-}
-
-.wotd-qmark{
-  width:32px;
-  height:32px;
-  border-radius:999px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background: rgba(239,233,248,0.95);
-  border: 1px solid rgba(184,166,217,0.25);
-  font-weight: 900;
-  color:#5a4b7a;
-  box-shadow: 0 10px 18px rgba(0,0,0,0.06);
-}
-
-/* Extra tightening for small iPhones */
-@media (max-height: 740px){
-  body.home .page-header{ padding: 34px 20px 8px; }
-  .home-hero{ margin: -14px auto -150px; }
-  .home-pill-btn{ padding: 11px 12px; }
-  .home-help{ padding: 11px 12px; }
-}
-/* ===== BREATHE: make phase big + centered under circle ===== */
-#breathPhase{
-  text-align:center;
-  font-size:22px;
-  font-weight:900;
-  margin-bottom:8px;
-}
-
-#breathTip{
-  text-align:center;
-  font-size:14px;
-}
-
-/* ===== BREATHE: different colour on inhale vs exhale ===== */
-.breathe-circle{
-  transition: transform 4s ease-in-out, background 700ms ease-in-out;
-}
-
-/* inhale = more purple */
-.breathe-circle.inhale{
-  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.92), rgba(124,96,170,0.70));
-}
-
-/* exhale = more blue */
-.breathe-circle.exhale{
-  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.92), rgba(90,140,210,0.62));
-}
-
-/* ===== Music/Yoga: ensure anchors look like buttons ===== */
-.music-btn{
-  text-decoration:none;   /* FIX: remove blue underline look */
-}
-.music-btn:visited{
-  color:#5a4b7a;
-}
-
-/* ===== Back button always left, not centered pill ===== */
-.back-btn{
-  text-align:center;
 }
