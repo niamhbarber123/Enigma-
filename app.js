@@ -72,43 +72,59 @@ function addCompletion(type){
    - #startBreathe, #stopBreathe, #completeBreathe
 ========================================================= */
 function initBreathe(){
-  const phaseEl = $("breathePhase");
-  const circle = $("breatheCircle");
-  const startBtn = $("startBreathe");
-  const stopBtn = $("stopBreathe");
-  const completeBtn = $("completeBreathe");
+  // Supports BOTH old ids and new ids (so you’re safe either way)
+  const phaseEl = document.getElementById("breathePhase") || document.getElementById("breathPhase");
+  const circle  = document.getElementById("breatheCircle");
+  const tipEl   = document.getElementById("breatheTip") || document.getElementById("breathTip");
 
-  // If your current breathe.html doesn't have these ids,
-  // this function will simply exit without breaking.
-  if (!startBtn && !circle && !phaseEl) return;
+  const startBtn =
+    document.getElementById("startBreathe") ||
+    document.getElementById("breathStartBtn");
+
+  const stopBtn =
+    document.getElementById("stopBreathe") ||
+    document.getElementById("breathStopBtn");
+
+  const completeBtn =
+    document.getElementById("completeBreathe") ||
+    document.getElementById("breathCompleteBtn");
+
+  if (!phaseEl && !circle && !startBtn) return;
 
   let timer = null;
-  let stepIndex = 0;
   let running = false;
+  let stepIndex = 0;
 
-  // 60s total: 4 cycles of 15s (In 4, Hold 2, Out 6, Hold 3)
+  // Inhale 4s, Hold 2s, Exhale 6s, Hold 3s (15s loop)
   const STEPS = [
-    { label:"Inhale",  dur:4000, scale:1.18 },
-    { label:"Hold",    dur:2000, scale:1.18 },
-    { label:"Exhale",  dur:6000, scale:0.88 },
-    { label:"Hold",    dur:3000, scale:0.88 }
+    { label:"Inhale", dur:4000, scale:1.18, tip:"Slow breath in…" },
+    { label:"Hold",   dur:2000, scale:1.18, tip:"Hold gently." },
+    { label:"Exhale", dur:6000, scale:0.88, tip:"Slow breath out…" },
+    { label:"Hold",   dur:3000, scale:0.88, tip:"Pause. You’re safe." }
   ];
 
   function setPhase(text){
     if (phaseEl) phaseEl.textContent = text;
   }
-
+  function setTip(text){
+    if (tipEl) tipEl.textContent = text;
+  }
   function setCircle(scale){
     if (!circle) return;
     circle.style.transform = `scale(${scale})`;
   }
 
+  function clearTimer(){
+    if (timer) clearTimeout(timer);
+    timer = null;
+  }
+
   function stop(){
     running = false;
     stepIndex = 0;
-    if (timer) clearTimeout(timer);
-    timer = null;
+    clearTimer();
     setPhase("Ready");
+    setTip("Tap Start to begin.");
     setCircle(1);
   }
 
@@ -117,8 +133,10 @@ function initBreathe(){
 
     const step = STEPS[stepIndex % STEPS.length];
     setPhase(step.label);
+    setTip(step.tip);
     setCircle(step.scale);
 
+    clearTimer();
     timer = setTimeout(()=>{
       stepIndex++;
       nextStep();
@@ -130,9 +148,15 @@ function initBreathe(){
     running = true;
     stepIndex = 0;
 
-    // start at exhale-ish neutral then begin inhale
+    // Start from a calm neutral size then begin sequence
+    setPhase("Get ready…");
+    setTip("Follow the rhythm.");
     setCircle(0.92);
-    setTimeout(()=>{ if (running) nextStep(); }, 150);
+
+    clearTimer();
+    timer = setTimeout(()=>{
+      if (running) nextStep();
+    }, 350);
   }
 
   if (startBtn) startBtn.onclick = start;
@@ -140,10 +164,15 @@ function initBreathe(){
 
   if (completeBtn){
     completeBtn.onclick = ()=>{
-      addCompletion("breathe");
+      // Optional: record completion + streak if your app.js includes addCompletion()
+      try { addCompletion("breathe"); } catch(e) {}
       alert("Saved ✅");
     };
   }
+
+  // Don’t keep running if user leaves the page
+  window.addEventListener("pagehide", stop);
+}
 
   // if user leaves page / reload, stop
   window.addEventListener("pagehide", stop);
