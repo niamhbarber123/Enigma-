@@ -178,14 +178,9 @@ function initBreathe(){
   window.addEventListener("pagehide", stop);
 }
 
-/* =========================================================
-   QUOTES (quotes.html)
-   Expected:
-   - #quoteGrid
-   - #savedCount
-   - #viewSavedBtn
-   - #clearSavedBtn
-========================================================= */
+/* =========================
+   Quotes (tiles + save/unsave + daily shuffle + search + saved-only)
+========================= */
 const QUOTES = [
   { q:"Nothing can dim the light that shines from within.", a:"Maya Angelou" },
   { q:"No one can make you feel inferior without your consent.", a:"Eleanor Roosevelt" },
@@ -194,18 +189,17 @@ const QUOTES = [
   { q:"Power is not given to you. You have to take it.", a:"Beyoncé" },
   { q:"I have learned over the years that when one’s mind is made up, this diminishes fear.", a:"Rosa Parks" },
   { q:"If you don’t like the road you’re walking, start paving another one.", a:"Dolly Parton" },
-  { q:"My peace is my priority.", a:"Affirmation" },
-  { q:"I am deliberate and afraid of nothing.", a:"Audre Lorde" },
-  { q:"You may encounter many defeats, but you must not be defeated.", a:"Maya Angelou" },
-  { q:"Done is better than perfect.", a:"Sheryl Sandberg" },
-  { q:"If they don’t give you a seat at the table, bring a folding chair.", a:"Shirley Chisholm" }
+  { q:"My peace is my priority.", a:"Affirmation" }
 ];
+
+const SAVED_QUOTES_KEY = "enigmaSavedQuotesV2";
+const QUOTE_VIEW_KEY = "enigmaQuotesSavedOnly";
 
 function quoteId(item){
   return `${item.a}::${item.q}`;
 }
 
-// deterministic RNG for daily shuffle
+// deterministic RNG
 function mulberry32(seed){
   return function(){
     let t = seed += 0x6D2B79F5;
@@ -216,7 +210,7 @@ function mulberry32(seed){
 }
 
 function dailyShuffledQuotes(list){
-  const today = todayKey(); // YYYY-MM-DD
+  const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
   const seed = parseInt(today.replaceAll("-", ""), 10) || 20260101;
   const rand = mulberry32(seed);
 
@@ -228,69 +222,125 @@ function dailyShuffledQuotes(list){
   return arr;
 }
 
+function getSavedQuotesSet(){
+  try{
+    return new Set(JSON.parse(localStorage.getItem(SAVED_QUOTES_KEY) || "[]"));
+  }catch(e){
+    return new Set();
+  }
+}
+
+function setSavedQuotesSet(set){
+  localStorage.setItem(SAVED_QUOTES_KEY, JSON.stringify(Array.from(set)));
+}
+
 function initQuotes(){
-  const grid = $("quoteGrid");
+  const grid = document.getElementById("quoteGrid");
   if (!grid) return;
 
-  const storageKey = "enigmaSavedQuotesV2";
-  const saved = new Set(JSON.parse(localStorage.getItem(storageKey) || "[]"));
+  const searchEl = document.getElementById("quoteSearch");
+  const savedCountEl = document.getElementById("savedCount");
+  const viewSavedBtn = document.getElementById("viewSavedBtn");
+  const clearSavedBtn = document.getElementById("clearSavedBtn");
+  const toggleSavedOnlyBtn = document.getElementById("toggleSavedOnlyBtn");
 
-  const savedCount = $("savedCount");
-  if (savedCount) savedCount.textContent = String(saved.size);
+  let savedOnly = localStorage.getItem(QUOTE_VIEW_KEY) === "1";
+  let saved = getSavedQuotesSet();
 
-  const list = dailyShuffledQuotes(QUOTES);
+  function updateCount(){
+    if (savedCountEl) savedCountEl.textContent = String(saved.size);
+  }
 
-  grid.innerHTML = "";
-  list.forEach(item=>{
-    const id = quoteId(item);
+  function render(){
+    const term = (searchEl?.value || "").trim().toLowerCase();
+    const list = dailyShuffledQuotes(QUOTES);
 
-    const tile = document.createElement("div");
-    tile.className = "quote-tile" + (saved.has(id) ? " saved" : "");
-    tile.innerHTML = `
-      <div style="font-weight:900;color:#5a4b7a; line-height:1.35;">“${item.q}”</div>
-      <small>— ${item.a}</small>
-      <button class="quote-save-btn ${saved.has(id) ? "saved":""}" type="button">
-        ${saved.has(id) ? "Saved ✓" : "Save"}
-      </button>
-    `;
+    grid.innerHTML = "";
 
-    const btn = tile.querySelector(".quote-save-btn");
+    const filtered = list.filter(item=>{
+      const id = quoteId(item);
+      if (savedOnly && !saved.has(id)) return false;
 
-    btn.addEventListener("click", (e)=>{
-      e.preventDefault();
-      if (saved.has(id)) saved.delete(id);
-      else saved.add(id);
-
-      localStorage.setItem(storageKey, JSON.stringify(Array.from(saved)));
-      tile.classList.toggle("saved", saved.has(id));
-      btn.classList.toggle("saved", saved.has(id));
-      btn.textContent = saved.has(id) ? "Saved ✓" : "Save";
-
-      if (savedCount) savedCount.textContent = String(saved.size);
+      if (!term) return true;
+      return (
+        item.q.toLowerCase().includes(term) ||
+        item.a.toLowerCase().includes(term)
+      );
     });
 
-    grid.appendChild(tile);
-  });
+    filtered.forEach(item=>{
+      const id = quoteId(item);
+      const isSaved = saved.has(id);
 
-  const viewBtn = $("viewSavedBtn");
-  if (viewBtn){
-    viewBtn.onclick = ()=>{
+      const tile = document.createElement("div");
+      tile.className = "quote-tile" + (isSaved ? " saved" : "");
+      tile.innerHTML = `
+        <div style="font-weight:900;color:#5a4b7a; line-height:1.35;">“${item.q}”</div>
+        <small>— ${item.a}</small>
+      `;
+
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "quote-save-btn" + (isSaved ? " saved" : "");
+      btn.textContent = isSaved ? "Saved 💜" : "Save 💜";
+
+      btn.addEventListener("click", (e)=>{
+        e.preventDefault();
+        if (saved.has(id)) saved.delete(id);
+        else saved.add(id);
+
+        setSavedQuotesSet(saved);
+        updateCount();
+        render();
+      });
+
+      tile.appendChild(btn);
+      grid.appendChild(tile);
+    });
+
+    if (toggleSavedOnlyBtn){
+      toggleSavedOnlyBtn.classList.toggle("active", savedOnly);
+      toggleSavedOnlyBtn.textContent = savedOnly ? "Showing saved only" : "Show saved only";
+    }
+
+    updateCount();
+  }
+
+  if (searchEl){
+    searchEl.addEventListener("input", ()=>{
+      render();
+    });
+  }
+
+  if (toggleSavedOnlyBtn){
+    toggleSavedOnlyBtn.onclick = ()=>{
+      savedOnly = !savedOnly;
+      localStorage.setItem(QUOTE_VIEW_KEY, savedOnly ? "1" : "0");
+      render();
+    };
+  }
+
+  if (viewSavedBtn){
+    viewSavedBtn.onclick = ()=>{
       const list = Array.from(saved);
       if (!list.length) return alert("No saved quotes yet.");
       alert("Saved quotes:\n\n" + list.map(x=> "• " + x.split("::")[1]).join("\n\n"));
     };
   }
 
-  const clearBtn = $("clearSavedBtn");
-  if (clearBtn){
-    clearBtn.onclick = ()=>{
+  if (clearSavedBtn){
+    clearSavedBtn.onclick = ()=>{
       if (!confirm("Delete all saved quotes?")) return;
-      localStorage.setItem(storageKey, "[]");
-      initQuotes();
+      saved = new Set();
+      setSavedQuotesSet(saved);
+      localStorage.setItem(QUOTE_VIEW_KEY, "0");
+      savedOnly = false;
+      render();
     };
   }
-}
 
+  render();
+}
 /* =========================================================
    MUSIC (sounds.html)
 ========================================================= */
