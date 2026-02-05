@@ -548,3 +548,32 @@ body.home .tool-btn{ padding:16px 14px; }
   .card{ padding:14px; }
   .home-hero{ margin: -18px auto -132px; }
 }
+/* =========================
+   GAME: number chips + gentle wrong-number feedback
+========================= */
+.number-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:12px;
+}
+
+.number-chip{
+  border:none;
+  padding:10px 14px;
+  border-radius:999px;
+  background:rgba(239,233,248,0.95);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.06);
+  font-weight:900;
+  color:#5a4b7a;
+}
+
+.number-chip.active{
+  background: var(--lavender);
+  color:#fff;
+}
+
+/* tiny feedback if user taps wrong number area */
+.cbn-wrong{
+  filter: brightness(0.96);
+}
