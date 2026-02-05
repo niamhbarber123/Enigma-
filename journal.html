@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Journal • Enigma</title>
-  <link rel="stylesheet" href="style.css?v=9301" />
+  <link rel="stylesheet" href="style.css?v=9991" />
 </head>
 
 <body class="page-wrap">
@@ -19,7 +19,8 @@
   <main class="page">
     <div class="card">
       <div class="section-title">New entry</div>
-      <textarea id="journalText" rows="6" style="width:100%; border:none; border-radius:16px; padding:14px; background:rgba(239,233,248,0.65); font-size:16px; outline:none;"></textarea>
+      <textarea id="journalText" rows="6"
+        style="width:100%; border:none; border-radius:18px; padding:14px; background:rgba(239,233,248,0.65); font-size:16px; outline:none;"></textarea>
 
       <div class="tool-row">
         <button class="tool-btn primary" type="button" id="saveEntryBtn">Save entry</button>
@@ -49,74 +50,6 @@
     <a href="progress.html"><div class="nav-ico">📈</div><span>Progress</span></a>
   </nav>
 
-  <script src="app.js?v=9301"></script>
-  <script>
-    const KEY = "enigmaJournalEntriesV1";
-    const text = document.getElementById("journalText");
-    const saveBtn = document.getElementById("saveEntryBtn");
-    const viewBtn = document.getElementById("viewEntriesBtn");
-    const clearBtn = document.getElementById("clearEntriesBtn");
-    const msg = document.getElementById("journalMsg");
-    const entriesCard = document.getElementById("entriesCard");
-    const grid = document.getElementById("entriesGrid");
-
-    function load(){
-      try { return JSON.parse(localStorage.getItem(KEY) || "[]"); }
-      catch { return []; }
-    }
-    function save(list){
-      localStorage.setItem(KEY, JSON.stringify(list));
-    }
-
-    function render(){
-      const entries = load();
-      grid.innerHTML = "";
-      entries.slice().reverse().forEach(e=>{
-        const tile = document.createElement("div");
-        tile.className = "entry-tile";
-        tile.innerHTML = `
-          <h3>${e.date}</h3>
-          <p>${(e.text || "").replace(/</g,"&lt;").replace(/>/g,"&gt;")}</p>
-          <small>${e.time}</small>
-        `;
-        grid.appendChild(tile);
-      });
-      msg.textContent = entries.length ? `You have ${entries.length} saved entries.` : "No entries yet.";
-    }
-
-    saveBtn.addEventListener("click", ()=>{
-      const val = (text.value || "").trim();
-      if (!val) { msg.textContent = "Write something first."; return; }
-
-      const now = new Date();
-      const entry = {
-        text: val,
-        date: now.toLocaleDateString(),
-        time: now.toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"})
-      };
-
-      const entries = load();
-      entries.push(entry);
-      save(entries);
-      text.value = "";
-      msg.textContent = "Saved ✅";
-      render();
-    });
-
-    viewBtn.addEventListener("click", ()=>{
-      entriesCard.style.display = entriesCard.style.display === "none" ? "block" : "none";
-      render();
-    });
-
-    clearBtn.addEventListener("click", ()=>{
-      if (!confirm("Delete all journal entries?")) return;
-      localStorage.removeItem(KEY);
-      render();
-      msg.textContent = "Deleted ✅";
-    });
-
-    // initial
-    render();
-  </script>
+  <script src="app.js?v=9991"></script>
 </body>
 </html>
