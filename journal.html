@@ -2,47 +2,121 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Journal • Enigma</title>
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/Enigma-/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="192x192" href="/Enigma-/icon-192.png">
-  <link rel="manifest" href="/Enigma-/manifest.json">
-  <meta name="theme-color" content="#b8a6d9">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="Enigma">
-
-  <link rel="stylesheet" href="/Enigma-/style.css?v=700">
+  <link rel="stylesheet" href="style.css?v=9301" />
 </head>
 
 <body class="page-wrap">
+  <button id="themeFab" class="theme-toggle-top" type="button" aria-label="Toggle night mode">🌙</button>
+
   <header class="page-header">
-    <button class="back-btn" type="button" onclick="enigmaBack()" aria-label="Back">←</button>
+    <button class="back-btn" type="button" onclick="enigmaBack()">←</button>
     <h1>Journal</h1>
-    <p>A gentle place to write</p>
+    <p>Write what’s on your mind</p>
   </header>
 
   <main class="page">
     <div class="card">
-      <textarea id="journalText" placeholder="Write what’s on your mind..."></textarea>
-      <button class="primary" type="button" onclick="saveJournalEntry()">Save entry</button>
-      <div class="gentle-text" id="journalMsg"></div>
+      <div class="section-title">New entry</div>
+      <textarea id="journalText" rows="6" style="width:100%; border:none; border-radius:16px; padding:14px; background:rgba(239,233,248,0.65); font-size:16px; outline:none;"></textarea>
+
+      <div class="tool-row">
+        <button class="tool-btn primary" type="button" id="saveEntryBtn">Save entry</button>
+        <button class="tool-btn" type="button" id="viewEntriesBtn">View saved entries</button>
+      </div>
+
+      <div class="tool-row">
+        <button class="tool-btn danger" type="button" id="clearEntriesBtn">Delete all entries</button>
+      </div>
+
+      <div class="gentle-text" id="journalMsg">Saved entries stay on this device.</div>
     </div>
 
-    <div id="journalList"></div>
+    <div class="card" id="entriesCard" style="display:none;">
+      <div class="section-title">Saved entries</div>
+      <div id="entriesGrid" class="journal-grid"></div>
+    </div>
   </main>
 
   <nav class="bottom-nav">
-    <a href="/Enigma-/index.html"><div class="nav-ico">🏠</div><span>Home</span></a>
-    <a href="/Enigma-/breathe.html"><div class="nav-ico">🌬️</div><span>Breathe</span></a>
-    <a class="active" href="/Enigma-/journal.html"><div class="nav-ico">📖</div><span>Journal</span></a>
-    <a href="/Enigma-/quotes.html"><div class="nav-ico">💬</div><span>Quotes</span></a>
-    <a href="/Enigma-/game.html"><div class="nav-ico">🎨</div><span>Colour</span></a>
-    <a href="/Enigma-/sounds.html"><div class="nav-ico">🎧</div><span>Sounds</span></a>
-
-    <button id="themeFab" class="theme-fab" type="button" aria-label="Toggle night mode">🌙</button>
+    <a href="index.html"><div class="nav-ico">🏠</div><span>Home</span></a>
+    <a href="breathe.html"><div class="nav-ico">🌬️</div><span>Breathe</span></a>
+    <a class="active" href="journal.html"><div class="nav-ico">📖</div><span>Journal</span></a>
+    <a href="quotes.html"><div class="nav-ico">💬</div><span>Quotes</span></a>
+    <a href="game.html"><div class="nav-ico">🎨</div><span>Colour</span></a>
+    <a href="sounds.html"><div class="nav-ico">🎵</div><span>Music</span></a>
+    <a href="progress.html"><div class="nav-ico">📈</div><span>Progress</span></a>
   </nav>
 
-  <script src="/Enigma-/app.js?v=700"></script>
+  <script src="app.js?v=9301"></script>
+  <script>
+    const KEY = "enigmaJournalEntriesV1";
+    const text = document.getElementById("journalText");
+    const saveBtn = document.getElementById("saveEntryBtn");
+    const viewBtn = document.getElementById("viewEntriesBtn");
+    const clearBtn = document.getElementById("clearEntriesBtn");
+    const msg = document.getElementById("journalMsg");
+    const entriesCard = document.getElementById("entriesCard");
+    const grid = document.getElementById("entriesGrid");
+
+    function load(){
+      try { return JSON.parse(localStorage.getItem(KEY) || "[]"); }
+      catch { return []; }
+    }
+    function save(list){
+      localStorage.setItem(KEY, JSON.stringify(list));
+    }
+
+    function render(){
+      const entries = load();
+      grid.innerHTML = "";
+      entries.slice().reverse().forEach(e=>{
+        const tile = document.createElement("div");
+        tile.className = "entry-tile";
+        tile.innerHTML = `
+          <h3>${e.date}</h3>
+          <p>${(e.text || "").replace(/</g,"&lt;").replace(/>/g,"&gt;")}</p>
+          <small>${e.time}</small>
+        `;
+        grid.appendChild(tile);
+      });
+      msg.textContent = entries.length ? `You have ${entries.length} saved entries.` : "No entries yet.";
+    }
+
+    saveBtn.addEventListener("click", ()=>{
+      const val = (text.value || "").trim();
+      if (!val) { msg.textContent = "Write something first."; return; }
+
+      const now = new Date();
+      const entry = {
+        text: val,
+        date: now.toLocaleDateString(),
+        time: now.toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"})
+      };
+
+      const entries = load();
+      entries.push(entry);
+      save(entries);
+      text.value = "";
+      msg.textContent = "Saved ✅";
+      render();
+    });
+
+    viewBtn.addEventListener("click", ()=>{
+      entriesCard.style.display = entriesCard.style.display === "none" ? "block" : "none";
+      render();
+    });
+
+    clearBtn.addEventListener("click", ()=>{
+      if (!confirm("Delete all journal entries?")) return;
+      localStorage.removeItem(KEY);
+      render();
+      msg.textContent = "Deleted ✅";
+    });
+
+    // initial
+    render();
+  </script>
 </body>
 </html>
