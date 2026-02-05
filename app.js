@@ -292,131 +292,113 @@
     }
   }
 
-  /* =========================================================
-     MUSIC (YouTube links + mood chips + minutes listened)
-  ========================================================= */
+ /* =========================
+   MUSIC (YouTube links)
+========================= */
 
-  const MUSIC_TRACKS = [
-    { title: "Calm breathing music (1 hour)", mood: ["All", "Anxious", "Stressed"], url: "https://www.youtube.com/results?search_query=calm+breathing+music+1+hour" },
-    { title: "Relaxing piano for stress", mood: ["All", "Stressed", "Low mood"], url: "https://www.youtube.com/results?search_query=relaxing+piano+for+stress" },
-    { title: "Lo-fi focus mix", mood: ["All", "Focus"], url: "https://www.youtube.com/results?search_query=lofi+focus+mix" },
-    { title: "Sleep music (dark screen)", mood: ["All", "Sleep", "Low mood"], url: "https://www.youtube.com/results?search_query=sleep+music+dark+screen" },
-    { title: "Nature sounds playlist", mood: ["All", "Anxious", "Sleep"], url: "https://www.youtube.com/results?search_query=nature+sounds+playlist" },
-    { title: "Ocean waves (8 hours)", mood: ["All", "Sleep", "Anxious"], url: "https://www.youtube.com/results?search_query=ocean+waves+8+hours" },
-    { title: "Guided meditation playlist", mood: ["All", "Anxious", "Low mood"], url: "https://www.youtube.com/results?search_query=guided+meditation+playlist" }
-  ];
+const MOODS = ["All","Anxious","Stressed","Low mood","Focus","Sleep"];
 
-  const MOODS = ["All", "Anxious", "Stressed", "Low mood", "Focus", "Sleep"];
+const TRACKS = [
+  { title:"Calm breathing music (1 hour)", mood:"Anxious", url:"https://www.youtube.com/watch?v=odADwWzHR24" },
+  { title:"Relaxing piano for stress", mood:"Stressed", url:"https://www.youtube.com/watch?v=1ZYbU82GVz4" },
+  { title:"Gentle uplifting ambient", mood:"Low mood", url:"https://www.youtube.com/watch?v=2OEL4P1Rz04" },
+  { title:"Lo-fi focus mix", mood:"Focus", url:"https://www.youtube.com/watch?v=jfKfPfyJRdk" },
+  { title:"Sleep music (dark screen)", mood:"Sleep", url:"https://www.youtube.com/watch?v=DWcJFNfaw9c" },
+  { title:"Nature sounds playlist", mood:"All", url:"https://www.youtube.com/watch?v=eKFTSSKCzWA" },
+  { title:"Meditation music playlist", mood:"All", url:"https://www.youtube.com/watch?v=inpok4MKVLM" }
+];
 
-  function initMusic() {
-    // Works whether your page id is "soundsPage" or not
-    const listEl = $("musicList");
-    const chipsEl = $("moodChips");
-    const minsTodayEl = $("minsToday");
-    const minsTotalEl = $("minsTotal");
-    const startBtn = $("startListenBtn");
-    const endBtn = $("endListenBtn");
-    const statusEl = $("listenStatus");
+let currentMood = "All";
+let sessionStart = null;
 
-    // If the containers are missing, nothing to do
-    if (!listEl && !chipsEl) return;
+/* ---------- Init ---------- */
+document.addEventListener("DOMContentLoaded", () => {
+  initMusic();
+});
 
-    let activeMood = "All";
+function initMusic(){
+  if(!document.getElementById("musicPage")) return;
 
-    // minutes listened tracking (user-managed)
-    const STORE_KEY = "enigmaMusicMinutes";
-    const store = JSON.parse(localStorage.getItem(STORE_KEY) || "{}");
-    const day = todayKey();
+  renderMoodChips();
+  renderTracks();
+  loadMinutes();
 
-    function getToday() { return Number(store[day] || 0); }
-    function getTotal() {
-      return Object.values(store).reduce((acc, v) => acc + Number(v || 0), 0);
-    }
+  document.getElementById("startListenBtn").onclick = startSession;
+  document.getElementById("endListenBtn").onclick = endSession;
+}
 
-    function renderMinutes() {
-      if (minsTodayEl) minsTodayEl.textContent = String(getToday());
-      if (minsTotalEl) minsTotalEl.textContent = String(getTotal());
-    }
+/* ---------- Moods ---------- */
+function renderMoodChips(){
+  const wrap = document.getElementById("moodChips");
+  const label = document.getElementById("moodLabel");
 
-    // session timer
-    let sessionStart = null;
+  wrap.innerHTML = "";
+  MOODS.forEach(m=>{
+    const btn = document.createElement("button");
+    btn.className = "chip" + (m===currentMood ? " active" : "");
+    btn.textContent = m;
 
-    function renderTracks() {
-      if (!listEl) return;
-      listEl.innerHTML = "";
+    btn.onclick = ()=>{
+      currentMood = m;
+      renderMoodChips();
+      renderTracks();
+      label.textContent = "Showing: " + m;
+    };
 
-      const tracks = MUSIC_TRACKS.filter(t => t.mood.includes(activeMood) || activeMood === "All");
+    wrap.appendChild(btn);
+  });
+}
 
-      tracks.forEach(t => {
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = "music-btn";
-        btn.innerHTML = `<span>${t.title}</span><span>↗</span>`;
-        btn.addEventListener("click", (e) => {
-          e.preventDefault();
-          // iPhone: open in new tab must be triggered by direct tap
-          window.open(t.url, "_blank", "noopener,noreferrer");
-        }, { passive: false });
-        listEl.appendChild(btn);
-      });
+/* ---------- Tracks ---------- */
+function renderTracks(){
+  const list = document.getElementById("musicList");
+  list.innerHTML = "";
 
-      // If somehow empty, show a gentle fallback
-      if (!tracks.length) {
-        const p = document.createElement("div");
-        p.className = "gentle-text";
-        p.textContent = "No tracks for this mood yet.";
-        listEl.appendChild(p);
-      }
-    }
+  TRACKS.filter(t => currentMood==="All" || t.mood===currentMood)
+    .forEach(t=>{
+      const a = document.createElement("a");
+      a.href = t.url;
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.className = "music-btn";
+      a.innerHTML = `<span>${t.title}</span><span>▶︎</span>`;
+      list.appendChild(a);
+    });
+}
 
-    function renderChips() {
-      if (!chipsEl) return;
-      chipsEl.innerHTML = "";
+/* ---------- Minutes listened ---------- */
+function startSession(){
+  if(sessionStart) return;
+  sessionStart = Date.now();
+  document.getElementById("listenStatus").textContent = "Listening session active…";
+}
 
-      MOODS.forEach(m => {
-        const b = document.createElement("button");
-        b.type = "button";
-        b.className = "chip" + (m === activeMood ? " active" : "");
-        b.textContent = m;
-        b.addEventListener("click", (e) => {
-          e.preventDefault();
-          activeMood = m;
-          renderChips();
-          renderTracks();
-        }, { passive: false });
-        chipsEl.appendChild(b);
-      });
-    }
+function endSession(){
+  if(!sessionStart) return;
 
-    renderChips();
-    renderTracks();
-    renderMinutes();
+  const mins = Math.max(1, Math.round((Date.now() - sessionStart)/60000));
+  sessionStart = null;
 
-    if (startBtn && statusEl) {
-      startBtn.addEventListener("click", (e) => {
-        e.preventDefault();
-        if (sessionStart) return;
-        sessionStart = Date.now();
-        statusEl.textContent = "Session running… when you’re done, tap Finish.";
-      }, { passive: false });
-    }
+  const todayKey = "enigmaMinsToday";
+  const totalKey = "enigmaMinsTotal";
 
-    if (endBtn && statusEl) {
-      endBtn.addEventListener("click", (e) => {
-        e.preventDefault();
-        if (!sessionStart) return;
-        const mins = Math.max(1, Math.round((Date.now() - sessionStart) / 60000));
-        sessionStart = null;
+  const today = Number(localStorage.getItem(todayKey) || 0) + mins;
+  const total = Number(localStorage.getItem(totalKey) || 0) + mins;
 
-        store[day] = (Number(store[day] || 0) + mins);
-        localStorage.setItem(STORE_KEY, JSON.stringify(store));
-        renderMinutes();
-        statusEl.textContent = `Saved ${mins} minute(s) ✅`;
-        setTimeout(() => (statusEl.textContent = "No active session."), 1400);
-      }, { passive: false });
-    }
-  }
+  localStorage.setItem(todayKey, today);
+  localStorage.setItem(totalKey, total);
 
+  loadMinutes();
+  document.getElementById("listenStatus").textContent =
+    `Session saved (+${mins} min).`;
+}
+
+function loadMinutes(){
+  document.getElementById("minsToday").textContent =
+    localStorage.getItem("enigmaMinsToday") || 0;
+  document.getElementById("minsTotal").textContent =
+    localStorage.getItem("enigmaMinsTotal") || 0;
+}
   /* =========================================================
      COLOUR (design chips + palette circles + mode)
   ========================================================= */
