@@ -575,3 +575,183 @@ body.night .theme-toggle-top{
   background: #b8a6d9 !important;
   color: #ffffff !important;
 }
+/* ===== Game designs (ensures designs show) ===== */
+.design-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+}
+.design-tile{
+  background:rgba(255,255,255,0.86);
+  border-radius:18px;
+  box-shadow:0 10px 24px rgba(0,0,0,0.08);
+  padding:12px;
+  display:flex;
+  gap:12px;
+  align-items:center;
+  user-select:none;
+}
+.design-tile.active{
+  outline:3px solid rgba(184,166,217,0.75);
+  background:rgba(239,233,248,0.96);
+}
+.design-preview{
+  width:56px;
+  height:56px;
+  border-radius:14px;
+  background:rgba(239,233,248,0.92);
+  display:grid;
+  grid-template-columns:repeat(10,1fr);
+  gap:1px;
+  padding:6px;
+}
+.preview-dot{
+  width:100%;
+  aspect-ratio:1/1;
+  border-radius:2px;
+  background:rgba(90,75,122,0.14);
+}
+.design-title{ font-weight:900; color:#5a4b7a; }
+.design-sub{ font-size:12px; color:rgba(90,75,122,0.65); margin-top:2px; }
+
+/* Palette */
+.palette-grid{
+  display:grid;
+  grid-template-columns:repeat(8,1fr);
+  gap:10px;
+  margin-top:10px;
+}
+.palette-chip{
+  position:relative;
+  aspect-ratio:1/1;
+  border-radius:999px;
+  border:2px solid rgba(0,0,0,0.08);
+  box-shadow:0 6px 14px rgba(0,0,0,0.06);
+}
+.palette-chip.active{ outline:3px solid rgba(184,166,217,0.85); }
+.palette-num{
+  position:absolute;
+  inset:auto 0 0 0;
+  text-align:center;
+  font-weight:900;
+  font-size:12px;
+  color:rgba(63,58,74,0.72);
+  padding-bottom:4px;
+}
+
+/* Grid */
+.grid-wrap{ display:flex; justify-content:center; padding:10px 0 6px; }
+.colour-grid{
+  display:grid;
+  grid-template-columns:repeat(14,1fr);
+  gap:6px;
+  width:100%;
+  max-width:420px;
+}
+.cell{
+  aspect-ratio:1/1;
+  background:rgba(239,233,248,0.92);
+  border-radius:10px;
+  position:relative;
+}
+.cell .num{
+  position:absolute; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  font-size:12px; font-weight:900;
+  color:rgba(90,75,122,0.55);
+}
+.cell.filled .num{ display:none; }
+
+/* Mode buttons */
+.mode-row{ display:flex; gap:10px; }
+.mode-btn{
+  flex:1; padding:12px;
+  border-radius:14px; border:none;
+  background:rgba(239,233,248,0.92);
+  box-shadow:0 10px 24px rgba(0,0,0,0.08);
+  font-weight:900; color:#5a4b7a;
+}
+.mode-btn.active{ outline:3px solid rgba(184,166,217,0.75); background:rgba(255,255,255,0.92); }
+
+/* ===== Music links + mood + minutes ===== */
+.sound-links{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+.sound-link{
+  display:block;
+  padding:16px;
+  border-radius:18px;
+  background:rgba(239,233,248,0.95);
+  box-shadow:0 10px 24px rgba(0,0,0,0.08);
+  text-decoration:none;
+  color:#5a4b7a;
+  font-weight:900;
+}
+.sound-link:active{ transform:scale(0.99); }
+.sound-link.active{
+  background:#b8a6d9;
+  color:#fff;
+}
+
+/* Mood chips */
+.chip-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:8px;
+}
+.chip{
+  border:none;
+  padding:10px 12px;
+  border-radius:999px;
+  background:rgba(239,233,248,0.95);
+  box-shadow:0 10px 24px rgba(0,0,0,0.08);
+  font-weight:900;
+  color:#5a4b7a;
+}
+.chip.active{
+  background:#b8a6d9;
+  color:#fff;
+}
+
+/* Minutes listened stats */
+.listen-stats{
+  display:flex;
+  gap:12px;
+  margin-top:10px;
+}
+.stat{
+  flex:1;
+  background:rgba(255,255,255,0.85);
+  border-radius:18px;
+  padding:12px;
+  box-shadow:0 10px 24px rgba(0,0,0,0.08);
+  text-align:center;
+}
+.stat-num{
+  font-weight:900;
+  font-size:22px;
+  color:#5a4b7a;
+}
+.stat-label{
+  font-size:12px;
+  color:rgba(90,75,122,0.65);
+  margin-top:4px;
+}
+
+/* Night mode adjustments for music cards */
+body.night .sound-link,
+body.night .chip,
+body.night .stat{
+  background:rgba(255,255,255,0.10);
+  color:rgba(245,242,255,0.92);
+}
+body.night .sound-link.active,
+body.night .chip.active{
+  background:#6f5aa6;
+  color:#fff;
+}
+body.night .stat-num{ color:rgba(245,242,255,0.95); }
+body.night .stat-label{ color:rgba(245,242,255,0.65); }
