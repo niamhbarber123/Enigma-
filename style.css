@@ -1,7 +1,9 @@
 /* =========================================================
    Enigma • style.css (FULL)
-   - Home fits on one screen (no scroll)
-   - Quotes scroll-friendly (save button only)
+   - Cleaner layout
+   - Bigger tap targets
+   - Palette circles (20+)
+   - Music links as buttons
 ========================================================= */
 
 :root{
@@ -22,7 +24,7 @@ html,body{ margin:0; padding:0; height:100%; }
 body{
   background:var(--bg);
   color:var(--ink);
-  font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
 }
 
 /* ---------- Night mode ---------- */
@@ -35,8 +37,9 @@ body.night .home-card,
 body.night .home-pill,
 body.night .home-help,
 body.night .quote-tile,
-body.night .quote-save-btn,
-body.night input{
+body.night input,
+body.night .chip,
+body.night .music-btn{
   background:rgba(255,255,255,0.10) !important;
   color:rgba(245,242,255,0.92) !important;
   border-color:rgba(255,255,255,0.12) !important;
@@ -52,7 +55,7 @@ body.night .bottom-nav{
 body.night .bottom-nav a{ color:rgba(245,242,255,0.65); }
 body.night .bottom-nav a.active{ color:#fff; }
 
-/* ---------- Page layout ---------- */
+/* ---------- Layout ---------- */
 .page-wrap{
   min-height:100vh;
   display:flex;
@@ -60,10 +63,10 @@ body.night .bottom-nav a.active{ color:#fff; }
 }
 .page{
   flex:1;
-  padding:12px 18px calc(140px + env(safe-area-inset-bottom));
-  max-width:720px;
   width:100%;
+  max-width:720px;
   margin:0 auto;
+  padding:12px 18px calc(140px + env(safe-area-inset-bottom));
 }
 
 /* ---------- Header ---------- */
@@ -102,7 +105,7 @@ body.night .page-header h1{ color:rgba(245,242,255,0.92); }
 }
 .back-btn:active{ transform:scale(0.98); }
 
-/* ---------- Theme button (moon) ---------- */
+/* ---------- Theme button ---------- */
 .theme-toggle-top{
   position:fixed;
   right:14px;
@@ -124,7 +127,7 @@ body.night .theme-toggle-top{
 
 /* ---------- Card ---------- */
 .card{
-  background:rgba(255,255,255,0.86);
+  background:rgba(255,255,255,0.90);
   border-radius:var(--radius-xl);
   padding:16px;
   box-shadow:var(--shadow);
@@ -141,6 +144,39 @@ body.night .theme-toggle-top{
   font-size:13px;
   color:rgba(90,75,122,0.65);
   margin-top:8px;
+}
+
+/* ---------- Chips (mood/design) ---------- */
+.chip-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+}
+.chip{
+  border:none;
+  padding:10px 14px;
+  border-radius:999px;
+  background:rgba(239,233,248,0.90);
+  box-shadow:0 6px 16px rgba(0,0,0,0.06);
+  font-weight:800;
+  color:#5a4b7a;
+}
+.chip.active{
+  background:var(--lavender);
+  color:#fff;
+}
+.chip:active{ transform:scale(0.99); }
+
+/* ---------- Inputs ---------- */
+input[type="search"], input[type="text"]{
+  width:100%;
+  padding:14px 14px;
+  border-radius:16px;
+  border:1px solid rgba(184,166,217,0.18);
+  background:rgba(239,233,248,0.65);
+  outline:none;
+  font-size:16px;
+  color:var(--ink);
 }
 
 /* ---------- Buttons ---------- */
@@ -199,120 +235,7 @@ body.night .theme-toggle-top{
 }
 
 /* =========================================================
-   HOME (no scroll)
-========================================================= */
-.home-page{ padding-top: 6px; }
-
-/* Big soft icon, but smaller so it fits */
-.home-hero{
-  width: min(520px, 92vw);
-  height: min(520px, 92vw);
-  margin: -10px auto 0;
-  border-radius: 50%;
-  background-image: url("icon.png");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 92%;
-  opacity: 0.14;
-  filter: saturate(0.9);
-  pointer-events:none;
-}
-body.night .home-hero{ opacity:0.10; }
-
-/* Smaller header on home so content fits */
-body.home .page-header{ padding: 42px 20px 10px; }
-
-/* Breathe card tightened */
-.home-card{
-  display:block;
-  text-decoration:none;
-  margin: -95px auto 14px;
-  max-width: 680px;
-  background: rgba(255,255,255,0.86);
-  border-radius: 26px;
-  padding: 18px 18px;
-  box-shadow: var(--shadow);
-  border: 1px solid rgba(184,166,217,0.18);
-}
-.home-card-title{
-  font-size: 22px;
-  font-weight: 900;
-  color: #5a4b7a;
-}
-body.night .home-card-title{ color: rgba(245,242,255,0.92); }
-.home-card-sub{
-  margin-top: 6px;
-  font-size: 14px;
-  color: rgba(90,75,122,0.65);
-  font-weight: 700;
-}
-body.night .home-card-sub{ color: rgba(245,242,255,0.65); }
-
-/* 2x2 pills */
-.home-grid{
-  display:grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  max-width: 680px;
-  margin: 0 auto;
-}
-.home-pill{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap: 10px;
-  text-decoration:none;
-  background: rgba(255,255,255,0.86);
-  border-radius: 24px;
-  padding: 14px 14px;
-  min-height: 56px;
-  box-shadow: var(--shadow);
-  border: 1px solid rgba(184,166,217,0.18);
-  font-weight: 900;
-  color:#5a4b7a;
-}
-.home-pill:active{ transform: scale(0.99); }
-body.night .home-pill{ color: rgba(245,242,255,0.92); }
-
-.pill-ico{ font-size: 20px; line-height: 1; }
-.pill-text{ font-size: 16px; }
-
-.home-help{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap: 10px;
-  text-decoration:none;
-  max-width: 680px;
-  margin: 10px auto 0;
-  background: rgba(239,233,248,0.95);
-  border-radius: 24px;
-  padding: 14px;
-  box-shadow: var(--shadow);
-  border: 1px solid rgba(184,166,217,0.18);
-  font-weight: 900;
-  color:#5a4b7a;
-}
-
-/* Ensure no scroll by reducing page bottom padding on home */
-body.home .page{
-  padding-bottom: calc(110px + env(safe-area-inset-bottom));
-}
-
-/* Super small phones */
-@media (max-width: 380px){
-  body.home .home-hero{
-    width: min(470px, 92vw);
-    height: min(470px, 92vw);
-    margin-top: -18px;
-    opacity: 0.12;
-  }
-  body.home .home-card{ margin-top:-85px; }
-  body.home .home-pill{ min-height: 54px; }
-}
-
-/* =========================================================
-   QUOTES (scroll-friendly)
+   QUOTES
 ========================================================= */
 .quote-grid{
   display:grid;
@@ -320,14 +243,12 @@ body.home .page{
   gap:12px;
   margin-top:14px;
 }
-
-/* Tile is NOT clickable anymore — only Save button is */
 .quote-tile{
   position:relative;
   background:rgba(255,255,255,0.9);
   border-radius:18px;
   padding:14px 14px 12px;
-  padding-right: 98px; /* space for save button */
+  padding-right: 102px;
   box-shadow:var(--shadow);
   border:1px solid rgba(184,166,217,0.25);
 }
@@ -341,8 +262,6 @@ body.home .page{
   border:2px solid rgba(184,166,217,0.75);
   box-shadow:0 14px 30px rgba(90,75,122,0.14);
 }
-
-/* Save button */
 .quote-save-btn{
   position:absolute;
   right:12px;
@@ -354,10 +273,77 @@ body.home .page{
   background:rgba(239,233,248,0.95);
   box-shadow:var(--shadow);
   color:#5a4b7a;
-  cursor:pointer;
 }
-.quote-save-btn:active{ transform:scale(0.99); }
 .quote-save-btn.saved{
   background: var(--lavender);
   color:#fff;
+}
+
+/* =========================================================
+   MUSIC — make links tappable & spaced
+========================================================= */
+.music-list{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+.music-btn{
+  width:100%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:16px 16px;
+  border:none;
+  border-radius:20px;
+  background:rgba(255,255,255,0.9);
+  border:1px solid rgba(184,166,217,0.18);
+  box-shadow:var(--shadow);
+  font-weight:900;
+  font-size:16px;
+  color:#5a4b7a;
+  text-align:left;
+}
+.music-btn span:last-child{
+  font-size:18px;
+  opacity:0.7;
+}
+.music-btn:active{ transform:scale(0.99); }
+.music-btn.small{
+  font-size:15px;
+  font-weight:800;
+}
+
+/* =========================================================
+   GAME — palette circles (20+)
+========================================================= */
+.palette-dots{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  padding-top:6px;
+}
+.color-dot{
+  width:34px;
+  height:34px;
+  border-radius:999px;
+  border:2px solid rgba(90,75,122,0.18);
+  box-shadow:0 8px 18px rgba(0,0,0,0.08);
+  cursor:pointer;
+}
+.color-dot.selected{
+  border:3px solid #5a4b7a;
+  transform:scale(1.04);
+}
+
+/* Hide numbers in free colour mode if your game overlays them */
+.free-mode .cell-number,
+.free-mode .number-overlay{
+  display:none !important;
+}
+
+/* Utility */
+.hr{
+  height:1px;
+  background:rgba(184,166,217,0.25);
+  margin:12px 0;
 }
