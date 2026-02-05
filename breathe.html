@@ -5,10 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Breathe • Enigma</title>
 
-  <link rel="stylesheet" href="/Enigma-/style.css?v=5001">
+  <!-- IMPORTANT: correct path + cache-bust -->
+  <link rel="stylesheet" href="/Enigma-/style.css?v=6001">
 </head>
 
 <body class="page-wrap">
+  <!-- Night mode button (optional) -->
   <button id="themeFab" class="theme-toggle-top" type="button" aria-label="Toggle night mode">🌙</button>
 
   <header class="page-header">
@@ -23,7 +25,7 @@
         <div class="breathe-text" id="breatheLabel">Inhale</div>
 
         <div class="breathe-circle-wrap">
-          <div class="breathe-circle" id="breatheCircle"></div>
+          <div class="breathe-circle" id="breatheCircle" aria-hidden="true"></div>
         </div>
 
         <button class="primary" type="button" onclick="markBreatheDone()">Completed</button>
@@ -42,10 +44,23 @@
     <a href="/Enigma-/progress.html"><div class="nav-ico">📈</div><span>Progress</span></a>
   </nav>
 
-  <script src="/Enigma-/app.js?v=5001"></script>
+  <!-- If you have app.js, keep it. If you don't, the inline script below still runs. -->
+  <script src="/Enigma-/app.js?v=6001"></script>
 
-  <!-- Makes the label change in sync with the CSS breathe animation (10s loop) -->
+  <!-- Label changes in sync with the 10s circle animation -->
   <script>
+    // fallback if app.js isn't present
+    window.enigmaBack = window.enigmaBack || function(){
+      if (history.length > 1) history.back();
+      else location.href = "/Enigma-/index.html";
+    };
+    window.markBreatheDone = window.markBreatheDone || function(){
+      const today = new Date().toISOString().split("T")[0];
+      localStorage.setItem("enigmaBreatheDone", today);
+      const msg = document.getElementById("breatheDoneMsg");
+      if (msg) msg.textContent = "Saved ✅ Well done.";
+    };
+
     const label = document.getElementById("breatheLabel");
     function loopLabels(){
       if(!label) return;
