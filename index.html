@@ -1,55 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
   <title>Enigma</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="apple-touch-icon" sizes="180x180" href="/Enigma-/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="192x192" href="/Enigma-/icon-192.png">
+  <link rel="apple-touch-icon" href="/Enigma-/apple-touch-icon.png">
   <link rel="manifest" href="/Enigma-/manifest.json">
   <meta name="theme-color" content="#b8a6d9">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="Enigma">
 
-  <link rel="stylesheet" href="/Enigma-/style.css?v=700">
+  <link rel="stylesheet" href="/Enigma-/style.css?v=900">
 </head>
 
-<body class="home-body page-wrap">
+<body class="home-body">
+
+  <!-- Night mode -->
+  <button class="theme-toggle-top" onclick="toggleTheme()">🌙</button>
+
   <header class="page-header">
     <h1>Enigma</h1>
     <p>Your calm space</p>
   </header>
 
   <main class="home-main">
-    <div class="home-stack">
-      <a class="primary-card" href="/Enigma-/breathe.html">
-        <div class="pc-title">Breathe &amp; reset</div>
-        <div class="pc-sub">A gentle 60 seconds</div>
-      </a>
+    <a class="primary-card" href="/Enigma-/breathe.html">
+      <strong>Breathe &amp; reset</strong>
+      <span>A gentle 60 seconds</span>
+    </a>
 
-      <div class="home-grid-min">
-        <a class="mini-tile" href="/Enigma-/journal.html"><div class="mini-ico">📖</div><div class="mini-text">Journal</div></a>
-        <a class="mini-tile" href="/Enigma-/quotes.html"><div class="mini-ico">💬</div><div class="mini-text">Quotes</div></a>
-        <a class="mini-tile" href="/Enigma-/game.html"><div class="mini-ico">🎨</div><div class="mini-text">Colour</div></a>
-        <a class="mini-tile" href="/Enigma-/sounds.html"><div class="mini-ico">🎧</div><div class="mini-text">Sounds</div></a>
-      </div>
-
-      <a class="help-link" href="/Enigma-/help.html">Need help right now? 🆘</a>
+    <div class="grid">
+      <a class="tile" href="/Enigma-/journal.html">📖 Journal</a>
+      <a class="tile" href="/Enigma-/quotes.html">💬 Quotes</a>
+      <a class="tile" href="/Enigma-/game.html">🎨 Colour</a>
+      <a class="tile" href="/Enigma-/sounds.html">🎧 Sounds</a>
     </div>
+
+    <a class="primary-card" href="/Enigma-/help.html" style="margin-top:16px;text-align:center;">
+      🆘 Need help right now?
+    </a>
   </main>
 
   <nav class="bottom-nav">
-    <a class="active" href="/Enigma-/index.html"><div class="nav-ico">🏠</div><span>Home</span></a>
-    <a href="/Enigma-/breathe.html"><div class="nav-ico">🌬️</div><span>Breathe</span></a>
-    <a href="/Enigma-/journal.html"><div class="nav-ico">📖</div><span>Journal</span></a>
-    <a href="/Enigma-/quotes.html"><div class="nav-ico">💬</div><span>Quotes</span></a>
-    <a href="/Enigma-/game.html"><div class="nav-ico">🎨</div><span>Colour</span></a>
-    <a href="/Enigma-/sounds.html"><div class="nav-ico">🎧</div><span>Sounds</span></a>
-
-    <button id="themeFab" class="theme-fab" type="button" aria-label="Toggle night mode">🌙</button>
+    <a class="active" href="/Enigma-/index.html"><div class="nav-ico">🏠</div>Home</a>
+    <a href="/Enigma-/breathe.html"><div class="nav-ico">🌬️</div>Breathe</a>
+    <a href="/Enigma-/journal.html"><div class="nav-ico">📖</div>Journal</a>
+    <a href="/Enigma-/quotes.html"><div class="nav-ico">💬</div>Quotes</a>
+    <a href="/Enigma-/game.html"><div class="nav-ico">🎨</div>Colour</a>
+    <a href="/Enigma-/sounds.html"><div class="nav-ico">🎧</div>Sounds</a>
   </nav>
 
-  <script src="/Enigma-/app.js?v=700"></script>
+  <script>
+    function toggleTheme(){
+      document.body.classList.toggle("night");
+      localStorage.setItem(
+        "enigmaTheme",
+        document.body.classList.contains("night") ? "night" : "day"
+      );
+    }
+
+    (function(){
+      const saved = localStorage.getItem("enigmaTheme");
+      if(saved === "night"){
+        document.body.classList.add("night");
+      }
+    })();
+  </script>
+
 </body>
 </html>
