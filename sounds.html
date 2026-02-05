@@ -5,68 +5,127 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sounds • Enigma</title>
 
-  <link rel="stylesheet" href="/Enigma-/style.css?v=5001">
+  <style>
+    :root{
+      --lav:#b8a6d9;
+      --bg:#faf7ff;
+      --ink:#4a4458;
+      --muted:#8b86a0;
+      --card:rgba(255,255,255,0.88);
+      --shadow:0 10px 24px rgba(0,0,0,0.08);
+      --r:22px;
+    }
+    *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+    html,body{ margin:0; padding:0; font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",Inter,sans-serif; background:var(--bg); color:var(--ink); }
+    .wrap{ min-height:100vh; padding:64px 18px 28px; }
+    h1{ margin:0; text-align:center; font-size:28px; color:#5a4b7a; font-weight:900; }
+    p{ margin:6px 0 18px; text-align:center; color:var(--muted); }
+
+    .card{
+      background:var(--card);
+      border-radius:var(--r);
+      box-shadow:var(--shadow);
+      padding:16px;
+      margin:14px 0;
+    }
+    .title{ font-weight:900; color:#5a4b7a; margin-bottom:10px; }
+    .row{ display:flex; gap:10px; margin-top:10px; }
+    .btn{
+      flex:1;
+      border:none;
+      padding:12px 12px;
+      border-radius:16px;
+      background:rgba(239,233,248,0.95);
+      box-shadow:var(--shadow);
+      font-weight:900;
+      color:#5a4b7a;
+      font-size:14px;
+    }
+    .btn:active{ transform:scale(0.99); }
+    .btn.primary{ background:var(--lav); color:white; }
+    .btn.stop{ background:rgba(244,194,194,0.75); color:#5a4b7a; }
+
+    input[type="range"]{ width:100%; }
+    .status{ color:var(--muted); text-align:center; margin-top:10px; font-size:13px; }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:6px 10px;
+      border-radius:999px;
+      background:rgba(239,233,248,0.95);
+      color:#5a4b7a;
+      font-weight:900;
+      font-size:12px;
+      margin:0 auto;
+    }
+
+    .small{ font-size:12px; color:var(--muted); line-height:1.5; }
+  </style>
 </head>
 
-<body class="page-wrap">
-  <button id="themeFab" class="theme-toggle-top" type="button" aria-label="Toggle night mode">🌙</button>
-
-  <header class="page-header">
-    <button class="back-btn" type="button" onclick="enigmaBack()" aria-label="Back">←</button>
+<body>
+  <div class="wrap">
     <h1>Sounds</h1>
-    <p>Play a gentle background sound</p>
-  </header>
+    <p>Calming sounds with no MP3 files needed</p>
 
-  <main class="page">
     <div class="card">
-      <div class="section-title">Volume</div>
-      <input id="soundVol" type="range" min="0" max="1" step="0.01" />
-      <div class="gentle-text">Status: <span id="soundStatus">Not playing</span></div>
+      <div class="title">Volume</div>
+      <input id="vol" type="range" min="0" max="1" step="0.01" value="0.6">
+      <div class="status">Status: <span id="status">Not playing</span></div>
     </div>
 
     <div class="card">
-      <div class="section-title">Choose a sound</div>
+      <div class="title">Choose a sound</div>
 
-      <!-- Hidden player (iPhone Safari is happiest with this approach) -->
-      <audio id="soundPlayer" preload="auto" loop></audio>
-
-      <div class="tool-row">
-        <button class="tool-btn" type="button" onclick="playSound('/Enigma-/audio/rain.mp3')">🌧 Rain</button>
-        <button class="tool-btn danger" type="button" onclick="stopSound()">Stop</button>
+      <div class="row">
+        <button class="btn primary" onclick="EnigmaSounds.play('rain')">🌧 Rain</button>
+        <button class="btn stop" onclick="EnigmaSounds.stop()">Stop</button>
       </div>
 
-      <div class="tool-row">
-        <button class="tool-btn" type="button" onclick="playSound('/Enigma-/audio/ocean.mp3')">🌊 Ocean</button>
-        <button class="tool-btn" type="button" onclick="playSound('/Enigma-/audio/forest.mp3')">🌿 Forest</button>
+      <div class="row">
+        <button class="btn" onclick="EnigmaSounds.play('ocean')">🌊 Ocean</button>
+        <button class="btn" onclick="EnigmaSounds.play('forest')">🌿 Forest</button>
       </div>
 
-      <div class="tool-row">
-        <button class="tool-btn" type="button" onclick="playSound('/Enigma-/audio/fireplace.mp3')">🔥 Fireplace</button>
-        <button class="tool-btn" type="button" onclick="playSound('/Enigma-/audio/wind.mp3')">🌬 Wind</button>
+      <div class="row">
+        <button class="btn" onclick="EnigmaSounds.play('wind')">🌬 Wind</button>
+        <button class="btn" onclick="EnigmaSounds.play('white')">⚪ White noise</button>
       </div>
 
-      <div class="tool-row">
-        <button class="tool-btn" type="button" onclick="playSound('/Enigma-/audio/white-noise.mp3')">⚪ White noise</button>
-        <button class="tool-btn" type="button" onclick="playSound('/Enigma-/audio/pink-noise.mp3')">🌸 Pink noise</button>
+      <div class="row">
+        <button class="btn" onclick="EnigmaSounds.play('pink')">🌸 Pink noise</button>
+        <button class="btn" onclick="EnigmaSounds.play('chimes')">🔔 Chimes</button>
       </div>
 
-      <div class="tool-row">
-        <button class="tool-btn" type="button" onclick="playSound('/Enigma-/audio/chimes.mp3')">🔔 Chimes</button>
-        <button class="tool-btn" type="button" onclick="playSound('/Enigma-/audio/meditation.mp3')">🧘 Meditation</button>
+      <div class="status"><span class="pill">Tip</span></div>
+      <div class="small">
+        On iPhone, sound can only start after you tap a button (Safari rule). Tap a sound once, then adjust volume.
       </div>
     </div>
-  </main>
+  </div>
 
-  <nav class="bottom-nav">
-    <a href="/Enigma-/index.html"><div class="nav-ico">🏠</div><span>Home</span></a>
-    <a href="/Enigma-/breathe.html"><div class="nav-ico">🌬️</div><span>Breathe</span></a>
-    <a href="/Enigma-/journal.html"><div class="nav-ico">📖</div><span>Journal</span></a>
-    <a href="/Enigma-/quotes.html"><div class="nav-ico">💬</div><span>Quotes</span></a>
-    <a href="/Enigma-/game.html"><div class="nav-ico">🎨</div><span>Colour</span></a>
-    <a class="active" href="/Enigma-/sounds.html"><div class="nav-ico">🎧</div><span>Sounds</span></a>
-    <a href="/Enigma-/progress.html"><div class="nav-ico">📈</div><span>Progress</span></a>
-  </nav>
+  <script src="sounds.js?v=1"></script>
+  <script>
+    // hook up volume slider + status label
+    const vol = document.getElementById("vol");
+    const status = document.getElementById("status");
 
-  <script src="/Enigma-/app.js?v=5001"></script>
+    vol.addEventListener("input", () => {
+      EnigmaSounds.setVolume(parseFloat(vol.value));
+      localStorage.setItem("enigmaSoundVol", vol.value);
+    });
+
+    // restore volume
+    const savedVol = localStorage.getItem("enigmaSoundVol");
+    if (savedVol !== null) {
+      vol.value = savedVol;
+      EnigmaSounds.setVolume(parseFloat(savedVol));
+    }
+
+    // status updater
+    EnigmaSounds.onStatus((txt) => status.textContent = txt);
+  </script>
 </body>
 </html>
