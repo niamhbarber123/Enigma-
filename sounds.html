@@ -5,8 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sounds • Enigma</title>
 
-  <!-- cache-bust -->
-  <link rel="stylesheet" href="/Enigma-/style.css?v=7001">
+  <link rel="stylesheet" href="/Enigma-/style.css?v=8001">
 </head>
 
 <body class="page-wrap">
@@ -23,7 +22,7 @@
       <div class="section-title">Volume</div>
       <input id="soundVol" type="range" min="0" max="1" step="0.01" value="0.6" />
       <div class="gentle-text">Status: <span id="soundStatus">Not playing</span></div>
-      <div class="gentle-text" id="soundHint">Tip: Tap a sound once to start (iPhone rule).</div>
+      <div class="gentle-text">Tip: Tap a sound once to start (iPhone rule).</div>
     </div>
 
     <div class="card">
@@ -55,7 +54,7 @@
       </div>
 
       <div class="gentle-text" style="margin-top:10px;">
-        MP3s are optional. If you later upload files, use folder <b>/audio/</b> (e.g. rain.mp3, ocean.mp3…).
+        MP3s optional. If you add MP3s later, put them in <b>/audio/</b> as rain.mp3, ocean.mp3 etc.
       </div>
     </div>
   </main>
@@ -70,11 +69,11 @@
     <a href="/Enigma-/progress.html"><div class="nav-ico">📈</div><span>Progress</span></a>
   </nav>
 
-  <!-- This file is new (below) -->
-  <script src="/Enigma-/sounds-engine.js?v=7001"></script>
+  <!-- your sound engine -->
+  <script src="/Enigma-/sounds-engine.js?v=8001"></script>
 
   <script>
-    // simple back fallback if your app.js isn't loaded on this page
+    // fallback back button
     window.enigmaBack = window.enigmaBack || function(){
       if (history.length > 1) history.back();
       else location.href = "/Enigma-/index.html";
@@ -84,7 +83,6 @@
     const status = document.getElementById("soundStatus");
     const stopBtn = document.getElementById("stopBtn");
 
-    // restore volume
     const savedVol = localStorage.getItem("enigmaSoundVol");
     if (savedVol !== null) vol.value = savedVol;
 
@@ -96,20 +94,20 @@
       localStorage.setItem("enigmaSoundVol", vol.value);
     });
 
-    function setActive(btn){
+    function clearActive(){
       document.querySelectorAll("[data-sound]").forEach(b=> b.classList.remove("active"));
-      if (btn) btn.classList.add("active");
     }
 
     document.querySelectorAll("[data-sound]").forEach(btn=>{
       btn.addEventListener("click", async () => {
-        setActive(btn);
+        clearActive();
+        btn.classList.add("active");
         await EnigmaSounds.play(btn.dataset.sound);
       }, { passive:true });
     });
 
     stopBtn.addEventListener("click", () => {
-      setActive(null);
+      clearActive();
       EnigmaSounds.stop();
     }, { passive:true });
   </script>
