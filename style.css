@@ -1,112 +1,307 @@
-.quote-tile.saved{ outline:3px solid rgba(184,166,217,0.75); }
+/* ===============================
+   Enigma – Global variables
+================================ */
+:root {
+  --lavender: #b8a6d9;
+  --lavender-soft: #efe9f8;
+  --ink: #4a4458;
+  --ink-soft: #6d667a;
+  --muted: #8b86a0;
+  --bg: #faf7ff;
+  --white: #ffffff;
 
-.section-title{ font-weight:900; margin-bottom:10px; color:#5a4b7a; }
-.design-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
-.design-tile{
-  background:rgba(255,255,255,0.78);
-  border-radius:18px;
-  box-shadow:0 10px 24px rgba(0,0,0,0.08);
-  padding:12px;
-  cursor:pointer;
-  display:flex;
-  gap:12px;
-  align-items:center;
-}
-.design-tile.active{
-  outline:3px solid rgba(184,166,217,0.75);
-  background:rgba(239,233,248,0.95);
-}
-.design-preview{
-  width:56px; height:56px;
-  border-radius:14px;
-  background:rgba(239,233,248,0.9);
-  display:grid;
-  grid-template-columns:repeat(10,1fr);
-  gap:1px;
-  padding:6px;
-}
-.preview-dot{ width:100%; aspect-ratio:1/1; border-radius:2px; background:rgba(90,75,122,0.14); }
-.preview-dot.off{ background:transparent; }
-
-.mode-row{ display:flex; gap:10px; margin-top:12px; }
-.mode-btn{
-  flex:1;
-  padding:12px;
-  border-radius:14px;
-  border:none;
-  background:rgba(239,233,248,0.92);
-  box-shadow:0 10px 24px rgba(0,0,0,0.08);
-  font-weight:900;
-  color:#5a4b7a;
-}
-.mode-btn.active{
-  outline:3px solid rgba(184,166,217,0.8);
-  background:rgba(255,255,255,0.92);
+  --shadow: 0 10px 24px rgba(0,0,0,0.08);
+  --radius-xl: 26px;
+  --radius-lg: 20px;
+  --radius-md: 16px;
 }
 
-.palette-grid{
-  display:grid;
-  grid-template-columns:repeat(8, 1fr);
-  gap:10px;
-  margin-top:10px;
-}
-.palette-chip{
-  position:relative;
-  width:100%;
-  aspect-ratio:1/1;
-  border-radius:999px;
-  border:2px solid rgba(0,0,0,0.08);
-  box-shadow:0 6px 14px rgba(0,0,0,0.06);
-}
-.palette-chip.active{ outline:3px solid rgba(184,166,217,0.85); }
-.palette-num{
-  position:absolute;
-  inset:auto 0 0 0;
-  text-align:center;
-  font-weight:900;
-  font-size:12px;
-  color:#3f3a4a;
-  padding-bottom:4px;
+/* ===============================
+   Reset & base
+================================ */
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.tool-row{ display:flex; gap:10px; margin-top:12px; }
-.tool-btn{
-  flex:1;
-  padding:12px;
-  border-radius:14px;
-  border:none;
-  background:rgba(239,233,248,0.92);
-  box-shadow:0 10px 24px rgba(0,0,0,0.08);
-  font-weight:900;
-  color:#5a4b7a;
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
 }
-.tool-btn.danger{ background:rgba(244,194,194,0.6); }
 
-.grid-wrap{ display:flex; justify-content:center; padding:10px 0 6px; }
-.colour-grid.big{
-  display:grid;
-  grid-template-columns:repeat(14, 1fr);
-  gap:6px;
-  width:100%;
-  max-width:420px;
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
 }
-.cell{
-  position:relative;
-  width:100%;
-  aspect-ratio:1/1;
-  border-radius:10px;
-  background:#f2eff8;
-  box-shadow:0 4px 10px rgba(0,0,0,0.04);
+
+/* ===============================
+   Page wrapper
+================================ */
+.page-wrap {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
 }
-.cell .num{
-  position:absolute;
-  inset:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:900;
-  font-size:12px;
-  color:rgba(63,58,74,0.55);
-  pointer-events:none;
+
+/* ===============================
+   Headers
+================================ */
+.page-header {
+  padding: 22px 20px 10px;
+  text-align: center;
 }
-.cell.filled .num{ display:none; }
+
+.page-header h1 {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 800;
+  color: #5a4b7a;
+}
+
+.page-header p {
+  margin: 6px 0 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* ===============================
+   Generic page content
+================================ */
+.page {
+  flex: 1;
+  padding: 12px 18px 90px;
+}
+
+.card {
+  background: rgba(255,255,255,0.85);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  padding: 16px;
+  margin-bottom: 14px;
+}
+
+/* ===============================
+   Buttons
+================================ */
+.primary {
+  width: 100%;
+  border: none;
+  border-radius: var(--radius-lg);
+  padding: 14px;
+  font-weight: 800;
+  background: var(--lavender);
+  color: white;
+  box-shadow: var(--shadow);
+  font-size: 15px;
+}
+
+/* ===============================
+   HOME – minimal & calm
+================================ */
+.home-body {
+  background:
+    linear-gradient(rgba(250,247,255,0.9), rgba(250,247,255,0.9)),
+    url("/Enigma-/icon.png");
+  background-size: cover;
+  background-position: center;
+}
+
+.home-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 18px 0;
+}
+
+.home-stack {
+  width: 100%;
+  max-width: 520px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Primary action */
+.primary-card {
+  text-decoration: none;
+  background: rgba(255,255,255,0.9);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--ink);
+}
+
+.pc-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #5a4b7a;
+}
+
+.pc-sub {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* Secondary actions */
+.home-grid-min {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.mini-tile {
+  text-decoration: none;
+  background: rgba(255,255,255,0.82);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--ink);
+}
+
+.mini-ico {
+  font-size: 22px;
+}
+
+.mini-text {
+  font-weight: 800;
+  color: #5a4b7a;
+}
+
+.help-link {
+  text-align: center;
+  font-weight: 700;
+  color: #5a4b7a;
+  text-decoration: none;
+  margin-top: 4px;
+}
+
+/* ===============================
+   Bottom navigation
+================================ */
+.bottom-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255,255,255,0.96);
+  box-shadow: 0 -6px 18px rgba(0,0,0,0.08);
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0 14px;
+  z-index: 10;
+}
+
+.bottom-nav a {
+  text-decoration: none;
+  color: var(--muted);
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.bottom-nav .nav-ico {
+  font-size: 20px;
+}
+
+.bottom-nav a.active {
+  color: #5a4b7a;
+  font-weight: 800;
+}
+
+/* ===============================
+   Quotes
+================================ */
+.quote-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.quote-tile {
+  background: rgba(255,255,255,0.85);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  padding: 14px;
+  font-size: 14px;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.quote-tile small {
+  display: block;
+  margin-top: 8px;
+  color: var(--muted);
+}
+
+.quote-tile.saved {
+  outline: 3px solid rgba(184,166,217,0.7);
+}
+
+/* ===============================
+   Tap-to-colour basics (shared)
+================================ */
+.palette-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 10px;
+}
+
+.palette-chip {
+  aspect-ratio: 1 / 1;
+  border-radius: 999px;
+  border: 2px solid rgba(0,0,0,0.08);
+}
+
+.palette-chip.active {
+  outline: 3px solid rgba(184,166,217,0.8);
+}
+
+.colour-grid.big {
+  display: grid;
+  grid-template-columns: repeat(14, 1fr);
+  gap: 6px;
+}
+
+.cell {
+  aspect-ratio: 1 / 1;
+  background: var(--lavender-soft);
+  border-radius: 10px;
+  position: relative;
+}
+
+.cell .num {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 800;
+  color: rgba(90,75,122,0.5);
+}
+
+.cell.filled .num {
+  display: none;
+}
+
+/* ===============================
+   Small screens tweak
+================================ */
+@media (max-width: 380px) {
+  .page-header h1 {
+    font-size: 24px;
+  }
+}
