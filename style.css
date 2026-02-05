@@ -439,3 +439,116 @@ body.home .tool-btn{
   .page{ padding-bottom:calc(112px + env(safe-area-inset-bottom)); }
   .card{ padding:14px; }
 }
+/* =========================================================
+   HOME components (missing in your file)
+========================================================= */
+.home-page{ position:relative; }
+
+.home-hero{
+  width:min(520px, 92vw);
+  height:min(520px, 92vw);
+  margin: -8px auto 6px;
+  border-radius: 50%;
+  background-image: url("icon.png");
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size: cover;     /* makes the icon fill */
+  opacity:0.14;               /* calm watermark */
+  filter:saturate(0.9);
+  pointer-events:none;
+}
+
+.home-card{
+  display:block;
+  text-decoration:none;
+  color:var(--ink);
+  background:rgba(255,255,255,0.90);
+  border:1px solid rgba(184,166,217,0.18);
+  border-radius:var(--radius-xl);
+  padding:16px;
+  box-shadow:var(--shadow);
+  margin:-110px auto 12px; /* pulls card into hero area */
+  max-width:680px;
+}
+.home-card-title{
+  font-weight:900;
+  font-size:22px;
+  color:#5a4b7a;
+}
+.home-card-sub{
+  margin-top:6px;
+  color:rgba(90,75,122,0.65);
+  font-weight:700;
+}
+
+.home-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  max-width:680px;
+  margin:0 auto 12px;
+}
+
+.home-pill{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  text-decoration:none;
+  color:#5a4b7a;
+  font-weight:900;
+  font-size:17px;
+  background:rgba(255,255,255,0.90);
+  border:1px solid rgba(184,166,217,0.18);
+  border-radius:999px;
+  padding:14px 14px;
+  box-shadow:var(--shadow);
+}
+.home-pill:active{ transform:scale(0.99); }
+.pill-ico{ font-size:18px; }
+
+.home-help{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  text-decoration:none;
+  color:#5a4b7a;
+  font-weight:900;
+  font-size:16px;
+  background:rgba(239,233,248,0.95);
+  border:1px solid rgba(184,166,217,0.18);
+  border-radius:999px;
+  padding:14px 14px;
+  box-shadow:var(--shadow);
+  max-width:680px;
+  margin:0 auto;
+}
+.home-help:active{ transform:scale(0.99); }
+
+/* Home fits on screen tighter */
+body.home .page-header{ padding:44px 20px 10px; }
+body.home .page{ padding-top:8px; }
+body.home .home-hero{ height:min(480px, 84vw); }
+
+/* =========================================================
+   Inputs class (so quotes has no inline CSS)
+========================================================= */
+.input{
+  width:100%;
+  padding:14px 14px;
+  border-radius:16px;
+  border:1px solid rgba(184,166,217,0.18);
+  background:rgba(239,233,248,0.65);
+  outline:none;
+  font-size:16px;
+  color:var(--ink);
+}
+
+/* =========================================================
+   Quotes: prevent accidental saves while scrolling
+   Only the 💜 button should be tappable
+========================================================= */
+.quote-tile{
+  touch-action: pan-y;
+}
