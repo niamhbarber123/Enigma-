@@ -1,5 +1,7 @@
 /* =========================================================
    Enigma • style.css (FULL)
+   - Home fits on one screen (no scroll)
+   - Quotes scroll-friendly (save button only)
 ========================================================= */
 
 :root{
@@ -29,13 +31,12 @@ body.night{
   color:rgba(245,242,255,0.92);
 }
 body.night .card,
+body.night .home-card,
+body.night .home-pill,
+body.night .home-help,
 body.night .quote-tile,
-body.night .entry-tile,
-body.night .design-tile,
-body.night .sound-link,
-body.night .chip,
-body.night .mode-btn,
-body.night .tool-btn{
+body.night .quote-save-btn,
+body.night input{
   background:rgba(255,255,255,0.10) !important;
   color:rgba(245,242,255,0.92) !important;
   border-color:rgba(255,255,255,0.12) !important;
@@ -101,7 +102,7 @@ body.night .page-header h1{ color:rgba(245,242,255,0.92); }
 }
 .back-btn:active{ transform:scale(0.98); }
 
-/* ---------- Theme (moon) button ---------- */
+/* ---------- Theme button (moon) ---------- */
 .theme-toggle-top{
   position:fixed;
   right:14px;
@@ -198,55 +199,60 @@ body.night .theme-toggle-top{
 }
 
 /* =========================================================
-   HOME
+   HOME (no scroll)
 ========================================================= */
-.home-page{ padding-top: 10px; }
+.home-page{ padding-top: 6px; }
 
-/* BIG background icon */
+/* Big soft icon, but smaller so it fits */
 .home-hero{
-  width: min(720px, 110vw);
-  height: min(720px, 110vw);
-  margin: -20px auto 0;
+  width: min(520px, 92vw);
+  height: min(520px, 92vw);
+  margin: -10px auto 0;
   border-radius: 50%;
   background-image: url("icon.png");
   background-repeat: no-repeat;
   background-position: center;
-  background-size: 85%;
-  opacity: 0.16;
+  background-size: 92%;
+  opacity: 0.14;
   filter: saturate(0.9);
   pointer-events:none;
 }
 body.night .home-hero{ opacity:0.10; }
 
+/* Smaller header on home so content fits */
+body.home .page-header{ padding: 42px 20px 10px; }
+
+/* Breathe card tightened */
 .home-card{
   display:block;
   text-decoration:none;
-  margin: -120px auto 20px;
+  margin: -95px auto 14px;
   max-width: 680px;
   background: rgba(255,255,255,0.86);
   border-radius: 26px;
-  padding: 26px 24px;
+  padding: 18px 18px;
   box-shadow: var(--shadow);
   border: 1px solid rgba(184,166,217,0.18);
 }
 .home-card-title{
-  font-size: 26px;
+  font-size: 22px;
   font-weight: 900;
   color: #5a4b7a;
 }
 body.night .home-card-title{ color: rgba(245,242,255,0.92); }
 .home-card-sub{
   margin-top: 6px;
-  font-size: 16px;
+  font-size: 14px;
   color: rgba(90,75,122,0.65);
   font-weight: 700;
 }
 body.night .home-card-sub{ color: rgba(245,242,255,0.65); }
 
+/* 2x2 pills */
 .home-grid{
   display:grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 12px;
   max-width: 680px;
   margin: 0 auto;
 }
@@ -258,8 +264,8 @@ body.night .home-card-sub{ color: rgba(245,242,255,0.65); }
   text-decoration:none;
   background: rgba(255,255,255,0.86);
   border-radius: 24px;
-  padding: 18px 16px;
-  min-height: 64px;
+  padding: 14px 14px;
+  min-height: 56px;
   box-shadow: var(--shadow);
   border: 1px solid rgba(184,166,217,0.18);
   font-weight: 900;
@@ -268,8 +274,8 @@ body.night .home-card-sub{ color: rgba(245,242,255,0.65); }
 .home-pill:active{ transform: scale(0.99); }
 body.night .home-pill{ color: rgba(245,242,255,0.92); }
 
-.pill-ico{ font-size: 22px; line-height: 1; }
-.pill-text{ font-size: 18px; }
+.pill-ico{ font-size: 20px; line-height: 1; }
+.pill-text{ font-size: 16px; }
 
 .home-help{
   display:flex;
@@ -278,95 +284,35 @@ body.night .home-pill{ color: rgba(245,242,255,0.92); }
   gap: 10px;
   text-decoration:none;
   max-width: 680px;
-  margin: 14px auto 0;
+  margin: 10px auto 0;
   background: rgba(239,233,248,0.95);
   border-radius: 24px;
-  padding: 18px;
+  padding: 14px;
   box-shadow: var(--shadow);
   border: 1px solid rgba(184,166,217,0.18);
   font-weight: 900;
   color:#5a4b7a;
 }
 
-/* =========================================================
-   BREATHE
-========================================================= */
-.breathe-wrap{ display:flex; flex-direction:column; align-items:center; gap:16px; }
-.breathe-card{ width:100%; max-width:640px; }
+/* Ensure no scroll by reducing page bottom padding on home */
+body.home .page{
+  padding-bottom: calc(110px + env(safe-area-inset-bottom));
+}
 
-.breathe-stage{
-  width:min(80vw, 380px);
-  height:min(80vw, 380px);
-  border-radius:999px;
-  background:rgba(184,166,217,0.22);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  position:relative;
-  overflow:hidden;
-  box-shadow:0 14px 34px rgba(0,0,0,0.10);
-}
-.breathe-core{
-  width:70%;
-  height:70%;
-  border-radius:999px;
-  background:rgba(184,166,217,0.35);
-  box-shadow: inset 0 0 0 8px rgba(255,255,255,0.35);
-  transform:scale(0.85);
-  transition: transform 4s ease-in-out;
-}
-.breathe-stage.inhale .breathe-core{ transform:scale(1.05); }
-.breathe-stage.exhale .breathe-core{ transform:scale(0.78); }
-
-.breathe-label{
-  position:absolute;
-  bottom:16px;
-  left:0; right:0;
-  text-align:center;
-  font-weight:900;
-  color:#5a4b7a;
-  font-size:20px;
-}
-body.night .breathe-label{ color:rgba(245,242,255,0.92); }
-
-/* =========================================================
-   JOURNAL (2-wide tiles)
-========================================================= */
-.journal-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-}
-@media (max-width:380px){
-  .journal-grid{ grid-template-columns:1fr; }
-}
-.entry-tile{
-  background:rgba(255,255,255,0.86);
-  border-radius:22px;
-  padding:14px;
-  box-shadow:var(--shadow);
-  border:1px solid rgba(184,166,217,0.18);
-}
-.entry-tile h3{
-  margin:0 0 8px;
-  font-size:14px;
-  color:#5a4b7a;
-}
-.entry-tile p{
-  margin:0;
-  color:rgba(90,75,122,0.72);
-  font-size:13px;
-  line-height:1.35;
-}
-.entry-tile small{
-  display:block;
-  margin-top:10px;
-  color:rgba(90,75,122,0.55);
-  font-weight:800;
+/* Super small phones */
+@media (max-width: 380px){
+  body.home .home-hero{
+    width: min(470px, 92vw);
+    height: min(470px, 92vw);
+    margin-top: -18px;
+    opacity: 0.12;
+  }
+  body.home .home-card{ margin-top:-85px; }
+  body.home .home-pill{ min-height: 54px; }
 }
 
 /* =========================================================
-   QUOTES (tiles)
+   QUOTES (scroll-friendly)
 ========================================================= */
 .quote-grid{
   display:grid;
@@ -374,15 +320,17 @@ body.night .breathe-label{ color:rgba(245,242,255,0.92); }
   gap:12px;
   margin-top:14px;
 }
+
+/* Tile is NOT clickable anymore — only Save button is */
 .quote-tile{
+  position:relative;
   background:rgba(255,255,255,0.9);
   border-radius:18px;
   padding:14px 14px 12px;
+  padding-right: 98px; /* space for save button */
   box-shadow:var(--shadow);
   border:1px solid rgba(184,166,217,0.25);
-  transition:transform 0.08s ease, box-shadow 0.15s ease;
 }
-.quote-tile:active{ transform:scale(0.99); }
 .quote-tile small{
   display:block;
   margin-top:8px;
@@ -394,147 +342,22 @@ body.night .breathe-label{ color:rgba(245,242,255,0.92); }
   box-shadow:0 14px 30px rgba(90,75,122,0.14);
 }
 
-/* =========================================================
-   GAME (designs + palette + grid)
-========================================================= */
-.design-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-}
-.design-tile{
-  padding:16px;
-  border-radius:18px;
-  background:rgba(255,255,255,0.85);
-  border:1px solid rgba(184,166,217,0.25);
-  font-weight:900;
-  font-size:16px;
-  color:#5a4b7a;
-  box-shadow:var(--shadow);
-}
-.design-tile.active{
-  background:rgba(184,166,217,0.35);
-}
-
-.mode-row{ display:flex; gap:10px; }
-.mode-btn{
-  flex:1;
-  padding:14px 12px;
-  border-radius:18px;
+/* Save button */
+.quote-save-btn{
+  position:absolute;
+  right:12px;
+  top:12px;
   border:none;
-  background:rgba(239,233,248,0.92);
-  box-shadow:var(--shadow);
-  font-weight:900;
-  font-size:15px;
-  color:#5a4b7a;
-}
-.mode-btn.active{
-  outline:3px solid rgba(184,166,217,0.65);
-  background:rgba(255,255,255,0.92);
-}
-
-.palette-grid{
-  display:grid;
-  grid-template-columns:repeat(8,1fr);
-  gap:10px;
-  margin-top:10px;
-}
-.palette-chip{
-  position:relative;
-  aspect-ratio:1/1;
   border-radius:999px;
-  border:2px solid rgba(0,0,0,0.08);
-  box-shadow:0 6px 14px rgba(0,0,0,0.06);
-}
-.palette-chip.active{ outline:3px solid rgba(184,166,217,0.85); }
-.palette-num{
-  position:absolute;
-  inset:auto 0 0 0;
-  text-align:center;
-  font-weight:900;
-  font-size:12px;
-  color:rgba(63,58,74,0.72);
-  padding-bottom:4px;
-}
-
-.grid-wrap{ display:flex; justify-content:center; padding:10px 0 6px; }
-.colour-grid{
-  display:grid;
-  grid-template-columns:repeat(14,1fr);
-  gap:6px;
-  width:100%;
-  max-width:420px;
-}
-.cell{
-  aspect-ratio:1/1;
-  background:rgba(239,233,248,0.92);
-  border-radius:10px;
-  position:relative;
-}
-.cell .num{
-  position:absolute;
-  inset:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:12px;
-  font-weight:900;
-  color:rgba(90,75,122,0.55);
-}
-.cell.filled .num{ display:none; }
-
-/* Hide numbers in FREE mode */
-.colour-grid.free-mode .cell .num{ display:none !important; }
-
-/* =========================================================
-   MUSIC (links + mood + minutes)
-========================================================= */
-.sound-links{ display:flex; flex-direction:column; gap:12px; }
-.sound-link{
-  display:block;
-  padding:16px;
-  border-radius:18px;
-  background:rgba(239,233,248,0.95);
-  box-shadow:var(--shadow);
-  text-decoration:none;
-  color:#5a4b7a;
-  font-weight:900;
-  border:1px solid rgba(184,166,217,0.18);
-  -webkit-touch-callout:none;
-  user-select:none;
-}
-.sound-link:active{ transform:scale(0.99); }
-.sound-link.active{
-  background:var(--lavender);
-  color:#fff;
-}
-
-.chip-row{ display:flex; flex-wrap:wrap; gap:10px; margin-top:8px; }
-.chip{
-  border:none;
   padding:10px 12px;
-  border-radius:999px;
+  font-weight:900;
   background:rgba(239,233,248,0.95);
   box-shadow:var(--shadow);
-  font-weight:900;
   color:#5a4b7a;
+  cursor:pointer;
 }
-.chip.active{ background:var(--lavender); color:#fff; }
-
-.listen-stats{ display:flex; gap:12px; margin-top:10px; }
-.stat{
-  flex:1;
-  background:rgba(255,255,255,0.85);
-  border-radius:18px;
-  padding:12px;
-  box-shadow:var(--shadow);
-  text-align:center;
-  border:1px solid rgba(184,166,217,0.18);
-}
-.stat-num{ font-weight:900; font-size:22px; color:#5a4b7a; }
-.stat-label{ font-size:12px; color:rgba(90,75,122,0.65); margin-top:4px; }
-
-@media (max-width:380px){
-  .palette-grid{ grid-template-columns:repeat(7,1fr); }
-  .bottom-nav .nav-ico{ font-size:17px; }
+.quote-save-btn:active{ transform:scale(0.99); }
+.quote-save-btn.saved{
+  background: var(--lavender);
+  color:#fff;
 }
