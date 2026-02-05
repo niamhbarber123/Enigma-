@@ -9,13 +9,12 @@
   <link rel="apple-touch-icon-precomposed" href="/Enigma-/apple-touch-icon.png">
   <link rel="icon" type="image/png" href="/Enigma-/icon.png">
   <link rel="manifest" href="/Enigma-/manifest.json">
-
   <meta name="apple-mobile-web-app-title" content="Enigma">
   <meta name="application-name" content="Enigma">
   <meta name="theme-color" content="#b8a6d9">
   <meta name="apple-mobile-web-app-capable" content="yes">
 
-  <link rel="stylesheet" href="/Enigma-/style.css?v=60">
+  <link rel="stylesheet" href="/Enigma-/style.css?v=200">
 </head>
 
 <body class="page-wrap">
@@ -28,14 +27,12 @@
   <main class="page">
 
     <div class="card">
-      <div style="font-weight:900; color:#5a4b7a; margin-bottom:8px;">In immediate danger</div>
-      <div style="color:#4a4458;">
-        If you or someone else is in immediate danger, call <b>999</b>.
-      </div>
+      <div style="font-weight:800; color:#5a4b7a; margin-bottom:8px;">In immediate danger</div>
+      <div>If you or someone else is in immediate danger, call <b>999</b>.</div>
     </div>
 
     <div class="card">
-      <div style="font-weight:900; color:#5a4b7a; margin-bottom:8px;">24/7 support (UK)</div>
+      <div style="font-weight:800; color:#5a4b7a; margin-bottom:8px;">24/7 support (UK)</div>
 
       <div style="margin-bottom:12px;">
         <b>Samaritans</b><br>
@@ -45,47 +42,29 @@
 
       <div style="margin-bottom:12px;">
         <b>NHS 111</b><br>
-        Call: <b>111</b> (urgent medical advice)<br>
+        Call: <b>111</b><br>
         Website: <a href="https://111.nhs.uk/" target="_blank" rel="noopener noreferrer">111.nhs.uk</a>
       </div>
 
       <div style="margin-bottom:12px;">
         <b>Shout (text support)</b><br>
-        Text: <b>SHOUT</b> to <b>85258</b> (free, 24/7)<br>
+        Text <b>SHOUT</b> to <b>85258</b> (free, 24/7)<br>
         Website: <a href="https://giveusashout.org/" target="_blank" rel="noopener noreferrer">giveusashout.org</a>
       </div>
     </div>
 
     <div class="card">
-      <div style="font-weight:900; color:#5a4b7a; margin-bottom:8px;">Mental health information</div>
-
-      <div style="margin-bottom:12px;">
-        <b>Mind</b><br>
-        Website: <a href="https://www.mind.org.uk/" target="_blank" rel="noopener noreferrer">mind.org.uk</a>
-      </div>
-
-      <div style="margin-bottom:12px;">
-        <b>NHS Mental health</b><br>
-        Website: <a href="https://www.nhs.uk/mental-health/" target="_blank" rel="noopener noreferrer">nhs.uk/mental-health</a>
-      </div>
-
-      <div>
-        <b>Rethink Mental Illness</b><br>
-        Website: <a href="https://www.rethink.org/" target="_blank" rel="noopener noreferrer">rethink.org</a>
-      </div>
+      <div style="font-weight:800; color:#5a4b7a; margin-bottom:8px;">Information & guidance</div>
+      <div style="margin-bottom:10px;"><b>Mind</b> — <a href="https://www.mind.org.uk/" target="_blank" rel="noopener noreferrer">mind.org.uk</a></div>
+      <div style="margin-bottom:10px;"><b>NHS mental health</b> — <a href="https://www.nhs.uk/mental-health/" target="_blank" rel="noopener noreferrer">nhs.uk/mental-health</a></div>
+      <div><b>Rethink</b> — <a href="https://www.rethink.org/" target="_blank" rel="noopener noreferrer">rethink.org</a></div>
     </div>
 
     <div class="card">
-      <div style="font-weight:900; color:#5a4b7a; margin-bottom:8px;">A small grounding step</div>
-      <div style="color:#4a4458;">
-        Try this: breathe in for 4, hold for 2, out for 4.  
-        Or open <b>Breathe</b> in Enigma.
-      </div>
+      <div style="font-weight:800; color:#5a4b7a; margin-bottom:8px;">A small grounding step</div>
+      <div>Try: in for 4, hold for 2, out for 4. Or open <b>Breathe</b> in Enigma.</div>
       <div style="height:12px;"></div>
-      <a class="home-tile" style="min-height:64px;" href="/Enigma-/breathe.html">
-        <div class="tile-emoji">🌬️</div>
-        <div class="tile-text">Go to Breathe</div>
-      </a>
+      <a class="primary" style="display:block; text-align:center; text-decoration:none;" href="/Enigma-/breathe.html">Go to Breathe</a>
     </div>
 
   </main>
@@ -97,6 +76,8 @@
     <a href="/Enigma-/checkin.html"><div class="nav-ico">🌿</div><span>Check-in</span></a>
     <a href="/Enigma-/progress.html"><div class="nav-ico">📊</div><span>Progress</span></a>
     <a class="active" href="/Enigma-/help.html"><div class="nav-ico">🆘</div><span>Help</span></a>
+
+    <button id="themeFab" class="theme-fab" onclick="toggleTheme()" aria-label="Toggle night mode">🌙</button>
   </nav>
 
   <script src="/Enigma-/app.js"></script>
