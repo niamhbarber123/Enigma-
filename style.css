@@ -733,3 +733,21 @@ body.home .home-hero{ height:min(480px, 84vw); }
   background: var(--lavender);
   color:#fff;
 }
+/* =========================
+   BREATHE – animation classes (required)
+========================= */
+.breathe-ring{ overflow: visible !important; }
+
+.breathe-circle{
+  width: 150px;
+  height: 150px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.92), rgba(124,96,170,0.60));
+  box-shadow: inset 0 18px 36px rgba(0,0,0,0.08), 0 18px 38px rgba(90,75,122,0.18);
+  transform: scale(0.86);
+  transition: transform 4s ease-in-out;
+  will-change: transform;
+}
+
+.breathe-circle.inhale{ transform: scale(1.16); }
+.breathe-circle.exhale{ transform: scale(0.82); }
