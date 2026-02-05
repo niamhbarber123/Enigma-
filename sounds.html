@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sounds • Enigma</title>
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/Enigma-/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/Enigma-/icon-192.png">
+  <link rel="manifest" href="/Enigma-/manifest.json">
+  <meta name="theme-color" content="#b8a6d9">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Enigma">
+
+  <link rel="stylesheet" href="/Enigma-/style.css?v=502" />
+</head>
+
+<body class="page-wrap">
+  <header class="page-header">
+    <button class="back-btn" type="button" onclick="enigmaBack()">←</button>
+    <h1>Sounds</h1>
+    <p>Play a gentle background sound</p>
+  </header>
+
+  <main class="page">
+    <div class="card">
+      <div style="font-weight:900; color:#5a4b7a; margin-bottom:10px;">Volume</div>
+      <input id="soundVol" type="range" min="0" max="1" step="0.01" oninput="setSoundVolume(this.value)">
+      <div class="gentle-text">Status: <span id="soundStatus">Not playing</span></div>
+    </div>
+
+    <div class="card">
+      <div style="font-weight:900; color:#5a4b7a; margin-bottom:12px;">Choose a sound</div>
+
+      <div class="sound-row">
+        <button class="primary" type="button" onclick="playSound('/Enigma-/audio/rain.mp3')">🌧 Rain</button>
+        <button class="primary" type="button" style="background:#f4c2c2;color:#5a4b7a;" onclick="stopSound()">Stop</button>
+      </div>
+
+      <div style="height:10px;"></div>
+
+      <div class="sound-row">
+        <button class="primary" type="button" onclick="playSound('/Enigma-/audio/ocean.mp3')">🌊 Ocean</button>
+        <button class="primary" type="button" onclick="playSound('/Enigma-/audio/forest.mp3')">🌿 Forest</button>
+      </div>
+
+      <div style="height:12px;"></div>
+      <div class="gentle-text">
+        Upload MP3 files into a folder called <b>audio</b>: <b>rain.mp3</b>, <b>ocean.mp3</b>, <b>forest.mp3</b>
+      </div>
+    </div>
+  </main>
+
+  <nav class="bottom-nav">
+    <a href="/Enigma-/index.html"><div class="nav-ico">🏠</div><span>Home</span></a>
+    <a href="/Enigma-/breathe.html"><div class="nav-ico">🌬️</div><span>Breathe</span></a>
+    <a href="/Enigma-/journal.html"><div class="nav-ico">📖</div><span>Journal</span></a>
+    <a href="/Enigma-/quotes.html"><div class="nav-ico">💬</div><span>Quotes</span></a>
+    <a href="/Enigma-/game.html"><div class="nav-ico">🎨</div><span>Colour</span></a>
+    <a class="active" href="/Enigma-/sounds.html"><div class="nav-ico">🎧</div><span>Sounds</span></a>
+
+    <button id="themeFab" class="theme-fab" type="button" aria-label="Toggle night mode">🌙</button>
+  </nav>
+
+  <script src="/Enigma-/app.js?v=502"></script>
+</body>
+</html>
