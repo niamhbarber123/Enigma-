@@ -1,305 +1,401 @@
 /* =========================
-   Helpers
+   Tap-to-Colour (Colour-by-Number + designs)
+   Requires these elements on game.html:
+   - #designGrid, #palette, #grid, #saveMsg
+   - #modeNumberBtn, #modeFreeBtn
 ========================= */
-function isoToday(){ return new Date().toISOString().split("T")[0]; }
-function escapeHtml(str){
-  return (str || "")
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;");
+
+const ENIGMA_GAME_KEY = "enigmaColourGameV3";
+let enigmaColourMode = "number";     // "number" or "free"
+let enigmaCurrentDesign = "mandala"; // design id
+let enigmaSelectedColour = "#d9d2ff";
+let enigmaSelectedNumber = 1;
+let enigmaUndoStack = [];
+
+/* 16 calming colours */
+const ENIGMA_COLOURS = [
+  { n: 1,  c: "#d9d2ff" }, { n: 2,  c: "#b8a6d9" }, { n: 3,  c: "#efe9f8" }, { n: 4,  c: "#b8e0d2" },
+  { n: 5,  c: "#8fcfbf" }, { n: 6,  c: "#a8d8ff" }, { n: 7,  c: "#7fb5e6" }, { n: 8,  c: "#ffd5c7" },
+  { n: 9,  c: "#f4c2c2" }, { n: 10, c: "#ffeaa6" }, { n: 11, c: "#d6c9ef" }, { n: 12, c: "#cfd9d6" },
+  { n: 13, c: "#ffffff" }, { n: 14, c: "#f2eff8" }, { n: 15, c: "#cbbfff" }, { n: 16, c: "#9ad0d6" }
+];
+
+/* ---- Designs (14x14 templates; 0 = blank, 1..16 = numbers) ---- */
+const designs = [
+  { id: "mandala",  name: "Mandala",   desc: "Balanced calm",   template: tplMandala() },
+  { id: "flower",   name: "Flower",    desc: "Soft petals",     template: tplFlower() },
+  { id: "butterfly",name: "Butterfly", desc: "Light & hopeful", template: tplButterfly() },
+  { id: "waves",    name: "Waves",     desc: "Flow gently",     template: tplWaves() },
+  { id: "heart",    name: "Heart",     desc: "Self kindness",   template: tplHeart() },
+  { id: "sunrise",  name: "Sunrise",   desc: "New start",       template: tplSunrise() }
+];
+
+/* ---- Storage helpers ---- */
+function getGameData(){
+  return JSON.parse(localStorage.getItem(ENIGMA_GAME_KEY) || "{}");
+}
+function setGameData(data){
+  localStorage.setItem(ENIGMA_GAME_KEY, JSON.stringify(data));
+}
+function getDesignSave(){
+  const data = getGameData();
+  return data[enigmaCurrentDesign] || {};
+}
+function setDesignSave(saveObj){
+  const data = getGameData();
+  data[enigmaCurrentDesign] = saveObj;
+  setGameData(data);
+}
+function setSaveMsg(msg){
+  const el = document.getElementById("saveMsg");
+  if (el) el.textContent = msg;
 }
 
-/* =========================
-   Night mode
-========================= */
-function applyThemeFromStorage(){
-  const saved = localStorage.getItem("enigmaTheme"); // "night" | "day" | null
-  const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-  const useNight = saved ? (saved === "night") : prefersDark;
-  document.body.classList.toggle("night", useNight);
-  updateThemeIcon();
-}
+/* ---- Mode switching ---- */
+function setColourMode(mode){
+  enigmaColourMode = mode;
+  localStorage.setItem("enigmaColourMode", mode);
 
-function toggleTheme(){
-  const isNight = document.body.classList.toggle("night");
-  localStorage.setItem("enigmaTheme", isNight ? "night" : "day");
-  updateThemeIcon();
-}
-
-function updateThemeIcon(){
-  const btn = document.getElementById("themeFab");
-  if (!btn) return;
-  btn.textContent = document.body.classList.contains("night") ? "☀️" : "🌙";
-}
-
-/* =========================
-   Breathe (sync wording to animation)
-========================= */
-let __breathTimers = [];
-function clearBreathTimers(){
-  __breathTimers.forEach(t => clearTimeout(t));
-  __breathTimers = [];
-}
-function setBreathText(text){
-  const el = document.getElementById("breathText");
-  if (el) el.textContent = text;
-}
-function startBreathingSynced(){
-  const circle = document.querySelector(".breathe-circle");
-  const textEl = document.getElementById("breathText");
-  if (!circle || !textEl) return;
-
-  function scheduleCycle(){
-    clearBreathTimers();
-    setBreathText("Inhale");
-    __breathTimers.push(setTimeout(() => setBreathText("Hold"), 4000));
-    __breathTimers.push(setTimeout(() => setBreathText("Exhale"), 6000));
+  const nb = document.getElementById("modeNumberBtn");
+  const fb = document.getElementById("modeFreeBtn");
+  if (nb && fb){
+    nb.classList.toggle("active", mode === "number");
+    fb.classList.toggle("active", mode === "free");
   }
 
-  scheduleCycle();
-  circle.addEventListener("animationiteration", scheduleCycle);
-  document.addEventListener("visibilitychange", () => {
-    if (!document.hidden) scheduleCycle();
+  setSaveMsg(
+    mode === "number"
+      ? "Colour-by-number: pick a number, then tap matching tiles."
+      : "Free colour: pick any colour and tap tiles."
+  );
+
+  renderColourBoard();
+}
+
+/* ---- Init ---- */
+function initColourGame(){
+  const grid = document.getElementById("grid");
+  const palette = document.getElementById("palette");
+  const designGrid = document.getElementById("designGrid");
+  if (!grid || !palette || !designGrid) return;
+
+  // Restore last design + mode
+  const lastDesign = localStorage.getItem("enigmaLastDesignV3");
+  if (lastDesign && designs.some(d => d.id === lastDesign)) enigmaCurrentDesign = lastDesign;
+
+  const lastMode = localStorage.getItem("enigmaColourMode");
+  if (lastMode === "free" || lastMode === "number") enigmaColourMode = lastMode;
+
+  // Build palette
+  palette.innerHTML = "";
+  ENIGMA_COLOURS.forEach((item, idx) => {
+    const chip = document.createElement("div");
+    chip.className = "palette-chip" + (idx === 0 ? " active" : "");
+    chip.style.background = item.c;
+
+    const num = document.createElement("div");
+    num.className = "palette-num";
+    num.textContent = String(item.n);
+    chip.appendChild(num);
+
+    chip.addEventListener("click", () => {
+      document.querySelectorAll(".palette-chip").forEach(c => c.classList.remove("active"));
+      chip.classList.add("active");
+      enigmaSelectedColour = item.c;
+      enigmaSelectedNumber = item.n;
+
+      if (enigmaColourMode === "number"){
+        setSaveMsg(`Selected number ${item.n}. Tap tiles showing ${item.n}.`);
+      } else {
+        setSaveMsg(`Selected colour.`);
+      }
+    });
+
+    palette.appendChild(chip);
   });
+
+  // Build designs picker with small preview
+  designGrid.innerHTML = "";
+  designs.forEach(d => {
+    const tile = document.createElement("div");
+    tile.className = "design-tile" + (d.id === enigmaCurrentDesign ? " active" : "");
+
+    const prev = document.createElement("div");
+    prev.className = "design-preview";
+
+    const flat = d.template.flat();
+    for (let i = 0; i < 100; i++){
+      const dot = document.createElement("div");
+      const v = flat[Math.floor((i / 100) * flat.length)] || 0;
+      dot.className = "preview-dot" + (v === 0 ? " off" : "");
+      prev.appendChild(dot);
+    }
+
+    const txt = document.createElement("div");
+    txt.innerHTML = `<div class="design-title">${d.name}</div><div class="design-sub">${d.desc}</div>`;
+
+    tile.appendChild(prev);
+    tile.appendChild(txt);
+
+    tile.addEventListener("click", () => {
+      enigmaCurrentDesign = d.id;
+      localStorage.setItem("enigmaLastDesignV3", d.id);
+      document.querySelectorAll(".design-tile").forEach(t => t.classList.remove("active"));
+      tile.classList.add("active");
+      enigmaUndoStack = [];
+      renderColourBoard();
+      setSaveMsg("Design loaded ✨");
+    });
+
+    designGrid.appendChild(tile);
+  });
+
+  // Mode buttons reflect current mode
+  document.getElementById("modeNumberBtn")?.classList.toggle("active", enigmaColourMode === "number");
+  document.getElementById("modeFreeBtn")?.classList.toggle("active", enigmaColourMode === "free");
+
+  renderColourBoard();
+  setSaveMsg(enigmaColourMode === "number"
+    ? "Colour-by-number: pick a number, then tap matching tiles."
+    : "Free colour: pick any colour and tap tiles."
+  );
 }
 
-function completeBreathe(){
-  localStorage.setItem("enigmaBreatheDone", isoToday());
-  alert("Well done 🌬️ Take that calm with you.");
+/* ---- Render board ---- */
+function renderColourBoard(){
+  const grid = document.getElementById("grid");
+  if (!grid) return;
+
+  const design = designs.find(d => d.id === enigmaCurrentDesign);
+  const tpl = design ? design.template : blankTemplate();
+  const save = getDesignSave(); // key "r,c" -> colour
+
+  grid.innerHTML = "";
+  for (let r = 0; r < 14; r++){
+    for (let c = 0; c < 14; c++){
+      const key = `${r},${c}`;
+      const number = tpl[r][c];
+
+      const cell = document.createElement("div");
+      cell.className = "cell";
+
+      // blank spaces
+      if (number === 0){
+        cell.style.background = "transparent";
+        cell.style.boxShadow = "none";
+        cell.style.pointerEvents = "none";
+        grid.appendChild(cell);
+        continue;
+      }
+
+      // apply saved colour
+      if (save[key]){
+        cell.style.background = save[key];
+        cell.classList.add("filled");
+      }
+
+      // number label
+      const label = document.createElement("div");
+      label.className = "num";
+      label.textContent = String(number);
+      cell.appendChild(label);
+
+      cell.addEventListener("click", () => {
+        const prev = save[key] || "";
+        enigmaUndoStack.push({ key, prev });
+
+        // In number mode, only allow filling matching numbers
+        if (enigmaColourMode === "number" && number !== enigmaSelectedNumber){
+          setSaveMsg(`That tile is ${number}. Select colour ${number} to fill it.`);
+          return;
+        }
+
+        // fill or erase depending on selected colour
+        const newColour = enigmaSelectedColour || "";
+        if (newColour){
+          save[key] = newColour;
+          cell.style.background = newColour;
+          cell.classList.add("filled");
+        } else {
+          delete save[key];
+          cell.style.background = "";
+          cell.classList.remove("filled");
+        }
+
+        setDesignSave(save);
+      });
+
+      grid.appendChild(cell);
+    }
+  }
 }
 
-/* =========================
-   Quotes: select/deselect (toggle) + saved list
-========================= */
-function getSavedQuotes(){
-  return JSON.parse(localStorage.getItem("enigmaSavedQuotes") || "[]");
-}
-function setSavedQuotes(arr){
-  localStorage.setItem("enigmaSavedQuotes", JSON.stringify(arr));
-}
+/* ---- Tools ---- */
+function enigmaUndo(){
+  const last = enigmaUndoStack.pop();
+  if (!last) return;
 
-function toggleQuote(tile){
-  const text = tile.getAttribute("data-quote");
-  const author = tile.getAttribute("data-author");
-  const item = `${text} — ${author}`;
-
-  let saved = getSavedQuotes();
-  if (saved.includes(item)){
-    saved = saved.filter(x => x !== item);
-    setSavedQuotes(saved);
-    tile.classList.remove("saved");
+  const save = getDesignSave();
+  if (last.prev){
+    save[last.key] = last.prev;
   } else {
-    saved.push(item);
-    setSavedQuotes(saved);
-    tile.classList.add("saved");
+    delete save[last.key];
   }
+  setDesignSave(save);
+  renderColourBoard();
+  setSaveMsg("Undone ↩︎");
 }
 
-function deleteSavedQuote(item){
-  let saved = getSavedQuotes();
-  saved = saved.filter(x => x !== item);
-  setSavedQuotes(saved);
-  renderSavedQuotes();
+function enigmaEraser(){
+  enigmaSelectedColour = "";
+  setSaveMsg("Eraser selected 🧼 Tap a tile to clear it.");
 }
 
-function clearAllSavedQuotes(){
-  if (!confirm("Clear all saved quotes?")) return;
-  setSavedQuotes([]);
-  renderSavedQuotes();
+function enigmaClear(){
+  if (!confirm("Clear this design?")) return;
+  setDesignSave({});
+  enigmaUndoStack = [];
+  renderColourBoard();
+  setSaveMsg("Cleared ✨");
 }
 
-function renderSavedQuotes(){
-  const list = document.getElementById("savedQuotesList");
-  if (!list) return;
+function markColouringComplete(){
+  localStorage.setItem("enigmaColourComplete", new Date().toISOString());
+  setSaveMsg("Completed 🎉 Well done — take a calm breath.");
+}
 
-  const items = getSavedQuotes();
-  list.innerHTML = "";
+/* ---- Templates ---- */
+function blankTemplate(){
+  return Array.from({ length: 14 }, () => Array.from({ length: 14 }, () => 0));
+}
 
-  if (items.length === 0){
-    const div = document.createElement("div");
-    div.className = "card";
-    div.textContent = "No saved quotes yet 💜";
-    list.appendChild(div);
-    return;
+/* A ring-ish base for mandala style */
+function ringTemplate(){
+  const t = blankTemplate();
+  const cx = 6.5, cy = 6.5;
+  for (let r = 0; r < 14; r++){
+    for (let c = 0; c < 14; c++){
+      const dx = r - cx, dy = c - cy;
+      const d = Math.sqrt(dx*dx + dy*dy);
+      if (d < 6.6 && d > 1.8){
+        const band = Math.max(1, Math.min(8, Math.floor(d)));
+        t[r][c] = band;
+      }
+    }
   }
-
-  const top = document.createElement("div");
-  top.className = "card";
-  top.innerHTML = `
-    <div style="font-weight:800; color:#5a4b7a;">Saved quotes</div>
-    <div style="height:10px;"></div>
-    <button class="primary" style="background:#f4c2c2; color:#5a4b7a;" onclick="clearAllSavedQuotes()">Clear all</button>
-  `;
-  list.appendChild(top);
-
-  items.forEach(q => {
-    const div = document.createElement("div");
-    div.className = "card";
-    div.innerHTML = `
-      <div style="white-space:pre-wrap;">${escapeHtml(q)}</div>
-      <div style="height:10px;"></div>
-      <button class="primary" style="background:#ffeaa6; color:#5a4b7a;" onclick='deleteSavedQuote(${JSON.stringify(q)})'>Delete</button>
-    `;
-    list.appendChild(div);
-  });
+  return t;
 }
 
-/* =========================
-   Journal
-========================= */
-function getJournalEntries(){
-  return JSON.parse(localStorage.getItem("enigmaJournalEntries") || "[]");
-}
-
-function saveJournalEntry(){
-  const textEl = document.getElementById("journalText");
-  const msgEl = document.getElementById("journalMsg");
-  if (!textEl) return;
-
-  const text = textEl.value.trim();
-  if (!text){
-    if (msgEl) msgEl.textContent = "Write a little first 💜";
-    return;
+function tplMandala(){
+  const t = ringTemplate();
+  for (let r=0;r<14;r++){
+    for (let c=0;c<14;c++){
+      if (t[r][c] !== 0){
+        if ((r+c) % 4 === 0) t[r][c] = 11;
+        if ((r*c) % 11 === 0) t[r][c] = 2;
+      }
+    }
   }
-
-  const entries = getJournalEntries();
-  entries.unshift({ date: new Date().toLocaleString(), text });
-
-  localStorage.setItem("enigmaJournalEntries", JSON.stringify(entries));
-  textEl.value = "";
-  if (msgEl) msgEl.textContent = "Saved ✨";
-  renderJournal();
-}
-
-function deleteJournalEntry(index){
-  const entries = getJournalEntries();
-  entries.splice(index, 1);
-  localStorage.setItem("enigmaJournalEntries", JSON.stringify(entries));
-  renderJournal();
-}
-
-function renderJournal(){
-  const list = document.getElementById("journalList");
-  if (!list) return;
-
-  const entries = getJournalEntries();
-  list.innerHTML = "";
-
-  if (entries.length === 0){
-    const empty = document.createElement("div");
-    empty.className = "card";
-    empty.textContent = "No entries yet. Your words are safe here 💜";
-    list.appendChild(empty);
-    return;
+  // center block
+  for (let r=5;r<=8;r++){
+    for (let c=5;c<=8;c++){
+      t[r][c] = 3;
+    }
   }
-
-  entries.forEach((e, i) => {
-    const card = document.createElement("div");
-    card.className = "card";
-    card.innerHTML = `
-      <div style="font-weight:800; margin-bottom:8px; color:#5a4b7a;">${escapeHtml(e.date)}</div>
-      <div style="white-space:pre-wrap;">${escapeHtml(e.text)}</div>
-      <div style="height:10px;"></div>
-      <button class="primary" style="background:#f4c2c2; color:#5a4b7a;" onclick="deleteJournalEntry(${i})">Delete</button>
-    `;
-    list.appendChild(card);
-  });
+  return t;
 }
 
-/* =========================
-   Check-in + streak
-========================= */
-function pickMood(btn, mood){
-  window.__enigmaMood = mood;
-  document.querySelectorAll(".mood-btn").forEach(b => b.classList.remove("active"));
-  btn.classList.add("active");
-}
-
-function saveCheckin(){
-  const mood = window.__enigmaMood || "";
-  const note = document.getElementById("checkinNote")?.value || "";
-  if (!mood){ alert("Please choose how you're feeling 💜"); return; }
-
-  const today = isoToday();
-  const lastDate = localStorage.getItem("enigmaLastCheckinDate");
-  let streak = parseInt(localStorage.getItem("enigmaStreak") || "0", 10);
-
-  const y = new Date(); y.setDate(y.getDate() - 1);
-  const yesterday = y.toISOString().split("T")[0];
-
-  if (lastDate !== today){
-    streak = (lastDate === yesterday) ? streak + 1 : 1;
-    localStorage.setItem("enigmaStreak", String(streak));
-    localStorage.setItem("enigmaLastCheckinDate", today);
+function tplFlower(){
+  const t = blankTemplate();
+  const cx=6.5, cy=6.5;
+  for (let r=0;r<14;r++){
+    for (let c=0;c<14;c++){
+      const dx=r-cx, dy=c-cy;
+      const d=Math.sqrt(dx*dx+dy*dy);
+      if (d < 6.2){
+        if (d < 2.2) t[r][c] = 10;                     // center
+        else if (Math.abs(dx*dy) < 6) t[r][c] = 1;      // petal lines
+        else t[r][c] = 11;                               // background
+      }
+    }
   }
-
-  localStorage.setItem("enigmaDailyMood", mood);
-  localStorage.setItem("enigmaDailyNote", note);
-
-  const msg = document.getElementById("checkinSavedMsg");
-  if (msg) msg.textContent = `Saved 🌿 Streak: ${streak} day(s)`;
+  return t;
 }
 
-function getRecommendation(){
-  const mood = localStorage.getItem("enigmaDailyMood") || "";
-  if (mood === "calm") return "🧘 Gentle yoga or a short walk could feel lovely today.";
-  if (mood === "okay") return "💬 Read a quote that resonates.";
-  if (mood === "low") return "🌬️ Try a slow breathing session.";
-  if (mood === "anxious") return "🎨 Tap-to-colour can help ground you.";
-  return "🌱 Try a daily check-in to get gentle suggestions.";
+function tplButterfly(){
+  const t = blankTemplate();
+  for (let r=2;r<12;r++){
+    for (let c=1;c<13;c++){
+      const left = c < 7;
+      const wing = left ? (7-c) : (c-6);
+      const height = Math.abs(r-6.5);
+      if (wing >= 1 && wing <= 5 && height <= 4.8){
+        if (wing >= 4) t[r][c] = 6;
+        else if (height < 1.2) t[r][c] = 8;
+        else t[r][c] = 4;
+      }
+    }
+  }
+  // body
+  for (let r=3;r<11;r++){
+    t[r][6] = 12;
+    t[r][7] = 12;
+  }
+  return t;
 }
 
-/* =========================
-   Progress
-========================= */
-function populateProgress(){
-  const moodEl = document.getElementById("pMood");
-  const streakEl = document.getElementById("pStreak");
-  const recEl = document.getElementById("pRec");
-  const favEl = document.getElementById("pFavCount");
-  const breatheEl = document.getElementById("pBreathe");
-
-  if (moodEl) moodEl.textContent = localStorage.getItem("enigmaDailyMood") || "Not checked in yet";
-  if (streakEl) streakEl.textContent = localStorage.getItem("enigmaStreak") || "0";
-  if (recEl) recEl.textContent = getRecommendation();
-  if (favEl) favEl.textContent = String(getSavedQuotes().length);
-
-  const breatheDone = localStorage.getItem("enigmaBreatheDone");
-  if (breatheEl) breatheEl.textContent = (breatheDone === isoToday()) ? "Yes 🌬️" : "Not today yet";
+function tplWaves(){
+  const t = blankTemplate();
+  for (let r=2;r<12;r++){
+    for (let c=1;c<13;c++){
+      const wave = 6 + 2*Math.sin((c/12)*Math.PI*2);
+      if (Math.abs(r - wave) < 1.2) t[r][c] = 16;      // crest
+      if (r > wave && r < wave+3) t[r][c] = 6;         // mid
+      if (r >= wave+3) t[r][c] = 7;                    // deep
+    }
+  }
+  return t;
 }
 
-/* =========================
-   Tap-to-colour game init hook
-   IMPORTANT:
-   - If you already pasted the full colour-by-number game logic earlier (initColourGame etc.),
-     it will run.
-   - If not, the page will still load, but game grid won’t render.
-========================= */
-function safeInitColourGame(){
-  try {
-    if (typeof initColourGame === "function") initColourGame();
-  } catch(e) {}
+function tplHeart(){
+  const t = blankTemplate();
+  for (let r=2;r<12;r++){
+    for (let c=1;c<13;c++){
+      const x = (c-6.5)/6;
+      const y = (r-6.5)/6;
+      const a = x*x + y*y - 0.3;
+      const heart = a*a*a - x*x*y*y*y;
+      if (heart <= 0){
+        t[r][c] = (r < 6) ? 9 : 8;
+      }
+    }
+  }
+  return t;
 }
 
-/* =========================
-   Boot
-========================= */
-document.addEventListener("DOMContentLoaded", () => {
-  applyThemeFromStorage();
-
-  // Ensure moon icon correct on load
-  updateThemeIcon();
-
-  // Mark saved quote tiles (quotes page)
-  const saved = getSavedQuotes();
-  document.querySelectorAll(".quote-tile").forEach(tile => {
-    const item = `${tile.getAttribute("data-quote")} — ${tile.getAttribute("data-author")}`;
-    if (saved.includes(item)) tile.classList.add("saved");
-  });
-
-  renderSavedQuotes();
-  renderJournal();
-  populateProgress();
-  startBreathingSynced();
-  safeInitColourGame();
-});
+function tplSunrise(){
+  const t = blankTemplate();
+  for (let r=1;r<13;r++){
+    for (let c=1;c<13;c++){
+      if (r > 8) t[r][c] = 7;       // horizon
+      else t[r][c] = 14;            // sky
+    }
+  }
+  const cx=6.5, cy=8.5;
+  for (let r=2;r<12;r++){
+    for (let c=1;c<13;c++){
+      const dx=r-cx, dy=c-cy;
+      const d=Math.sqrt(dx*dx+dy*dy);
+      if (d < 3.2 && r <= 8){
+        t[r][c] = 10;               // sun
+      }
+    }
+  }
+  for (let r=2;r<9;r++){
+    for (let c=1;c<13;c++){
+      if (t[r][c] === 14 && Math.abs(c-6.5) < 4) t[r][c] = 3;   // glow
+      if (t[r][c] === 14 && Math.abs(c-6.5) < 2) t[r][c] = 11;  // inner glow
+    }
+  }
+  return t;
+}
