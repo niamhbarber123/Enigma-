@@ -432,3 +432,50 @@ body.night .back-btn{
 @media (max-width:380px){
   .page-header h1{ font-size:24px; }
 }
+/* ===============================
+   Bottom nav: smaller icons/labels
+   (paste at END of style.css)
+================================ */
+
+.bottom-nav{
+  padding: 8px 0 12px;            /* less vertical padding */
+  gap: 0;                          /* tighter */
+}
+
+.bottom-nav a{
+  font-size: 10px;                 /* smaller label text */
+  gap: 3px;                        /* less space between icon + label */
+  min-width: 44px;                 /* still thumb-friendly */
+}
+
+.bottom-nav a span{
+  font-size: 10px;
+  line-height: 1;
+  letter-spacing: 0.2px;
+}
+
+.nav-ico{
+  font-size: 16px;                 /* smaller emoji icon */
+  line-height: 1;
+}
+
+/* Make each nav item take equal space */
+.bottom-nav a{
+  flex: 1;
+}
+
+/* Keep the moon button from covering the last tab */
+.theme-fab{
+  right: 6px;
+  bottom: 8px;
+  width: 36px;
+  height: 36px;
+  font-size: 16px;
+}
+
+/* On very small screens, shrink a touch more */
+@media (max-width: 380px){
+  .nav-ico{ font-size: 15px; }
+  .bottom-nav a, .bottom-nav a span{ font-size: 9px; }
+  .theme-fab{ width: 34px; height: 34px; font-size: 15px; }
+}
