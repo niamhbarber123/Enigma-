@@ -4,112 +4,71 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sounds • Enigma</title>
-
-  <link rel="stylesheet" href="/Enigma-/style.css?v=8001">
+  <link rel="stylesheet" href="style.css" />
+  <script defer src="app.js"></script>
 </head>
 
-<body class="page-wrap">
-  <button id="themeFab" class="theme-toggle-top" type="button" aria-label="Toggle night mode">🌙</button>
+<body>
+  <!-- Back -->
+  <button class="back-btn" onclick="enigmaBack()">←</button>
 
-  <header class="page-header">
-    <button class="back-btn" type="button" onclick="enigmaBack()" aria-label="Back">←</button>
-    <h1>Sounds</h1>
-    <p>Play a gentle background sound</p>
-  </header>
+  <!-- Night mode -->
+  <button id="themeFab" class="theme-fab">🌙</button>
 
   <main class="page">
-    <div class="card">
-      <div class="section-title">Volume</div>
-      <input id="soundVol" type="range" min="0" max="1" step="0.01" value="0.6" />
-      <div class="gentle-text">Status: <span id="soundStatus">Not playing</span></div>
-      <div class="gentle-text">Tip: Tap a sound once to start (iPhone rule).</div>
-    </div>
+    <h1>Calming music</h1>
+    <p class="subtitle">Tap a sound to open calming music</p>
 
     <div class="card">
-      <div class="section-title">Choose a sound</div>
+      <div class="sound-links">
 
-      <div class="tool-row">
-        <button class="tool-btn primary" type="button" data-sound="rain">🌧 Rain</button>
-        <button class="tool-btn danger" type="button" id="stopBtn">Stop</button>
+        <a class="sound-link" target="_blank"
+          href="https://open.spotify.com/playlist/37i9dQZF1DX3rxVfibe1L0">
+          🌧️ Rain sounds
+        </a>
+
+        <a class="sound-link" target="_blank"
+          href="https://open.spotify.com/playlist/37i9dQZF1DWU0ScTcjJBdj">
+          🌊 Ocean waves
+        </a>
+
+        <a class="sound-link" target="_blank"
+          href="https://open.spotify.com/playlist/37i9dQZF1DWZqd5JICZI0u">
+          🌲 Forest ambience
+        </a>
+
+        <a class="sound-link" target="_blank"
+          href="https://www.youtube.com/watch?v=2OEL4P1Rz04">
+          🔔 Meditation bells
+        </a>
+
+        <a class="sound-link" target="_blank"
+          href="https://www.youtube.com/watch?v=nmFUDkj1Aq0">
+          🔥 Fireplace crackle
+        </a>
+
+        <a class="sound-link" target="_blank"
+          href="https://www.youtube.com/watch?v=q76bMs-NwRk">
+          🎶 Piano for anxiety
+        </a>
+
       </div>
 
-      <div class="tool-row">
-        <button class="tool-btn" type="button" data-sound="ocean">🌊 Ocean</button>
-        <button class="tool-btn" type="button" data-sound="forest">🌿 Forest</button>
-      </div>
-
-      <div class="tool-row">
-        <button class="tool-btn" type="button" data-sound="fireplace">🔥 Fireplace</button>
-        <button class="tool-btn" type="button" data-sound="wind">🌬 Wind</button>
-      </div>
-
-      <div class="tool-row">
-        <button class="tool-btn" type="button" data-sound="white">⚪ White noise</button>
-        <button class="tool-btn" type="button" data-sound="pink">🌸 Pink noise</button>
-      </div>
-
-      <div class="tool-row">
-        <button class="tool-btn" type="button" data-sound="chimes">🔔 Chimes</button>
-        <button class="tool-btn" type="button" data-sound="meditation">🧘 Meditation</button>
-      </div>
-
-      <div class="gentle-text" style="margin-top:10px;">
-        MP3s optional. If you add MP3s later, put them in <b>/audio/</b> as rain.mp3, ocean.mp3 etc.
-      </div>
+      <p class="hint">
+        Music opens in a new tab (iPhone-friendly).
+      </p>
     </div>
   </main>
 
+  <!-- Bottom nav -->
   <nav class="bottom-nav">
-    <a href="/Enigma-/index.html"><div class="nav-ico">🏠</div><span>Home</span></a>
-    <a href="/Enigma-/breathe.html"><div class="nav-ico">🌬️</div><span>Breathe</span></a>
-    <a href="/Enigma-/journal.html"><div class="nav-ico">📖</div><span>Journal</span></a>
-    <a href="/Enigma-/quotes.html"><div class="nav-ico">💬</div><span>Quotes</span></a>
-    <a href="/Enigma-/game.html"><div class="nav-ico">🎨</div><span>Colour</span></a>
-    <a class="active" href="/Enigma-/sounds.html"><div class="nav-ico">🎧</div><span>Sounds</span></a>
-    <a href="/Enigma-/progress.html"><div class="nav-ico">📈</div><span>Progress</span></a>
+    <a href="index.html">🏠<span>Home</span></a>
+    <a href="breathe.html">🌬️<span>Breathe</span></a>
+    <a href="journal.html">📖<span>Journal</span></a>
+    <a href="quotes.html">💬<span>Quotes</span></a>
+    <a href="colour.html">🎨<span>Colour</span></a>
+    <a class="active" href="sounds.html">🎵<span>Music</span></a>
+    <a href="progress.html">📈<span>Progress</span></a>
   </nav>
-
-  <!-- your sound engine -->
-  <script src="/Enigma-/sounds-engine.js?v=8001"></script>
-
-  <script>
-    // fallback back button
-    window.enigmaBack = window.enigmaBack || function(){
-      if (history.length > 1) history.back();
-      else location.href = "/Enigma-/index.html";
-    };
-
-    const vol = document.getElementById("soundVol");
-    const status = document.getElementById("soundStatus");
-    const stopBtn = document.getElementById("stopBtn");
-
-    const savedVol = localStorage.getItem("enigmaSoundVol");
-    if (savedVol !== null) vol.value = savedVol;
-
-    EnigmaSounds.onStatus((t)=> status.textContent = t);
-    EnigmaSounds.setVolume(parseFloat(vol.value || "0.6"));
-
-    vol.addEventListener("input", () => {
-      EnigmaSounds.setVolume(parseFloat(vol.value));
-      localStorage.setItem("enigmaSoundVol", vol.value);
-    });
-
-    function clearActive(){
-      document.querySelectorAll("[data-sound]").forEach(b=> b.classList.remove("active"));
-    }
-
-    document.querySelectorAll("[data-sound]").forEach(btn=>{
-      btn.addEventListener("click", async () => {
-        clearActive();
-        btn.classList.add("active");
-        await EnigmaSounds.play(btn.dataset.sound);
-      }, { passive:true });
-    });
-
-    stopBtn.addEventListener("click", () => {
-      clearActive();
-      EnigmaSounds.stop();
-    }, { passive:true });
-  </script>
 </body>
 </html>
