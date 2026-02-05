@@ -9,13 +9,13 @@
   <link rel="icon" type="image/png" sizes="192x192" href="/Enigma-/icon-192.png">
   <link rel="manifest" href="/Enigma-/manifest.json">
   <meta name="theme-color" content="#b8a6d9">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="Enigma">
 
-  <link rel="stylesheet" href="/Enigma-/style.css?v=700">
+  <link rel="stylesheet" href="/Enigma-/style.css?v=2001">
 </head>
 
 <body class="page-wrap">
+  <button id="themeFab" class="theme-toggle-top" type="button" aria-label="Toggle night mode">🌙</button>
+
   <header class="page-header">
     <button class="back-btn" type="button" onclick="enigmaBack()" aria-label="Back">←</button>
     <h1>Tap to Colour</h1>
@@ -23,6 +23,7 @@
   </header>
 
   <main class="page">
+
     <div class="card">
       <div class="section-title">Choose a design</div>
       <div id="designGrid" class="design-grid"></div>
@@ -56,9 +57,10 @@
     <div class="card">
       <div class="section-title">Your page</div>
       <div class="grid-wrap">
-        <div id="grid" class="colour-grid big"></div>
+        <div id="grid" class="colour-grid"></div>
       </div>
     </div>
+
   </main>
 
   <nav class="bottom-nav">
@@ -68,10 +70,9 @@
     <a href="/Enigma-/quotes.html"><div class="nav-ico">💬</div><span>Quotes</span></a>
     <a class="active" href="/Enigma-/game.html"><div class="nav-ico">🎨</div><span>Colour</span></a>
     <a href="/Enigma-/sounds.html"><div class="nav-ico">🎧</div><span>Sounds</span></a>
-
-    <button id="themeFab" class="theme-fab" type="button" aria-label="Toggle night mode">🌙</button>
+    <a href="/Enigma-/progress.html"><div class="nav-ico">📈</div><span>Progress</span></a>
   </nav>
 
-  <script src="/Enigma-/app.js?v=700"></script>
+  <script src="/Enigma-/app.js?v=2001"></script>
 </body>
 </html>
