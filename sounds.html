@@ -3,72 +3,76 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sounds • Enigma</title>
-  <link rel="stylesheet" href="style.css" />
-  <script defer src="app.js"></script>
+  <title>Music • Enigma</title>
+
+  <link rel="stylesheet" href="/Enigma-/style.css?v=9001">
 </head>
 
-<body>
-  <!-- Back -->
-  <button class="back-btn" onclick="enigmaBack()">←</button>
+<body class="page-wrap">
+  <button id="themeFab" class="theme-toggle-top" type="button" aria-label="Toggle night mode">🌙</button>
 
-  <!-- Night mode -->
-  <button id="themeFab" class="theme-fab">🌙</button>
+  <header class="page-header">
+    <button class="back-btn" type="button" onclick="enigmaBack()" aria-label="Back">←</button>
+    <h1>Music</h1>
+    <p>Choose a mood, then tap a link</p>
+  </header>
 
   <main class="page">
-    <h1>Calming music</h1>
-    <p class="subtitle">Tap a sound to open calming music</p>
+    <div class="card">
+      <div class="section-title">Your mood</div>
+      <div class="chip-row" id="moodChips">
+        <button class="chip active" data-mood="all" type="button">All</button>
+        <button class="chip" data-mood="anxious" type="button">Anxious</button>
+        <button class="chip" data-mood="stressed" type="button">Stressed</button>
+        <button class="chip" data-mood="low" type="button">Low mood</button>
+        <button class="chip" data-mood="focus" type="button">Focus</button>
+        <button class="chip" data-mood="sleep" type="button">Sleep</button>
+      </div>
+      <div class="gentle-text" id="moodHint">Showing: All</div>
+    </div>
 
     <div class="card">
-      <div class="sound-links">
+      <div class="section-title">Minutes listened</div>
+      <div class="listen-stats">
+        <div class="stat">
+          <div class="stat-num" id="todayMinutes">0</div>
+          <div class="stat-label">Today</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num" id="totalMinutes">0</div>
+          <div class="stat-label">Total</div>
+        </div>
+      </div>
+      <div class="tool-row">
+        <button class="tool-btn" type="button" id="endSessionBtn">End listening session</button>
+      </div>
+      <div class="gentle-text" id="sessionStatus">No active session.</div>
+    </div>
 
-        <a class="sound-link" target="_blank"
-          href="https://open.spotify.com/playlist/37i9dQZF1DX3rxVfibe1L0">
-          🌧️ Rain sounds
-        </a>
+    <div class="card">
+      <div class="section-title">Pick a track</div>
 
-        <a class="sound-link" target="_blank"
-          href="https://open.spotify.com/playlist/37i9dQZF1DWU0ScTcjJBdj">
-          🌊 Ocean waves
-        </a>
-
-        <a class="sound-link" target="_blank"
-          href="https://open.spotify.com/playlist/37i9dQZF1DWZqd5JICZI0u">
-          🌲 Forest ambience
-        </a>
-
-        <a class="sound-link" target="_blank"
-          href="https://www.youtube.com/watch?v=2OEL4P1Rz04">
-          🔔 Meditation bells
-        </a>
-
-        <a class="sound-link" target="_blank"
-          href="https://www.youtube.com/watch?v=nmFUDkj1Aq0">
-          🔥 Fireplace crackle
-        </a>
-
-        <a class="sound-link" target="_blank"
-          href="https://www.youtube.com/watch?v=q76bMs-NwRk">
-          🎶 Piano for anxiety
-        </a>
-
+      <div class="sound-links" id="soundLinks">
+        <!-- items injected by sounds.js -->
       </div>
 
-      <p class="hint">
-        Music opens in a new tab (iPhone-friendly).
-      </p>
+      <div class="gentle-text" style="margin-top:10px;">
+        Tip: links open in a new tab. Your listening minutes are tracked from when you tap a link until you return and press “End listening session”.
+      </div>
     </div>
   </main>
 
-  <!-- Bottom nav -->
   <nav class="bottom-nav">
-    <a href="index.html">🏠<span>Home</span></a>
-    <a href="breathe.html">🌬️<span>Breathe</span></a>
-    <a href="journal.html">📖<span>Journal</span></a>
-    <a href="quotes.html">💬<span>Quotes</span></a>
-    <a href="colour.html">🎨<span>Colour</span></a>
-    <a class="active" href="sounds.html">🎵<span>Music</span></a>
-    <a href="progress.html">📈<span>Progress</span></a>
+    <a href="/Enigma-/index.html"><div class="nav-ico">🏠</div><span>Home</span></a>
+    <a href="/Enigma-/breathe.html"><div class="nav-ico">🌬️</div><span>Breathe</span></a>
+    <a href="/Enigma-/journal.html"><div class="nav-ico">📖</div><span>Journal</span></a>
+    <a href="/Enigma-/quotes.html"><div class="nav-ico">💬</div><span>Quotes</span></a>
+    <a href="/Enigma-/game.html"><div class="nav-ico">🎨</div><span>Colour</span></a>
+    <a class="active" href="/Enigma-/sounds.html"><div class="nav-ico">🎵</div><span>Music</span></a>
+    <a href="/Enigma-/progress.html"><div class="nav-ico">📈</div><span>Progress</span></a>
   </nav>
+
+  <script src="/Enigma-/app.js?v=9001"></script>
+  <script src="/Enigma-/sounds.js?v=9001"></script>
 </body>
 </html>
