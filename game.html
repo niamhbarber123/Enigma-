@@ -7,7 +7,7 @@
 
   <link rel="icon" href="icon.png" />
   <link rel="apple-touch-icon" href="icon.png" />
-  <link rel="stylesheet" href="style.css?v=10150" />
+  <link rel="stylesheet" href="style.css?v=20200" />
 </head>
 
 <body class="page-wrap">
@@ -25,64 +25,40 @@
     <div class="card">
       <div class="section-title">Choose a design</div>
       <div id="designChips" class="chip-row"></div>
-      <div class="gentle-text">Select one design to begin.</div>
+      <div class="gentle-text" id="gameStatus">Select a design to begin.</div>
     </div>
 
     <!-- MODE -->
     <div class="card">
       <div class="section-title">Mode</div>
       <div class="chip-row">
-        <button id="modeCbnBtn" class="chip active" type="button">
-          Colour-by-number
-        </button>
-        <button id="modeFreeBtn" class="chip" type="button">
-          Free colour
-        </button>
+        <button id="modeCbnBtn" class="chip active" type="button">Colour-by-number</button>
+        <button id="modeFreeBtn" class="chip" type="button">Free colour</button>
       </div>
-      <div class="gentle-text">
-        Free colour hides numbers so you can colour freely.
-      </div>
+      <div class="gentle-text">Free colour hides numbers (if any).</div>
     </div>
 
-    <!-- PALETTE -->
+    <!-- PALETTE + TOOLS -->
     <div class="card">
       <div class="section-title">Palette</div>
       <div id="paletteDots" class="palette-dots"></div>
 
       <div class="tool-row">
-        <button id="undoBtn" class="tool-btn">Undo</button>
-        <button id="eraserBtn" class="tool-btn">Eraser</button>
+        <button id="undoBtn" class="tool-btn" type="button">Undo</button>
+        <button id="eraserBtn" class="tool-btn" type="button">Eraser</button>
       </div>
 
       <div class="tool-row">
-        <button id="clearBtn" class="tool-btn danger">Clear</button>
-      </div>
-
-      <div class="tool-row">
-        <button id="completeBtn" class="tool-btn primary">
-          Completed ✅
-        </button>
-      </div>
-
-      <div class="gentle-text">
-        Pick a design and a colour to start.
+        <button id="clearBtn" class="tool-btn danger" type="button">Clear</button>
+        <button id="completeBtn" class="tool-btn primary" type="button">Completed ✅</button>
       </div>
     </div>
 
-    <!-- CANVAS PLACEHOLDER -->
+    <!-- DESIGN CANVAS -->
     <div class="card">
-      <div class="section-title">Your page</div>
-      <div style="
-        height:260px;
-        border-radius:18px;
-        border:2px dashed rgba(184,166,217,0.4);
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        color:rgba(90,75,122,0.5);
-        font-weight:700;">
-        Canvas loads here
-      </div>
+      <div class="section-title">Design</div>
+      <div id="canvasMount" class="design-mount"></div>
+      <div class="gentle-text">Tap parts of the design to fill with your selected colour.</div>
     </div>
 
   </main>
@@ -97,6 +73,6 @@
     <a href="progress.html"><div class="nav-ico">📈</div><span>Progress</span></a>
   </nav>
 
-  <script src="app.js?v=10150"></script>
+  <script src="app.js?v=20200"></script>
 </body>
 </html>
