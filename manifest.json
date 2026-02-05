@@ -7,10 +7,6 @@
   "background_color": "#faf7ff",
   "theme_color": "#b8a6d9",
   "icons": [
-    {
-      "src": "/Enigma-/apple-touch-icon.png",
-      "sizes": "180x180",
-      "type": "image/png"
-    }
+    { "src": "/Enigma-/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
   ]
 }
