@@ -751,3 +751,23 @@ body.home .home-hero{ height:min(480px, 84vw); }
 
 .breathe-circle.inhale{ transform: scale(1.16); }
 .breathe-circle.exhale{ transform: scale(0.82); }
+/* Game design area */
+.design-mount{
+  width:100%;
+  min-height:360px;
+  border-radius:18px;
+  background:rgba(239,233,248,0.55);
+  border:1px solid rgba(184,166,217,0.22);
+  box-shadow: 0 12px 26px rgba(0,0,0,0.06);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  padding:10px;
+}
+
+.design-mount svg{
+  width:100%;
+  height:auto;
+  max-height:520px;
+}
