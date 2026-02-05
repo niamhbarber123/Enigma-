@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Tap to Colour • Enigma</title>
-  <link rel="stylesheet" href="style.css?v=9991" />
+  <link rel="stylesheet" href="style.css?v=10020" />
 </head>
 
 <body class="page-wrap">
@@ -16,42 +16,45 @@
     <p>Pick a design, then colour gently</p>
   </header>
 
-  <main class="page">
+  <main class="page" id="gamePage">
     <div class="card">
       <div class="section-title">Choose a design</div>
-      <div id="designGrid" class="design-grid"></div>
+      <div class="chip-row" id="designChips"></div>
+      <div class="gentle-text" id="designHint">Choose a design to begin.</div>
     </div>
 
     <div class="card">
       <div class="section-title">Mode</div>
-      <div class="mode-row">
-        <button id="modeNumberBtn" class="mode-btn" type="button">Colour-by-number</button>
-        <button id="modeFreeBtn" class="mode-btn" type="button">Free colour</button>
+      <div class="chip-row">
+        <button class="chip active" id="modeByNumber" type="button">Colour-by-number</button>
+        <button class="chip" id="modeFree" type="button">Free colour</button>
       </div>
-      <div class="gentle-text">In free colour mode, numbers are hidden.</div>
+      <div class="gentle-text" id="modeHint">Colour-by-number shows gentle guidance. Free colour hides numbers.</div>
     </div>
 
     <div class="card">
       <div class="section-title">Palette</div>
-      <div id="palette" class="palette-grid"></div>
+      <div class="palette-dots" id="paletteDots"></div>
 
-      <div class="tool-row">
-        <button class="tool-btn" type="button" onclick="enigmaUndo()">Undo</button>
-        <button class="tool-btn" type="button" onclick="enigmaEraser()">Eraser</button>
-        <button class="tool-btn danger" type="button" onclick="enigmaClear()">Clear</button>
+      <div class="tool-row" style="margin-top:14px;">
+        <button class="tool-btn" id="undoBtn" type="button">Undo</button>
+        <button class="tool-btn" id="eraserBtn" type="button">Eraser</button>
+        <button class="tool-btn danger" id="clearBtn" type="button">Clear</button>
       </div>
 
       <div class="tool-row">
-        <button class="tool-btn" type="button" onclick="markColouringComplete()">Completed ✅</button>
+        <button class="tool-btn primary" id="completeBtn" type="button">Completed ✅</button>
       </div>
 
-      <div class="gentle-text" id="saveMsg">Choose a design to begin.</div>
+      <div class="gentle-text" id="gameStatus">Pick a design and a colour to start.</div>
     </div>
 
     <div class="card">
       <div class="section-title">Your page</div>
-      <div class="grid-wrap">
-        <div id="grid" class="colour-grid"></div>
+      <div class="gentle-text">This area is ready for your colouring canvas/graphic (your existing logic can plug in here).</div>
+      <div id="canvasMount" style="height:240px;border-radius:18px;border:1px dashed rgba(184,166,217,0.55);
+           display:flex;align-items:center;justify-content:center;color:rgba(90,75,122,0.55);font-weight:800;">
+        Canvas loads here
       </div>
     </div>
   </main>
@@ -66,6 +69,6 @@
     <a href="progress.html"><div class="nav-ico">📈</div><span>Progress</span></a>
   </nav>
 
-  <script src="app.js?v=9991"></script>
+  <script src="app.js?v=10020"></script>
 </body>
 </html>
