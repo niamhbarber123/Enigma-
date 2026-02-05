@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Enigma</title>
 
+  <!-- ✅ iPhone home-screen icon + PWA -->
   <link rel="apple-touch-icon" sizes="180x180" href="/Enigma-/apple-touch-icon.png">
   <link rel="apple-touch-icon-precomposed" href="/Enigma-/apple-touch-icon.png">
   <link rel="icon" type="image/png" href="/Enigma-/icon.png">
@@ -15,27 +16,50 @@
   <meta name="theme-color" content="#b8a6d9">
   <meta name="apple-mobile-web-app-capable" content="yes">
 
-  <link rel="stylesheet" href="/Enigma-/style.css?v=60">
+  <!-- ✅ IMPORTANT: absolute path for GitHub Pages repo -->
+  <link rel="stylesheet" href="/Enigma-/style.css?v=999">
 </head>
 
 <body class="home-body">
 
   <header class="page-header">
     <h1>Enigma</h1>
-    <p>Your calm space</p>
+    <p id="welcomeLine">Your calm space</p>
   </header>
 
+  <!-- Minimal + calm: one main action + small grid -->
   <main class="home-main">
-    <div class="home-grid">
-      <a class="home-tile" href="/Enigma-/breathe.html"><div class="tile-emoji">🌬️</div><div class="tile-text">Breathe</div></a>
-      <a class="home-tile" href="/Enigma-/journal.html"><div class="tile-emoji">📖</div><div class="tile-text">Journal</div></a>
-      <a class="home-tile" href="/Enigma-/checkin.html"><div class="tile-emoji">🌿</div><div class="tile-text">Daily check-in</div></a>
-      <a class="home-tile" href="/Enigma-/progress.html"><div class="tile-emoji">📊</div><div class="tile-text">Progress</div></a>
-      <a class="home-tile" href="/Enigma-/quotes.html"><div class="tile-emoji">💬</div><div class="tile-text">Quotes</div></a>
-      <a class="home-tile" href="/Enigma-/game.html"><div class="tile-emoji">🎨</div><div class="tile-text">Tap to colour</div></a>
+    <div class="home-stack">
 
-      <!-- ✅ Help added back -->
-      <a class="home-tile" href="/Enigma-/help.html"><div class="tile-emoji">🆘</div><div class="tile-text">Help</div></a>
+      <a class="primary-card" href="/Enigma-/breathe.html">
+        <div class="pc-title">Breathe & reset</div>
+        <div class="pc-sub">A gentle 60 seconds</div>
+      </a>
+
+      <div class="home-grid-min">
+        <a class="mini-tile" href="/Enigma-/checkin.html">
+          <div class="mini-ico">🌿</div>
+          <div class="mini-text">Check-in</div>
+        </a>
+
+        <a class="mini-tile" href="/Enigma-/journal.html">
+          <div class="mini-ico">📖</div>
+          <div class="mini-text">Journal</div>
+        </a>
+
+        <a class="mini-tile" href="/Enigma-/game.html">
+          <div class="mini-ico">🎨</div>
+          <div class="mini-text">Colour</div>
+        </a>
+
+        <a class="mini-tile" href="/Enigma-/quotes.html">
+          <div class="mini-ico">💬</div>
+          <div class="mini-text">Quotes</div>
+        </a>
+      </div>
+
+      <a class="help-link" href="/Enigma-/help.html">Need help right now? 🆘</a>
+
     </div>
   </main>
 
@@ -49,5 +73,12 @@
   </nav>
 
   <script src="/Enigma-/app.js"></script>
+  <script>
+    // Optional: friendly welcome line if user name exists
+    const name = localStorage.getItem("enigmaUser");
+    if (name) {
+      document.getElementById("welcomeLine").textContent = `Welcome back, ${name}`;
+    }
+  </script>
 </body>
 </html>
