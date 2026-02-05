@@ -5,10 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Enigma</title>
 
-  <!-- IMPORTANT: use relative paths for GitHub Pages -->
-  <link rel="stylesheet" href="style.css?v=9101" />
+  <link rel="stylesheet" href="style.css?v=9991" />
 
-  <!-- iOS Home Screen icon (bookmark icon) -->
+  <!-- iOS Home Screen icon -->
   <link rel="apple-touch-icon" href="icon.png">
   <link rel="icon" type="image/png" href="icon.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -16,56 +15,33 @@
 </head>
 
 <body class="page-wrap home">
-  <!-- Night mode -->
   <button id="themeFab" class="theme-toggle-top" type="button" aria-label="Toggle night mode">🌙</button>
 
-  <!-- Header -->
   <header class="page-header">
     <h1>Enigma</h1>
     <p>Your calm space</p>
   </header>
 
   <main class="page home-page">
-    <!-- Background icon area -->
     <div class="home-hero" aria-hidden="true"></div>
 
-    <!-- Main action -->
     <a class="home-card" href="breathe.html">
       <div class="home-card-title">Breathe &amp; reset</div>
       <div class="home-card-sub">A gentle 60 seconds</div>
     </a>
 
-    <!-- 2x2 buttons -->
     <div class="home-grid">
-      <a class="home-pill" href="journal.html">
-        <span class="pill-ico">📖</span>
-        <span class="pill-text">Journal</span>
-      </a>
-
-      <a class="home-pill" href="quotes.html">
-        <span class="pill-ico">💬</span>
-        <span class="pill-text">Quotes</span>
-      </a>
-
-      <a class="home-pill" href="game.html">
-        <span class="pill-ico">🎨</span>
-        <span class="pill-text">Colour</span>
-      </a>
-
-      <a class="home-pill" href="sounds.html">
-        <span class="pill-ico">🎵</span>
-        <span class="pill-text">Music</span>
-      </a>
+      <a class="home-pill" href="journal.html"><span class="pill-ico">📖</span><span class="pill-text">Journal</span></a>
+      <a class="home-pill" href="quotes.html"><span class="pill-ico">💬</span><span class="pill-text">Quotes</span></a>
+      <a class="home-pill" href="game.html"><span class="pill-ico">🎨</span><span class="pill-text">Colour</span></a>
+      <a class="home-pill" href="sounds.html"><span class="pill-ico">🎵</span><span class="pill-text">Music</span></a>
     </div>
 
-    <!-- Help -->
     <a class="home-help" href="help.html">
-      <span class="pill-ico">🆘</span>
-      <span class="pill-text">Need help right now?</span>
+      <span class="pill-ico">🆘</span><span class="pill-text">Need help right now?</span>
     </a>
   </main>
 
-  <!-- Bottom nav -->
   <nav class="bottom-nav">
     <a class="active" href="index.html"><div class="nav-ico">🏠</div><span>Home</span></a>
     <a href="breathe.html"><div class="nav-ico">🌬️</div><span>Breathe</span></a>
@@ -76,112 +52,6 @@
     <a href="progress.html"><div class="nav-ico">📈</div><span>Progress</span></a>
   </nav>
 
-  <script src="app.js?v=9101"></script>
-
-  <!-- Home-only styling (keeps it minimal & like the mockup) -->
-  <style>
-    .home-page{ padding-top: 10px; }
-
-    /* Big faint background icon (uses your icon.png) */
-    .home-hero{
-      width: min(520px, 92vw);
-      height: min(520px, 92vw);
-      margin: 8px auto 10px;
-      border-radius: 40px;
-      background-image: url("icon.png");
-      background-repeat: no-repeat;
-      background-position: center;
-      background-size: contain;
-      opacity: 0.10;
-      filter: saturate(0.9);
-    }
-    body.night .home-hero{ opacity: 0.08; }
-
-    /* Primary card */
-    .home-card{
-      display:block;
-      text-decoration:none;
-      margin: -70px auto 14px; /* pulls card into the icon area like the mockup */
-      max-width: 640px;
-      background: rgba(255,255,255,0.86);
-      border-radius: 26px;
-      padding: 18px 18px 16px;
-      box-shadow: 0 10px 24px rgba(0,0,0,0.08);
-      border: 1px solid rgba(184,166,217,0.18);
-    }
-    body.night .home-card{
-      background: rgba(255,255,255,0.10);
-      border-color: rgba(255,255,255,0.12);
-    }
-    .home-card-title{
-      font-size: 22px;
-      font-weight: 900;
-      color: #5a4b7a;
-    }
-    body.night .home-card-title{ color: rgba(245,242,255,0.92); }
-    .home-card-sub{
-      margin-top: 6px;
-      font-size: 14px;
-      color: rgba(90,75,122,0.65);
-      font-weight: 700;
-    }
-    body.night .home-card-sub{ color: rgba(245,242,255,0.65); }
-
-    /* 2x2 grid */
-    .home-grid{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      max-width: 640px;
-      margin: 0 auto;
-    }
-
-    .home-pill{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap: 10px;
-      text-decoration:none;
-      background: rgba(255,255,255,0.86);
-      border-radius: 22px;
-      padding: 14px 12px;
-      box-shadow: 0 10px 24px rgba(0,0,0,0.08);
-      border: 1px solid rgba(184,166,217,0.18);
-      font-weight: 900;
-      color:#5a4b7a;
-    }
-    .home-pill:active{ transform: scale(0.99); }
-    body.night .home-pill{
-      background: rgba(255,255,255,0.10);
-      border-color: rgba(255,255,255,0.12);
-      color: rgba(245,242,255,0.92);
-    }
-
-    .pill-ico{ font-size: 20px; line-height: 1; }
-    .pill-text{ font-size: 16px; }
-
-    /* Help bar */
-    .home-help{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap: 10px;
-      text-decoration:none;
-      max-width: 640px;
-      margin: 14px auto 0;
-      background: rgba(239,233,248,0.95);
-      border-radius: 22px;
-      padding: 14px 12px;
-      box-shadow: 0 10px 24px rgba(0,0,0,0.08);
-      border: 1px solid rgba(184,166,217,0.18);
-      font-weight: 900;
-      color:#5a4b7a;
-    }
-    body.night .home-help{
-      background: rgba(255,255,255,0.10);
-      border-color: rgba(255,255,255,0.12);
-      color: rgba(245,242,255,0.92);
-    }
-  </style>
+  <script src="app.js?v=9991"></script>
 </body>
 </html>
