@@ -7,7 +7,9 @@
 
   <link rel="icon" href="icon.png" />
   <link rel="apple-touch-icon" href="icon.png" />
-  <link rel="stylesheet" href="style.css?v=10040" />
+
+  <!-- IMPORTANT: same version as other pages -->
+  <link rel="stylesheet" href="style.css?v=60001" />
 </head>
 
 <body class="page-wrap">
@@ -23,22 +25,36 @@
     <div class="card">
       <div class="section-title">Find a quote</div>
 
-      <input id="quoteSearch" class="input" type="search" placeholder="Search quotes or authors…" />
+      <input
+        id="quoteSearch"
+        class="input"
+        type="search"
+        placeholder="Search quotes or authors…"
+        autocomplete="off"
+      />
 
       <div class="tool-row" style="margin-top:12px;">
-        <button id="toggleSavedOnlyBtn" class="tool-btn" type="button">Show saved only</button>
+        <button id="toggleSavedOnlyBtn" class="tool-btn" type="button">
+          Show saved only
+        </button>
+
         <button id="viewSavedBtn" class="tool-btn primary" type="button">
           💜 Saved (<span id="savedCount">0</span>)
         </button>
       </div>
 
       <div class="tool-row">
-        <button id="clearSavedBtn" class="tool-btn danger" type="button">Delete saved quotes</button>
+        <button id="clearSavedBtn" class="tool-btn danger" type="button">
+          Delete saved quotes
+        </button>
       </div>
 
-      <div class="gentle-text">Saving is only via the 💜 button — scrolling won’t accidentally save.</div>
+      <div class="gentle-text">
+        Saving is only via the 💜 button — scrolling won’t accidentally save.
+      </div>
     </div>
 
+    <!-- Quotes render here -->
     <div id="quoteGrid" class="quote-grid"></div>
   </main>
 
@@ -52,6 +68,7 @@
     <a href="progress.html"><div class="nav-ico">📈</div><span>Progress</span></a>
   </nav>
 
-  <script src="app.js?v=10040"></script>
+  <!-- IMPORTANT: defer prevents Safari/iOS bugs -->
+  <script src="app.js?v=60001" defer></script>
 </body>
 </html>
