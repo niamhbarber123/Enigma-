@@ -428,3 +428,93 @@ body.night .page-header h1{ color:rgba(245,242,255,0.92); }
   .palette-grid{ grid-template-columns:repeat(7,1fr); }
   .bottom-nav .nav-ico{ font-size:18px; }
 }
+/* ===== Bigger breathe circle + layout ===== */
+.breathe-wrap{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:16px;
+}
+.breathe-card{
+  width:100%;
+  max-width:640px;
+}
+.breathe-stage{
+  width:min(78vw, 360px);
+  height:min(78vw, 360px);
+  border-radius:999px;
+  background:rgba(184,166,217,0.22);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 14px 34px rgba(0,0,0,0.10);
+}
+.breathe-core{
+  width:68%;
+  height:68%;
+  border-radius:999px;
+  background:rgba(184,166,217,0.35);
+  box-shadow: inset 0 0 0 8px rgba(255,255,255,0.35);
+  transform:scale(0.85);
+  transition: transform 4s ease-in-out;
+}
+.breathe-stage.inhale .breathe-core{ transform:scale(1.05); }
+.breathe-stage.exhale .breathe-core{ transform:scale(0.78); }
+
+.breathe-label{
+  position:absolute;
+  bottom:16px;
+  left:0; right:0;
+  text-align:center;
+  font-weight:900;
+  color:#5a4b7a;
+  font-size:18px;
+}
+body.night .breathe-label{ color:rgba(245,242,255,0.92); }
+
+/* ===== Journal grid (2 wide) ===== */
+.journal-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+@media (max-width:380px){
+  .journal-grid{ grid-template-columns:1fr; }
+}
+.entry-tile{
+  background:rgba(255,255,255,0.86);
+  border-radius:22px;
+  padding:14px;
+  box-shadow:var(--shadow);
+  border:1px solid rgba(184,166,217,0.18);
+}
+.entry-tile h3{
+  margin:0 0 8px;
+  font-size:14px;
+  color:#5a4b7a;
+}
+.entry-tile p{
+  margin:0;
+  color:rgba(90,75,122,0.72);
+  font-size:13px;
+  line-height:1.35;
+}
+.entry-tile small{
+  display:block;
+  margin-top:10px;
+  color:rgba(90,75,122,0.55);
+  font-weight:800;
+}
+
+/* ===== Game: hide numbers in FREE mode ===== */
+.colour-grid.free-mode .cell .num{
+  display:none !important;
+}
+
+/* ===== Music links: make them definitely tappable on iPhone ===== */
+.sound-link{
+  -webkit-touch-callout:none;
+  user-select:none;
+}
