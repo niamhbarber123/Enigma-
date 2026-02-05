@@ -9,13 +9,13 @@
   <link rel="icon" type="image/png" sizes="192x192" href="/Enigma-/icon-192.png">
   <link rel="manifest" href="/Enigma-/manifest.json">
   <meta name="theme-color" content="#b8a6d9">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="Enigma">
 
-  <link rel="stylesheet" href="/Enigma-/style.css?v=700">
+  <link rel="stylesheet" href="/Enigma-/style.css?v=2001">
 </head>
 
 <body class="page-wrap">
+  <button id="themeFab" class="theme-toggle-top" type="button" aria-label="Toggle night mode">🌙</button>
+
   <header class="page-header">
     <button class="back-btn" type="button" onclick="enigmaBack()" aria-label="Back">←</button>
     <h1>Sounds</h1>
@@ -23,32 +23,46 @@
   </header>
 
   <main class="page">
+
     <div class="card">
-      <div style="font-weight:900; color:#5a4b7a; margin-bottom:10px;">Volume</div>
+      <div class="section-title">Volume</div>
       <input id="soundVol" type="range" min="0" max="1" step="0.01" oninput="setSoundVolume(this.value)">
       <div class="gentle-text">Status: <span id="soundStatus">Not playing</span></div>
     </div>
 
     <div class="card">
-      <div style="font-weight:900; color:#5a4b7a; margin-bottom:12px;">Choose a sound</div>
+      <div class="section-title">Choose a sound</div>
 
-      <div class="sound-row">
-        <button class="primary" type="button" onclick="playSound('/Enigma-/audio/rain.mp3')">🌧 Rain</button>
-        <button class="primary" type="button" style="background:#f4c2c2;color:#5a4b7a;" onclick="stopSound()">Stop</button>
+      <div class="tool-row">
+        <button class="tool-btn" type="button" onclick="playSound('/Enigma-/audio/rain.mp3')">🌧 Rain</button>
+        <button class="tool-btn danger" type="button" onclick="stopSound()">Stop</button>
       </div>
 
-      <div style="height:10px;"></div>
-
-      <div class="sound-row">
-        <button class="primary" type="button" onclick="playSound('/Enigma-/audio/ocean.mp3')">🌊 Ocean</button>
-        <button class="primary" type="button" onclick="playSound('/Enigma-/audio/forest.mp3')">🌿 Forest</button>
+      <div class="tool-row">
+        <button class="tool-btn" type="button" onclick="playSound('/Enigma-/audio/ocean.mp3')">🌊 Ocean</button>
+        <button class="tool-btn" type="button" onclick="playSound('/Enigma-/audio/forest.mp3')">🌿 Forest</button>
       </div>
 
-      <div style="height:12px;"></div>
-      <div class="gentle-text">
-        Upload MP3 files into a folder called <b>audio</b>: <b>rain.mp3</b>, <b>ocean.mp3</b>, <b>forest.mp3</b>
+      <div class="tool-row">
+        <button class="tool-btn" type="button" onclick="playSound('/Enigma-/audio/fireplace.mp3')">🔥 Fireplace</button>
+        <button class="tool-btn" type="button" onclick="playSound('/Enigma-/audio/wind.mp3')">🌬 Wind</button>
+      </div>
+
+      <div class="tool-row">
+        <button class="tool-btn" type="button" onclick="playSound('/Enigma-/audio/white-noise.mp3')">⚪ White noise</button>
+        <button class="tool-btn" type="button" onclick="playSound('/Enigma-/audio/pink-noise.mp3')">🌸 Pink noise</button>
+      </div>
+
+      <div class="tool-row">
+        <button class="tool-btn" type="button" onclick="playSound('/Enigma-/audio/chimes.mp3')">🔔 Chimes</button>
+        <button class="tool-btn" type="button" onclick="playSound('/Enigma-/audio/meditation.mp3')">🧘 Meditation</button>
+      </div>
+
+      <div class="gentle-text" style="margin-top:12px;">
+        Upload MP3 files to <b>/audio/</b> in your repo (rain.mp3, ocean.mp3, forest.mp3, etc.)
       </div>
     </div>
+
   </main>
 
   <nav class="bottom-nav">
@@ -58,10 +72,9 @@
     <a href="/Enigma-/quotes.html"><div class="nav-ico">💬</div><span>Quotes</span></a>
     <a href="/Enigma-/game.html"><div class="nav-ico">🎨</div><span>Colour</span></a>
     <a class="active" href="/Enigma-/sounds.html"><div class="nav-ico">🎧</div><span>Sounds</span></a>
-
-    <button id="themeFab" class="theme-fab" type="button" aria-label="Toggle night mode">🌙</button>
+    <a href="/Enigma-/progress.html"><div class="nav-ico">📈</div><span>Progress</span></a>
   </nav>
 
-  <script src="/Enigma-/app.js?v=700"></script>
+  <script src="/Enigma-/app.js?v=2001"></script>
 </body>
 </html>
