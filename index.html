@@ -1,22 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Enigma</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="apple-touch-icon" href="/Enigma-/apple-touch-icon.png">
+  <!-- PWA / iPhone icons -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/Enigma-/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/Enigma-/icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/Enigma-/icon-512.png">
   <link rel="manifest" href="/Enigma-/manifest.json">
   <meta name="theme-color" content="#b8a6d9">
   <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Enigma">
 
-  <link rel="stylesheet" href="/Enigma-/style.css?v=900">
+  <!-- CSS (bump v number when updating) -->
+  <link rel="stylesheet" href="/Enigma-/style.css?v=1003">
 </head>
 
-<body class="home-body">
+<body class="home-body page-wrap">
 
-  <!-- Night mode -->
-  <button class="theme-toggle-top" onclick="toggleTheme()">🌙</button>
+  <!-- Top-right night mode -->
+  <button id="themeFab"
+          class="theme-toggle-top"
+          type="button"
+          aria-label="Toggle night mode">
+    🌙
+  </button>
 
   <header class="page-header">
     <h1>Enigma</h1>
@@ -24,47 +34,105 @@
   </header>
 
   <main class="home-main">
-    <a class="primary-card" href="/Enigma-/breathe.html">
-      <strong>Breathe &amp; reset</strong>
-      <span>A gentle 60 seconds</span>
-    </a>
+    <div class="home-stack">
 
-    <div class="grid">
-      <a class="tile" href="/Enigma-/journal.html">📖 Journal</a>
-      <a class="tile" href="/Enigma-/quotes.html">💬 Quotes</a>
-      <a class="tile" href="/Enigma-/game.html">🎨 Colour</a>
-      <a class="tile" href="/Enigma-/sounds.html">🎧 Sounds</a>
+      <!-- Big primary action -->
+      <a class="primary-card" href="/Enigma-/breathe.html">
+        <div class="pc-title">Breathe &amp; reset</div>
+        <div class="pc-sub">A gentle 60 seconds</div>
+      </a>
+
+      <!-- 2x2 grid -->
+      <div class="home-grid-min">
+        <a class="mini-tile" href="/Enigma-/journal.html">
+          <div class="mini-ico">📖</div>
+          <div class="mini-text">Journal</div>
+        </a>
+
+        <a class="mini-tile" href="/Enigma-/quotes.html">
+          <div class="mini-ico">💬</div>
+          <div class="mini-text">Quotes</div>
+        </a>
+
+        <a class="mini-tile" href="/Enigma-/game.html">
+          <div class="mini-ico">🎨</div>
+          <div class="mini-text">Colour</div>
+        </a>
+
+        <a class="mini-tile" href="/Enigma-/sounds.html">
+          <div class="mini-ico">🎧</div>
+          <div class="mini-text">Sounds</div>
+        </a>
+      </div>
+
+      <!-- Help CTA -->
+      <a class="help-link" href="/Enigma-/help.html">
+        <span style="font-size:18px;">🆘</span>
+        <span>Need help right now?</span>
+      </a>
+
     </div>
-
-    <a class="primary-card" href="/Enigma-/help.html" style="margin-top:16px;text-align:center;">
-      🆘 Need help right now?
-    </a>
   </main>
 
+  <!-- Bottom nav -->
   <nav class="bottom-nav">
-    <a class="active" href="/Enigma-/index.html"><div class="nav-ico">🏠</div>Home</a>
-    <a href="/Enigma-/breathe.html"><div class="nav-ico">🌬️</div>Breathe</a>
-    <a href="/Enigma-/journal.html"><div class="nav-ico">📖</div>Journal</a>
-    <a href="/Enigma-/quotes.html"><div class="nav-ico">💬</div>Quotes</a>
-    <a href="/Enigma-/game.html"><div class="nav-ico">🎨</div>Colour</a>
-    <a href="/Enigma-/sounds.html"><div class="nav-ico">🎧</div>Sounds</a>
+    <a class="active" href="/Enigma-/index.html">
+      <div class="nav-ico">🏠</div>
+      <span>Home</span>
+    </a>
+
+    <a href="/Enigma-/breathe.html">
+      <div class="nav-ico">🌬️</div>
+      <span>Breathe</span>
+    </a>
+
+    <a href="/Enigma-/journal.html">
+      <div class="nav-ico">📖</div>
+      <span>Journal</span>
+    </a>
+
+    <a href="/Enigma-/quotes.html">
+      <div class="nav-ico">💬</div>
+      <span>Quotes</span>
+    </a>
+
+    <a href="/Enigma-/game.html">
+      <div class="nav-ico">🎨</div>
+      <span>Colour</span>
+    </a>
+
+    <a href="/Enigma-/sounds.html">
+      <div class="nav-ico">🎧</div>
+      <span>Sounds</span>
+    </a>
   </nav>
 
+  <!-- Minimal JS for night mode (works even if app.js isn't loaded) -->
   <script>
-    function toggleTheme(){
-      document.body.classList.toggle("night");
-      localStorage.setItem(
-        "enigmaTheme",
-        document.body.classList.contains("night") ? "night" : "day"
-      );
+    function applyTheme() {
+      const saved = localStorage.getItem("enigmaTheme");
+      const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const useNight = saved ? (saved === "night") : prefersDark;
+      document.body.classList.toggle("night", useNight);
+      const btn = document.getElementById("themeFab");
+      if (btn) btn.textContent = document.body.classList.contains("night") ? "☀️" : "🌙";
     }
 
-    (function(){
-      const saved = localStorage.getItem("enigmaTheme");
-      if(saved === "night"){
-        document.body.classList.add("night");
+    function toggleTheme() {
+      const isNight = document.body.classList.toggle("night");
+      localStorage.setItem("enigmaTheme", isNight ? "night" : "day");
+      const btn = document.getElementById("themeFab");
+      if (btn) btn.textContent = isNight ? "☀️" : "🌙";
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      applyTheme();
+      const btn = document.getElementById("themeFab");
+      if (btn) {
+        btn.addEventListener("click", (e) => { e.preventDefault(); toggleTheme(); }, { passive:false });
+        btn.addEventListener("touchend", (e) => { e.preventDefault(); toggleTheme(); }, { passive:false });
       }
-    })();
+    });
   </script>
 
 </body>
