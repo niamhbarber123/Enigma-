@@ -84,6 +84,18 @@ body {
   margin-bottom: 14px;
 }
 
+/* Inputs */
+input, textarea, select{
+  width:100%;
+  padding:14px;
+  border-radius:16px;
+  border:1px solid rgba(0,0,0,0.08);
+  font-size:16px;
+  background:white;
+  color:var(--ink);
+}
+textarea{ min-height:120px; resize:none; }
+
 /* ===============================
    Buttons
 ================================ */
@@ -100,6 +112,13 @@ body {
 }
 
 .primary:active { transform: scale(0.99); }
+
+.gentle-text{
+  text-align:center;
+  color:var(--muted);
+  margin-top:8px;
+  font-size:13px;
+}
 
 /* ===============================
    HOME – minimal & calm
@@ -171,9 +190,7 @@ body {
   color: var(--ink);
 }
 
-.mini-ico {
-  font-size: 22px;
-}
+.mini-ico { font-size: 22px; line-height:1; }
 
 .mini-text {
   font-weight: 800;
@@ -214,9 +231,7 @@ body {
   gap: 4px;
 }
 
-.bottom-nav .nav-ico {
-  font-size: 20px;
-}
+.bottom-nav .nav-ico { font-size: 20px; line-height:1; }
 
 .bottom-nav a.active {
   color: #5a4b7a;
@@ -273,52 +288,154 @@ body {
 }
 
 /* ===============================
-   Tap-to-colour basics (shared)
+   Breathe
 ================================ */
-.palette-grid {
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  gap: 10px;
+.breathe-area{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:18px;
 }
-
-.palette-chip {
-  aspect-ratio: 1 / 1;
-  border-radius: 999px;
-  border: 2px solid rgba(0,0,0,0.08);
+.breathe-circle-wrap{
+  width:100%;
+  max-width:360px;
+  height:360px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:visible;
 }
-
-.palette-chip.active {
-  outline: 3px solid rgba(184,166,217,0.8);
+.breathe-circle{
+  width:170px;
+  height:170px;
+  border-radius:50%;
+  background: radial-gradient(circle,#d6c9ef,#b8a6d9);
+  animation:breathe 10s ease-in-out infinite;
+  transform-origin:center;
 }
-
-.colour-grid.big {
-  display: grid;
-  grid-template-columns: repeat(14, 1fr);
-  gap: 6px;
+@keyframes breathe{
+  0%{ transform:scale(1); opacity:0.85; }
+  40%{ transform:scale(1.45); opacity:1; }
+  60%{ transform:scale(1.45); opacity:1; }
+  100%{ transform:scale(1); opacity:0.85; }
 }
-
-.cell {
-  aspect-ratio: 1 / 1;
-  background: var(--lavender-soft);
-  border-radius: 10px;
-  position: relative;
+.breathe-text{
+  font-size:18px;
+  font-weight:800;
+  color:#5a4b7a;
+  text-align:center;
 }
-
-.cell .num {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  font-weight: 800;
-  color: rgba(90,75,122,0.5);
-}
-
-.cell.filled .num { display: none; }
 
 /* ===============================
-   Night mode (toggle)
+   Tap-to-colour (UI scaffolding)
+================================ */
+.section-title{ font-weight:800; color:#5a4b7a; margin-bottom:10px; }
+.design-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
+.design-tile{
+  background: rgba(255,255,255,0.85);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  padding: 12px;
+  cursor: pointer;
+  display:flex;
+  gap:12px;
+  align-items:center;
+}
+.design-tile.active{
+  outline: 3px solid rgba(184,166,217,0.7);
+  background: rgba(239,233,248,0.95);
+}
+.design-preview{
+  width:56px; height:56px;
+  border-radius:14px;
+  background: rgba(239,233,248,0.9);
+  display:grid;
+  grid-template-columns:repeat(10,1fr);
+  gap:1px;
+  padding:6px;
+}
+.preview-dot{ width:100%; aspect-ratio:1/1; border-radius:2px; background: rgba(90,75,122,0.14); }
+.preview-dot.off{ background: transparent; }
+.design-title{ font-weight:800; }
+.design-sub{ font-size:12px; color:var(--muted); margin-top:2px; }
+
+.mode-row{ display:flex; gap:10px; margin-top:12px; }
+.mode-btn{
+  flex:1;
+  padding:12px;
+  border-radius:14px;
+  border:none;
+  background: rgba(239,233,248,0.92);
+  box-shadow: var(--shadow);
+  font-weight:800;
+  color:#5a4b7a;
+}
+.mode-btn.active{
+  outline: 3px solid rgba(184,166,217,0.7);
+  background: rgba(255,255,255,0.92);
+}
+
+.palette-grid{
+  display:grid;
+  grid-template-columns:repeat(8,1fr);
+  gap:10px;
+  margin-top:10px;
+}
+.palette-chip{
+  position:relative;
+  aspect-ratio:1/1;
+  border-radius:999px;
+  border:2px solid rgba(0,0,0,0.08);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.06);
+}
+.palette-chip.active{ outline:3px solid rgba(184,166,217,0.8); }
+.palette-num{
+  position:absolute;
+  inset:auto 0 0 0;
+  text-align:center;
+  font-weight:800;
+  font-size:12px;
+  color: rgba(63,58,74,0.70);
+  padding-bottom:4px;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.6);
+}
+
+.tool-row{ display:flex; gap:10px; margin-top:12px; }
+.tool-btn{
+  flex:1;
+  padding:12px;
+  border-radius:14px;
+  border:none;
+  background: rgba(239,233,248,0.92);
+  box-shadow: var(--shadow);
+  font-weight:800;
+  color:#5a4b7a;
+}
+.tool-btn.danger{ background: rgba(244,194,194,0.6); }
+
+.grid-wrap{ display:flex; justify-content:center; padding:10px 0 6px; }
+.colour-grid.big{ display:grid; grid-template-columns:repeat(14,1fr); gap:6px; width:100%; max-width:420px; }
+.cell{
+  aspect-ratio:1/1;
+  background: var(--lavender-soft);
+  border-radius:10px;
+  position:relative;
+}
+.cell .num{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:12px;
+  font-weight:800;
+  color: rgba(90,75,122,0.55);
+}
+.cell.filled .num{ display:none; }
+
+/* ===============================
+   Night mode
 ================================ */
 body.night {
   background: #0f0e14;
@@ -346,7 +463,6 @@ body.night .primary {
   box-shadow: 0 10px 24px rgba(0,0,0,0.35);
 }
 
-/* Darker home overlay */
 body.night.home-body {
   background:
     linear-gradient(rgba(15,14,20,0.82), rgba(15,14,20,0.82)),
@@ -355,54 +471,35 @@ body.night.home-body {
   background-position: center;
 }
 
-body.night .primary-card {
-  background: rgba(255,255,255,0.08);
-  color: rgba(245,242,255,0.92);
-}
-
+body.night .primary-card { background: rgba(255,255,255,0.08); color: rgba(245,242,255,0.92); }
 body.night .pc-title { color: rgba(245,242,255,0.92); }
 body.night .pc-sub { color: rgba(245,242,255,0.62); }
 
-body.night .mini-tile {
-  background: rgba(255,255,255,0.07);
-  color: rgba(245,242,255,0.92);
-}
-
+body.night .mini-tile { background: rgba(255,255,255,0.07); color: rgba(245,242,255,0.92); }
 body.night .mini-text { color: rgba(245,242,255,0.86); }
 body.night .help-link { color: rgba(245,242,255,0.84); }
 
-/* Bottom nav in night mode */
 body.night .bottom-nav {
   background: rgba(20,18,28,0.92);
   box-shadow: 0 -6px 18px rgba(0,0,0,0.45);
 }
-
 body.night .bottom-nav a { color: rgba(245,242,255,0.55); }
 body.night .bottom-nav a.active { color: rgba(245,242,255,0.92); }
 
-/* Moon button night style */
 body.night .theme-fab {
   background: rgba(255,255,255,0.10);
   box-shadow: 0 10px 24px rgba(0,0,0,0.45);
   color: rgba(245,242,255,0.92);
 }
 
-/* Quotes night style */
-body.night .quote-tile {
-  background: rgba(255,255,255,0.07);
-  color: rgba(245,242,255,0.92);
-}
-
+body.night .quote-tile { background: rgba(255,255,255,0.07); color: rgba(245,242,255,0.92); }
 body.night .quote-tile small { color: rgba(245,242,255,0.62); }
 body.night .quote-tile.saved { outline: 3px solid rgba(184,166,217,0.55); }
 
-/* Tap-to-colour night style */
 body.night .cell { background: rgba(255,255,255,0.06); }
 body.night .cell .num { color: rgba(245,242,255,0.45); }
 
-/* ===============================
-   Small screens
-================================ */
+/* Small screens */
 @media (max-width: 380px) {
   .page-header h1 { font-size: 24px; }
 }
