@@ -1,121 +1,459 @@
+:root{
+  --lavender:#b8a6d9;
+  --lavender-soft:#efe9f8;
+  --ink:#4a4458;
+  --muted:#8b86a0;
+  --bg:#faf7ff;
+
+  --shadow:0 10px 24px rgba(0,0,0,0.08);
+  --shadow-dark:0 10px 24px rgba(0,0,0,0.45);
+
+  --radius-xl:26px;
+  --radius-lg:20px;
+  --radius-md:16px;
+}
+
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+  margin:0;
+  padding:0;
+  height:100%;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",Inter,sans-serif;
+}
+
+body{
+  background:var(--bg);
+  color:var(--ink);
+  min-height:100vh;
+}
+
 /* ===============================
-   HOME LAYOUT FIX (no overlap)
-   paste at END of style.css
+   Page wrapper & content
 ================================ */
-
-.home-main{
-  min-height: calc(100vh - 220px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 18px 18px calc(140px + env(safe-area-inset-bottom));
+.page-wrap{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
 }
 
-.home-stack{
-  width: 100%;
-  max-width: 520px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
+.page{
+  flex:1;
+  padding:12px 18px calc(130px + env(safe-area-inset-bottom));
 }
 
-/* Big top card */
-.primary-card{
-  display: block;
-  width: 100%;
-  padding: 18px 18px;
-  border-radius: 26px;
-  background: rgba(255,255,255,0.88);
-  box-shadow: 0 10px 24px rgba(0,0,0,0.08);
-  text-decoration: none;
-  overflow: hidden;
+/* ===============================
+   Header
+================================ */
+.page-header{
+  padding:64px 20px 18px;
+  text-align:center;
 }
 
-.primary-card .pc-title{
-  font-weight: 900;
-  font-size: 18px;
-  color: #5a4b7a;
-  margin: 0 0 6px 0;
+.page-header h1{
+  margin:0;
+  font-size:28px;
+  font-weight:900;
+  color:#5a4b7a;
 }
 
-.primary-card .pc-sub{
-  margin: 0;
-  color: #8b86a0;
-  font-size: 13px;
+.page-header p{
+  margin-top:6px;
+  font-size:14px;
+  color:var(--muted);
 }
 
-/* 2x2 grid for small buttons */
-.home-grid-min{
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
+/* ===============================
+   Top-right moon toggle
+================================ */
+.theme-toggle-top{
+  position:fixed;
+  top:calc(12px + env(safe-area-inset-top));
+  right:14px;
+  width:42px;
+  height:42px;
+  border-radius:999px;
+  border:none;
+  background:rgba(255,255,255,0.85);
+  box-shadow:var(--shadow);
+  font-size:18px;
+  line-height:1;
+  cursor:pointer;
+  z-index:100;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 
-/* Small tiles */
-.mini-tile{
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  padding: 14px 14px;
-  border-radius: 20px;
-  background: rgba(255,255,255,0.86);
-  box-shadow: 0 10px 24px rgba(0,0,0,0.08);
-  text-decoration: none;
-  color: #5a4b7a;
-  font-weight: 800;
-  overflow: hidden;
+.theme-toggle-top:active{
+  transform:scale(0.95);
 }
 
-.mini-ico{
-  font-size: 18px;
-  line-height: 1;
-  width: 24px;
-  text-align: center;
+/* ===============================
+   Cards / inputs / buttons
+================================ */
+.card{
+  background:rgba(255,255,255,0.88);
+  border-radius:var(--radius-lg);
+  box-shadow:var(--shadow);
+  padding:16px;
+  margin-bottom:14px;
 }
 
-.mini-text{
-  font-size: 16px;
-  line-height: 1.1;
+input,textarea,select{
+  width:100%;
+  padding:14px;
+  border-radius:16px;
+  border:1px solid rgba(0,0,0,0.10);
+  font-size:16px;
+  background:#fff;
+  color:var(--ink);
 }
 
-/* Help link at bottom (no overlap) */
-.help-link{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  width: 100%;
-  padding: 14px 14px;
-  border-radius: 20px;
-  background: rgba(255,255,255,0.80);
-  box-shadow: 0 10px 24px rgba(0,0,0,0.08);
-  text-decoration: none;
-  color: #5a4b7a;
-  font-weight: 900;
+textarea{
+  min-height:120px;
+  resize:none;
 }
 
-/* Make icon background softer */
+.primary{
+  width:100%;
+  border:none;
+  border-radius:var(--radius-lg);
+  padding:14px;
+  font-weight:900;
+  background:var(--lavender);
+  color:#fff;
+  box-shadow:var(--shadow);
+  font-size:15px;
+}
+
+.primary:active{ transform:scale(0.99); }
+
+.gentle-text{
+  margin-top:10px;
+  text-align:center;
+  color:var(--muted);
+  font-size:13px;
+}
+
+/* ===============================
+   Back button
+================================ */
+.back-btn{
+  position:absolute;
+  left:14px;
+  top:calc(16px + env(safe-area-inset-top));
+  width:44px;
+  height:44px;
+  border-radius:999px;
+  border:none;
+  background:rgba(255,255,255,0.75);
+  box-shadow:var(--shadow);
+  font-size:18px;
+  font-weight:900;
+  color:#5a4b7a;
+  z-index:101;
+}
+
+.back-btn:active{ transform:scale(0.98); }
+
+/* ===============================
+   HOME background + layout FIX
+================================ */
 .home-body{
   background:
     radial-gradient(circle at 50% 30%, rgba(250,247,255,0.94), rgba(250,247,255,0.94)),
     url("/Enigma-/icon.png");
-  background-size: cover;
-  background-position: center;
+  background-size:cover;
+  background-position:center;
+  min-height:100vh;
 }
 
-/* Night mode home cards */
+/* Centers home content and prevents overlap */
+.home-main{
+  min-height: calc(100vh - 220px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:18px 18px calc(140px + env(safe-area-inset-bottom));
+}
+
+.home-stack{
+  width:100%;
+  max-width:520px;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+
+/* Large top card */
+.primary-card{
+  display:block;
+  width:100%;
+  padding:18px 18px;
+  border-radius:var(--radius-xl);
+  background:rgba(255,255,255,0.88);
+  box-shadow:var(--shadow);
+  text-decoration:none;
+  overflow:hidden;
+}
+
+.primary-card .pc-title{
+  font-weight:900;
+  font-size:18px;
+  color:#5a4b7a;
+  margin:0 0 6px 0;
+}
+
+.primary-card .pc-sub{
+  margin:0;
+  color:var(--muted);
+  font-size:13px;
+}
+
+/* 2x2 grid */
+.home-grid-min{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+/* small tiles */
+.mini-tile{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  width:100%;
+  padding:14px 14px;
+  border-radius:var(--radius-lg);
+  background:rgba(255,255,255,0.86);
+  box-shadow:var(--shadow);
+  text-decoration:none;
+  color:#5a4b7a;
+  font-weight:800;
+  overflow:hidden;
+}
+
+.mini-ico{
+  font-size:18px;
+  line-height:1;
+  width:24px;
+  text-align:center;
+}
+
+.mini-text{
+  font-size:16px;
+  line-height:1.1;
+}
+
+/* Help call-to-action */
+.help-link{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  width:100%;
+  padding:14px 14px;
+  border-radius:var(--radius-lg);
+  background:rgba(255,255,255,0.80);
+  box-shadow:var(--shadow);
+  text-decoration:none;
+  color:#5a4b7a;
+  font-weight:900;
+}
+
+/* ===============================
+   Bottom nav (fits everything)
+================================ */
+.bottom-nav{
+  position:fixed;
+  left:0;
+  right:0;
+  bottom:0;
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
+  padding:8px 6px calc(12px + env(safe-area-inset-bottom));
+  background:rgba(255,255,255,0.96);
+  box-shadow:0 -6px 18px rgba(0,0,0,0.08);
+  z-index:20;
+}
+
+.bottom-nav a{
+  flex:1;
+  text-align:center;
+  text-decoration:none;
+  font-size:10px;
+  color:var(--muted);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:3px;
+}
+
+.bottom-nav a.active{
+  color:#5a4b7a;
+  font-weight:800;
+}
+
+.nav-ico{
+  font-size:16px;
+  line-height:1;
+}
+
+/* ===============================
+   Quotes grid (if you use it)
+================================ */
+.quote-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+}
+
+.quote-tile{
+  background:rgba(255,255,255,0.86);
+  border-radius:var(--radius-lg);
+  box-shadow:var(--shadow);
+  padding:14px;
+  font-size:14px;
+  color:var(--ink);
+  user-select:none;
+}
+
+.quote-tile small{
+  display:block;
+  margin-top:8px;
+  color:var(--muted);
+}
+
+.quote-tile.saved{
+  outline:3px solid rgba(184,166,217,0.75);
+}
+
+/* ===============================
+   Breathe (if you use it)
+================================ */
+.breathe-area{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:18px;
+}
+
+.breathe-circle-wrap{
+  width:100%;
+  max-width:360px;
+  height:360px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:visible;
+}
+
+.breathe-circle{
+  width:170px;
+  height:170px;
+  border-radius:50%;
+  background:radial-gradient(circle,#d6c9ef,#b8a6d9);
+  animation:breathe 10s ease-in-out infinite;
+  transform-origin:center;
+}
+
+@keyframes breathe{
+  0%{ transform:scale(1); opacity:0.85; }
+  40%{ transform:scale(1.45); opacity:1; }
+  60%{ transform:scale(1.45); opacity:1; }
+  100%{ transform:scale(1); opacity:0.85; }
+}
+
+.breathe-text{
+  font-size:18px;
+  font-weight:900;
+  color:#5a4b7a;
+  text-align:center;
+}
+
+/* ===============================
+   NIGHT MODE
+================================ */
+body.night{
+  background:#0f0e14;
+  color:rgba(245,242,255,0.92);
+}
+
+body.night .page-header h1{
+  color:rgba(245,242,255,0.95);
+}
+
+body.night .page-header p{
+  color:rgba(245,242,255,0.60);
+}
+
+body.night .card,
 body.night .primary-card,
 body.night .mini-tile,
-body.night .help-link{
-  background: rgba(255,255,255,0.10);
-  box-shadow: 0 10px 24px rgba(0,0,0,0.45);
-  color: rgba(245,242,255,0.95);
+body.night .help-link,
+body.night .quote-tile{
+  background:rgba(255,255,255,0.10);
+  box-shadow:var(--shadow-dark);
+  color:rgba(245,242,255,0.95);
 }
+
 body.night .primary-card .pc-title,
 body.night .mini-tile{
-  color: rgba(245,242,255,0.95);
+  color:rgba(245,242,255,0.95);
 }
-body.night .primary-card .pc-sub{
-  color: rgba(245,242,255,0.65);
+
+body.night .primary-card .pc-sub,
+body.night .quote-tile small,
+body.night .gentle-text{
+  color:rgba(245,242,255,0.65);
+}
+
+body.night input,
+body.night textarea,
+body.night select{
+  background:rgba(255,255,255,0.06);
+  color:rgba(245,242,255,0.92);
+  border:1px solid rgba(255,255,255,0.14);
+}
+
+body.night .primary{
+  background:#6f5aa6;
+  box-shadow:var(--shadow-dark);
+}
+
+body.night .bottom-nav{
+  background:rgba(20,18,28,0.95);
+  box-shadow:0 -6px 18px rgba(0,0,0,0.45);
+}
+
+body.night .bottom-nav a{
+  color:rgba(245,242,255,0.60);
+}
+
+body.night .bottom-nav a.active{
+  color:rgba(245,242,255,0.95);
+}
+
+body.night .theme-toggle-top{
+  background:rgba(255,255,255,0.12);
+  color:rgba(245,242,255,0.95);
+  box-shadow:var(--shadow-dark);
+}
+
+body.night .back-btn{
+  background:rgba(255,255,255,0.12);
+  color:rgba(245,242,255,0.95);
+  box-shadow:var(--shadow-dark);
+}
+
+/* Tiny screens */
+@media (max-width:380px){
+  .nav-ico{ font-size:15px; }
+  .bottom-nav a{ font-size:9px; }
 }
