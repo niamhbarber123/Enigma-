@@ -4,7 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Tap to Colour • Enigma</title>
-  <link rel="stylesheet" href="style.css?v=10020" />
+  <link rel="icon" href="icon.png" />
+  <link rel="apple-touch-icon" href="icon.png" />
+  <link rel="stylesheet" href="style.css?v=10030" />
 </head>
 
 <body class="page-wrap">
@@ -29,7 +31,7 @@
         <button class="chip active" id="modeByNumber" type="button">Colour-by-number</button>
         <button class="chip" id="modeFree" type="button">Free colour</button>
       </div>
-      <div class="gentle-text" id="modeHint">Colour-by-number shows gentle guidance. Free colour hides numbers.</div>
+      <div class="gentle-text" id="modeHint">Colour-by-number: match the number. Free colour: colour anything (numbers hidden).</div>
     </div>
 
     <div class="card">
@@ -51,10 +53,12 @@
 
     <div class="card">
       <div class="section-title">Your page</div>
-      <div class="gentle-text">This area is ready for your colouring canvas/graphic (your existing logic can plug in here).</div>
-      <div id="canvasMount" style="height:240px;border-radius:18px;border:1px dashed rgba(184,166,217,0.55);
-           display:flex;align-items:center;justify-content:center;color:rgba(90,75,122,0.55);font-weight:800;">
-        Canvas loads here
+
+      <!-- REAL canvas mount -->
+      <div id="canvasMount" class="svg-wrap" aria-label="Colouring canvas"></div>
+
+      <div class="gentle-text" id="canvasTip">
+        Tip: in colour-by-number mode, pick the colour that matches the number shown on the shape.
       </div>
     </div>
   </main>
@@ -69,6 +73,6 @@
     <a href="progress.html"><div class="nav-ico">📈</div><span>Progress</span></a>
   </nav>
 
-  <script src="app.js?v=10020"></script>
+  <script src="app.js?v=10030"></script>
 </body>
 </html>
