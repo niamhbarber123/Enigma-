@@ -1,68 +1,39 @@
 /* =========================================================
    Enigma • app.js (FULL)
-   - Theme toggle (moon button #themeFab)
-   - Back helper (enigmaBack)
-   - Quotes tiles + save/unsave + daily shuffle
-   - Tap-to-Colour game (designs + palette + grid + save)
+   Theme + Back
+   Quotes tiles (save/unsave + daily shuffle)
+   Journal (save + view entries)
+   Breathe (inhale/exhale loop + completed)
+   Game (designs restored + modes + palette + simple colouring)
+   Music links (YouTube) + mood filter + minutes listened
 ========================================================= */
 
-/* =========================
-   Helpers
-========================= */
+/* ---------- Utilities ---------- */
 function $(id){ return document.getElementById(id); }
-function isoToday(){ return new Date().toISOString().split("T")[0]; }
-function safeParseJSON(str, fallback){
-  try{ return JSON.parse(str); } catch { return fallback; }
-}
-function getJSON(key, fallback){
-  return safeParseJSON(localStorage.getItem(key) || "", fallback);
-}
-function setJSON(key, value){
-  localStorage.setItem(key, JSON.stringify(value));
-}
 
-/* =========================
-   Back
-========================= */
 window.enigmaBack = function(){
   if (history.length > 1) history.back();
-  else window.location.href = "/Enigma-/index.html";
+  else window.location.href = "index.html";
 };
 
-/* =========================
-   Theme (Night mode)
-========================= */
-(function themeInit(){
-  function setIcon(){
-    const btn = $("themeFab");
-    if (!btn) return;
-    btn.textContent = document.body.classList.contains("night") ? "☀️" : "🌙";
-  }
-  function applyTheme(){
-    const saved = localStorage.getItem("enigmaTheme");
-    const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const useNight = saved ? (saved === "night") : prefersDark;
-    document.body.classList.toggle("night", useNight);
-    setIcon();
-  }
-  function toggleTheme(){
-    const isNight = document.body.classList.toggle("night");
-    localStorage.setItem("enigmaTheme", isNight ? "night" : "day");
-    setIcon();
-  }
-  window.toggleTheme = toggleTheme;
-
-  document.addEventListener("DOMContentLoaded", () => {
-    applyTheme();
-    const btn = $("themeFab");
-    if (!btn) return;
-    btn.addEventListener("click", (e)=>{ e.preventDefault(); toggleTheme(); }, { passive:false });
-    btn.addEventListener("touchend", (e)=>{ e.preventDefault(); toggleTheme(); }, { passive:false });
-  });
-})();
+/* ---------- Theme ---------- */
+function applyThemeFromStorage(){
+  const night = localStorage.getItem("enigmaNightMode") === "1";
+  document.body.classList.toggle("night", night);
+}
+function toggleTheme(){
+  const now = !(localStorage.getItem("enigmaNightMode") === "1");
+  localStorage.setItem("enigmaNightMode", now ? "1" : "0");
+  applyThemeFromStorage();
+}
+document.addEventListener("DOMContentLoaded", ()=>{
+  applyThemeFromStorage();
+  const themeFab = $("themeFab");
+  if (themeFab) themeFab.addEventListener("click", toggleTheme);
+});
 
 /* =========================================================
-   Quotes (tiles + save/unsave + daily shuffle)
+   QUOTES (tiles + save/unsave + daily shuffle)
 ========================================================= */
 const QUOTES = [
   { q:"Nothing can dim the light that shines from within.", a:"Maya Angelou" },
@@ -72,12 +43,12 @@ const QUOTES = [
   { q:"Power is not given to you. You have to take it.", a:"Beyoncé" },
   { q:"I have learned over the years that when one’s mind is made up, this diminishes fear.", a:"Rosa Parks" },
   { q:"If you don’t like the road you’re walking, start paving another one.", a:"Dolly Parton" },
-  { q:"My peace is my priority.", a:"Affirmation" }
+  { q:"My peace is my priority.", a:"Affirmation" },
+  { q:"You may not control all the events that happen to you, but you can decide not to be reduced by them.", a:"Maya Angelou" },
+  { q:"Think like a queen. A queen is not afraid to fail.", a:"Oprah Winfrey" }
 ];
 
-function quoteId(item){
-  return `${item.a}::${item.q}`;
-}
+function quoteId(item){ return `${item.a}::${item.q}`; }
 
 // deterministic RNG
 function mulberry32(seed){
@@ -88,9 +59,8 @@ function mulberry32(seed){
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
   };
 }
-
 function dailyShuffledQuotes(list){
-  const today = isoToday(); // YYYY-MM-DD
+  const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
   const seed = parseInt(today.replaceAll("-", ""), 10) || 20260101;
   const rand = mulberry32(seed);
 
@@ -104,9 +74,9 @@ function dailyShuffledQuotes(list){
 
 function initQuotes(){
   const grid = $("quoteGrid");
-  if (!grid) return; // only on quotes page
+  if (!grid) return;
 
-  const saved = new Set(getJSON("enigmaSavedQuotesV2", []));
+  const saved = new Set(JSON.parse(localStorage.getItem("enigmaSavedQuotesV2") || "[]"));
   const savedCount = $("savedCount");
   if (savedCount) savedCount.textContent = String(saved.size);
 
@@ -130,17 +100,14 @@ function initQuotes(){
       e.preventDefault();
       if (saved.has(id)) saved.delete(id);
       else saved.add(id);
-      setJSON("enigmaSavedQuotesV2", Array.from(saved));
+
+      localStorage.setItem("enigmaSavedQuotesV2", JSON.stringify(Array.from(saved)));
       tile.classList.toggle("saved", saved.has(id));
       if (savedCount) savedCount.textContent = String(saved.size);
     };
 
     tile.addEventListener("click", toggle, { passive:false });
     tile.addEventListener("touchend", toggle, { passive:false });
-    tile.addEventListener("keydown", (e)=>{
-      if (e.key === "Enter" || e.key === " ") toggle(e);
-    });
-
     grid.appendChild(tile);
   });
 
@@ -164,275 +131,420 @@ function initQuotes(){
 }
 
 /* =========================================================
-   Tap-to-Colour Game (designs restored)
+   JOURNAL (save + view entries)
 ========================================================= */
-const GAME_KEY = "enigmaGameV1";
-let gameState = {
-  designId: "mandala",
-  mode: "number", // number | free
-  selectedColour: "#d9d2ff",
-  selectedNumber: 1,
-  cells: {} // key "r,c" -> colour
+function initJournal(){
+  const text = $("journalText");
+  const saveBtn = $("saveEntryBtn");
+  const viewBtn = $("viewEntriesBtn");
+  const clearBtn = $("clearEntriesBtn");
+  const msg = $("journalMsg");
+  const entriesCard = $("entriesCard");
+  const grid = $("entriesGrid");
+  if (!text || !saveBtn || !viewBtn || !clearBtn || !msg || !entriesCard || !grid) return;
+
+  const KEY = "enigmaJournalEntriesV1";
+
+  function load(){
+    try { return JSON.parse(localStorage.getItem(KEY) || "[]"); }
+    catch { return []; }
+  }
+  function store(list){ localStorage.setItem(KEY, JSON.stringify(list)); }
+
+  function render(){
+    const entries = load();
+    grid.innerHTML = "";
+    entries.slice().reverse().forEach(e=>{
+      const tile = document.createElement("div");
+      tile.className = "entry-tile";
+      tile.innerHTML = `
+        <h3>${e.date}</h3>
+        <p>${(e.text || "").replace(/</g,"&lt;").replace(/>/g,"&gt;")}</p>
+        <small>${e.time}</small>
+      `;
+      grid.appendChild(tile);
+    });
+    msg.textContent = entries.length ? `You have ${entries.length} saved entries.` : "No entries yet.";
+  }
+
+  saveBtn.addEventListener("click", ()=>{
+    const val = (text.value || "").trim();
+    if (!val) { msg.textContent = "Write something first."; return; }
+
+    const now = new Date();
+    const entry = {
+      text: val,
+      date: now.toLocaleDateString(),
+      time: now.toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"})
+    };
+
+    const entries = load();
+    entries.push(entry);
+    store(entries);
+    text.value = "";
+    msg.textContent = "Saved ✅";
+    render();
+  });
+
+  viewBtn.addEventListener("click", ()=>{
+    entriesCard.style.display = entriesCard.style.display === "none" ? "block" : "none";
+    render();
+  });
+
+  clearBtn.addEventListener("click", ()=>{
+    if (!confirm("Delete all journal entries?")) return;
+    localStorage.removeItem(KEY);
+    render();
+    msg.textContent = "Deleted ✅";
+  });
+
+  render();
+}
+
+/* =========================================================
+   BREATHE (bigger + wording changes)
+========================================================= */
+window.markBreatheDone = function(){
+  const key = "enigmaBreatheDoneCount";
+  const v = parseInt(localStorage.getItem(key) || "0", 10) + 1;
+  localStorage.setItem(key, String(v));
+  const msg = $("breatheDoneMsg");
+  if (msg) msg.textContent = `Completed ✅ (${v} total)`;
 };
-let undoStack = [];
 
-const COLOURS = [
-  {n:1,c:"#d9d2ff"},{n:2,c:"#b8a6d9"},{n:3,c:"#efe9f8"},{n:4,c:"#b8e0d2"},
-  {n:5,c:"#8fcfbf"},{n:6,c:"#a8d8ff"},{n:7,c:"#7fb5e6"},{n:8,c:"#ffd5c7"},
-  {n:9,c:"#f4c2c2"},{n:10,c:"#ffeaa6"},{n:11,c:"#d6c9ef"},{n:12,c:"#cfd9d6"},
-  {n:13,c:"#ffffff"},{n:14,c:"#f2eff8"},{n:15,c:"#cbbfff"},{n:16,c:"#9ad0d6"}
+function initBreathe(){
+  const stage = $("breatheStage");
+  const text = $("breatheText");
+  const startBtn = $("breatheStartBtn");
+  const stopBtn = $("breatheStopBtn");
+  if (!stage || !text || !startBtn || !stopBtn) return;
+
+  let running = false;
+  let timer = null;
+
+  function setPhase(phase){
+    stage.classList.remove("inhale","exhale");
+    stage.classList.add(phase);
+    text.textContent = phase === "inhale" ? "Inhale" : "Exhale";
+  }
+
+  function loop(){
+    if (!running) return;
+    setPhase("inhale");
+    timer = setTimeout(()=>{
+      if (!running) return;
+      setPhase("exhale");
+      timer = setTimeout(loop, 4000);
+    }, 4000);
+  }
+
+  startBtn.addEventListener("click", ()=>{
+    if (running) return;
+    running = true;
+    loop();
+  });
+
+  stopBtn.addEventListener("click", ()=>{
+    running = false;
+    clearTimeout(timer);
+    stage.classList.remove("inhale","exhale");
+    stage.classList.add("inhale");
+    text.textContent = "Ready";
+  });
+
+  text.textContent = "Ready";
+}
+
+/* =========================================================
+   GAME (designs restored + free-mode hides numbers)
+========================================================= */
+const COLOUR_DESIGNS = [
+  { id:"mandala", name:"Mandala" },
+  { id:"flower", name:"Flower" },
+  { id:"butterfly", name:"Butterfly" },
+  { id:"waves", name:"Waves" },
+  { id:"heart", name:"Heart" },
+  { id:"sunrise", name:"Sunrise" }
 ];
 
-const DESIGNS = [
-  { id:"mandala", name:"Mandala", desc:"Balanced calm" },
-  { id:"flower", name:"Flower", desc:"Soft petals" },
-  { id:"waves", name:"Waves", desc:"Flow gently" },
-  { id:"heart", name:"Heart", desc:"Self kindness" },
-  { id:"sunrise", name:"Sunrise", desc:"A fresh start" },
-  { id:"butterfly", name:"Butterfly", desc:"Light & hopeful" }
+const PALETTE = [
+  "#d8cdf3", "#b8a6d9", "#efe9f8", "#c7eadc",
+  "#9ed9c8", "#b8e0ff", "#7fb5ff", "#ffd6cc",
+  "#f7c0c8", "#ffe8a8", "#c9c2ff", "#b6b0e8"
 ];
 
-function loadGame(){
-  const saved = getJSON(GAME_KEY, null);
-  if (saved && typeof saved === "object"){
-    gameState = { ...gameState, ...saved };
-  }
-}
-function saveGame(){
-  setJSON(GAME_KEY, gameState);
-}
-function setGameMsg(msg){
-  const el = $("saveMsg");
-  if (el) el.textContent = msg;
-}
-
-// number pattern per design (simple but looks structured)
-function numberAt(r,c){
-  const x = r - 6.5;
-  const y = c - 6.5;
-  const d = Math.sqrt(x*x + y*y);
-
-  switch (gameState.designId){
-    case "mandala":
-      return Math.max(1, Math.min(12, Math.floor(d) + 1));
-    case "flower":
-      return ((r*3 + c*2) % 10) + 1;
-    case "waves":
-      return 6 + (Math.floor((Math.sin(c/2) + 1) * 2) + (r % 2)); // 6-11ish
-    case "heart":
-      return ((r + c) % 8) + 1;
-    case "sunrise":
-      return (r < 5) ? 10 : (r < 9 ? 11 : 7);
-    case "butterfly":
-      return ((Math.abs(6.5 - c) + r) % 9) + 1;
-    default:
-      return ((r + c) % 12) + 1;
-  }
-}
-
-function renderDesigns(){
-  const wrap = $("designGrid");
-  if (!wrap) return;
-
-  wrap.innerHTML = "";
-  DESIGNS.forEach(d=>{
-    const tile = document.createElement("div");
-    tile.className = "design-tile" + (d.id === gameState.designId ? " active" : "");
-
-    const preview = document.createElement("div");
-    preview.className = "design-preview";
-    for (let i=0;i<100;i++){
-      const dot = document.createElement("div");
-      dot.className = "preview-dot";
-      if (i % 7 === 0) dot.style.background = "rgba(90,75,122,0.22)";
-      preview.appendChild(dot);
-    }
-
-    const text = document.createElement("div");
-    text.innerHTML = `<div class="design-title">${d.name}</div><div class="design-sub">${d.desc}</div>`;
-
-    tile.appendChild(preview);
-    tile.appendChild(text);
-
-    const pick = (e)=>{
-      e.preventDefault();
-      gameState.designId = d.id;
-      undoStack = [];
-      saveGame();
-      document.querySelectorAll(".design-tile").forEach(x=>x.classList.remove("active"));
-      tile.classList.add("active");
-      renderGrid();
-      setGameMsg("Design loaded ✨");
-    };
-
-    tile.addEventListener("click", pick, { passive:false });
-    tile.addEventListener("touchend", pick, { passive:false });
-
-    wrap.appendChild(tile);
-  });
-}
-
-function renderPalette(){
-  const pal = $("palette");
-  if (!pal) return;
-
-  pal.innerHTML = "";
-  COLOURS.forEach(col=>{
-    const chip = document.createElement("div");
-    chip.className = "palette-chip" + (col.c === gameState.selectedColour ? " active" : "");
-    chip.style.background = col.c;
-
-    const num = document.createElement("div");
-    num.className = "palette-num";
-    num.textContent = String(col.n);
-    chip.appendChild(num);
-
-    const choose = (e)=>{
-      e.preventDefault();
-      gameState.selectedColour = col.c;
-      gameState.selectedNumber = col.n;
-      saveGame();
-      document.querySelectorAll(".palette-chip").forEach(x=>x.classList.remove("active"));
-      chip.classList.add("active");
-      setGameMsg(gameState.mode === "number"
-        ? `Selected ${col.n}. Tap tiles numbered ${col.n}.`
-        : "Selected colour."
-      );
-    };
-
-    chip.addEventListener("click", choose, { passive:false });
-    chip.addEventListener("touchend", choose, { passive:false });
-
-    pal.appendChild(chip);
-  });
-}
-
-function renderGrid(){
-  const grid = $("grid");
-  if (!grid) return;
-
-  grid.innerHTML = "";
-  for (let r=0;r<14;r++){
-    for (let c=0;c<14;c++){
-      const key = `${r},${c}`;
-      const num = numberAt(r,c);
-
-      const cell = document.createElement("div");
-      cell.className = "cell";
-
-      const saved = gameState.cells[key];
-      if (saved){
-        cell.style.background = saved;
-        cell.classList.add("filled");
-      }
-
-      const label = document.createElement("div");
-      label.className = "num";
-      label.textContent = String(num);
-      cell.appendChild(label);
-
-      const paint = (e)=>{
-        e.preventDefault();
-        const prev = gameState.cells[key] || "";
-        undoStack.push({ key, prev });
-
-        if (gameState.mode === "number" && num !== gameState.selectedNumber){
-          setGameMsg(`That tile is ${num}. Select ${num} to fill it.`);
-          return;
-        }
-
-        if (!gameState.selectedColour){
-          delete gameState.cells[key];
-          cell.style.background = "";
-          cell.classList.remove("filled");
-        } else {
-          gameState.cells[key] = gameState.selectedColour;
-          cell.style.background = gameState.selectedColour;
-          cell.classList.add("filled");
-        }
-
-        saveGame();
-      };
-
-      cell.addEventListener("click", paint, { passive:false });
-      cell.addEventListener("touchend", paint, { passive:false });
-
-      grid.appendChild(cell);
-    }
-  }
-}
+let gameState = {
+  designId: null,
+  mode: "number", // "number" or "free"
+  selectedColor: PALETTE[0],
+  lastPaint: null,
+  history: []
+};
 
 function setColourMode(mode){
   gameState.mode = mode;
-  saveGame();
-  $("modeNumberBtn")?.classList.toggle("active", mode === "number");
-  $("modeFreeBtn")?.classList.toggle("active", mode === "free");
-  setGameMsg(mode === "number"
-    ? "Colour-by-number: pick a number, then tap matching tiles."
-    : "Free colour: pick any colour and tap tiles."
-  );
+  const grid = $("grid");
+  if (grid){
+    grid.classList.toggle("free-mode", mode === "free");
+  }
+  const nBtn = $("modeNumberBtn");
+  const fBtn = $("modeFreeBtn");
+  if (nBtn) nBtn.classList.toggle("active", mode === "number");
+  if (fBtn) fBtn.classList.toggle("active", mode === "free");
 }
-window.setColourMode = setColourMode;
+
+function buildPalette(){
+  const wrap = $("palette");
+  if (!wrap) return;
+  wrap.innerHTML = "";
+  PALETTE.forEach((c, idx)=>{
+    const d = document.createElement("div");
+    d.className = "palette-chip" + (c === gameState.selectedColor ? " active" : "");
+    d.style.background = c;
+    d.innerHTML = `<div class="palette-num">${idx+1}</div>`;
+    d.addEventListener("click", ()=>{
+      gameState.selectedColor = c;
+      buildPalette();
+    });
+    wrap.appendChild(d);
+  });
+}
+
+function buildGrid(){
+  const grid = $("grid");
+  const msg = $("saveMsg");
+  if (!grid) return;
+
+  grid.innerHTML = "";
+  // Simple 14x14 grid; numbers 1..5 for colour-by-number
+  const size = 14;
+  for(let i=0; i<size*size; i++){
+    const cell = document.createElement("div");
+    cell.className = "cell";
+    const n = (i % 5) + 1;
+    cell.dataset.num = String(n);
+    cell.innerHTML = `<span class="num">${n}</span>`;
+    cell.addEventListener("click", ()=> paintCell(cell));
+    grid.appendChild(cell);
+  }
+  if (msg) msg.textContent = "Tap cells to colour.";
+}
+
+function paintCell(cell){
+  if (!cell) return;
+
+  // if mode is "number", allow any colour (kept simple)
+  // if mode is "free", allow any colour too, but hide numbers via CSS class
+  const prev = cell.style.backgroundColor || "";
+  cell.style.backgroundColor = gameState.selectedColor;
+  cell.classList.add("filled");
+
+  gameState.history.push({ cellIndex: Array.from(cell.parentNode.children).indexOf(cell), prev });
+}
 
 window.enigmaUndo = function(){
-  const last = undoStack.pop();
+  const grid = $("grid");
+  if (!grid) return;
+  const last = gameState.history.pop();
   if (!last) return;
-  if (last.prev) gameState.cells[last.key] = last.prev;
-  else delete gameState.cells[last.key];
-  saveGame();
-  renderGrid();
-  setGameMsg("Undone ↩︎");
+
+  const cell = grid.children[last.cellIndex];
+  if (!cell) return;
+
+  cell.style.backgroundColor = last.prev;
+  if (!last.prev) cell.classList.remove("filled");
 };
-// add inside setColourMode(mode) after setting gameState.mode
-const grid = document.getElementById("grid");
-if (grid){
-  grid.classList.toggle("free-mode", mode === "free");
-}
 
 window.enigmaEraser = function(){
-  gameState.selectedColour = "";
-  saveGame();
-  setGameMsg("Eraser selected 🧼 Tap a tile to clear it.");
+  gameState.selectedColor = "";
+  buildPalette();
 };
 
 window.enigmaClear = function(){
-  if (!confirm("Clear your colouring?")) return;
-  gameState.cells = {};
-  undoStack = [];
-  saveGame();
-  renderGrid();
-  setGameMsg("Cleared ✨");
+  const grid = $("grid");
+  if (!grid) return;
+  Array.from(grid.children).forEach(cell=>{
+    cell.style.backgroundColor = "";
+    cell.classList.remove("filled");
+  });
+  gameState.history = [];
 };
 
 window.markColouringComplete = function(){
-  localStorage.setItem("enigmaColourComplete", isoToday());
-  setGameMsg("Completed 🎉 Saved for today.");
+  const key = "enigmaColourComplete";
+  const v = parseInt(localStorage.getItem(key) || "0", 10) + 1;
+  localStorage.setItem(key, String(v));
+  const msg = $("saveMsg");
+  if (msg) msg.textContent = `Completed ✅ (${v} total)`;
 };
 
-function initGame(){
-  // Only run on game page
-  if (!$("designGrid") || !$("palette") || !$("grid")) return;
-
-  loadGame();
-  renderDesigns();
-  renderPalette();
-  renderGrid();
-
-  // Mode buttons
-  $("modeNumberBtn")?.addEventListener("click", ()=> setColourMode("number"));
-  $("modeFreeBtn")?.addEventListener("click", ()=> setColourMode("free"));
-
-  // initial mode UI
-  $("modeNumberBtn")?.classList.toggle("active", gameState.mode === "number");
-  $("modeFreeBtn")?.classList.toggle("active", gameState.mode === "free");
-
-  setGameMsg("Ready ✅");
+function loadDesign(id){
+  gameState.designId = id;
+  buildGrid();
 }
 
-/* =========================
-   Boot
-========================= */
-document.addEventListener("DOMContentLoaded", () => {
+function initGame(){
+  const designGrid = $("designGrid");
+  if (!designGrid) return;
+
+  // designs
+  designGrid.innerHTML = "";
+  COLOUR_DESIGNS.forEach(d=>{
+    const btn = document.createElement("button");
+    btn.className = "design-tile";
+    btn.type = "button";
+    btn.textContent = d.name;
+    btn.addEventListener("click", ()=>{
+      document.querySelectorAll(".design-tile").forEach(b=>b.classList.remove("active"));
+      btn.classList.add("active");
+      loadDesign(d.id);
+    });
+    designGrid.appendChild(btn);
+  });
+
+  // mode
+  const nBtn = $("modeNumberBtn");
+  const fBtn = $("modeFreeBtn");
+  if (nBtn) nBtn.addEventListener("click", ()=> setColourMode("number"));
+  if (fBtn) fBtn.addEventListener("click", ()=> setColourMode("free"));
+
+  setColourMode("number");
+  buildPalette();
+}
+
+/* =========================================================
+   MUSIC LINKS (YouTube) + mood + minutes listened
+========================================================= */
+const MUSIC_LINKS = [
+  { mood:"anxious", title:"Calm breathing music (1 hour)", url:"https://www.youtube.com/results?search_query=calm+breathing+music+1+hour" },
+  { mood:"stressed", title:"Relaxing piano for stress", url:"https://www.youtube.com/results?search_query=relaxing+piano+for+stress" },
+  { mood:"low", title:"Gentle uplifting ambient", url:"https://www.youtube.com/results?search_query=gentle+uplifting+ambient+music" },
+  { mood:"focus", title:"Lo-fi focus mix", url:"https://www.youtube.com/results?search_query=lofi+focus+mix" },
+  { mood:"sleep", title:"Sleep music (dark screen)", url:"https://www.youtube.com/results?search_query=sleep+music+dark+screen" },
+  { mood:"all", title:"Nature sounds playlist", url:"https://www.youtube.com/results?search_query=nature+sounds+playlist" },
+  { mood:"all", title:"Meditation music playlist", url:"https://www.youtube.com/results?search_query=meditation+music+playlist" }
+];
+
+const LISTEN_KEY = "enigmaListenMinutesV1";
+const LISTEN_TODAY_KEY = "enigmaListenMinutesTodayV1";
+const LISTEN_DATE_KEY = "enigmaListenMinutesDateV1";
+const LISTEN_SESSION_KEY = "enigmaListenSessionStartV1";
+
+function ensureToday(){
+  const today = new Date().toISOString().split("T")[0];
+  const savedDate = localStorage.getItem(LISTEN_DATE_KEY);
+  if (savedDate !== today){
+    localStorage.setItem(LISTEN_DATE_KEY, today);
+    localStorage.setItem(LISTEN_TODAY_KEY, "0");
+  }
+}
+
+function getMinutes(key){
+  return parseInt(localStorage.getItem(key) || "0", 10);
+}
+function setMinutes(key, val){
+  localStorage.setItem(key, String(Math.max(0, Math.floor(val))));
+}
+
+function updateMinutesUI(){
+  const todayEl = $("todayMinutes");
+  const totalEl = $("totalMinutes");
+  if (todayEl) todayEl.textContent = String(getMinutes(LISTEN_TODAY_KEY));
+  if (totalEl) totalEl.textContent = String(getMinutes(LISTEN_KEY));
+}
+
+function startSession(){
+  if (localStorage.getItem(LISTEN_SESSION_KEY)) return;
+  localStorage.setItem(LISTEN_SESSION_KEY, String(Date.now()));
+  const s = $("sessionStatus");
+  if (s) s.textContent = "Session started. Tap a link, then press End session when finished.";
+}
+
+function endSession(){
+  const start = parseInt(localStorage.getItem(LISTEN_SESSION_KEY) || "0", 10);
+  if (!start){
+    const s = $("sessionStatus");
+    if (s) s.textContent = "No active session.";
+    return;
+  }
+  const mins = Math.max(1, Math.round((Date.now() - start) / 60000));
+  localStorage.removeItem(LISTEN_SESSION_KEY);
+
+  setMinutes(LISTEN_TODAY_KEY, getMinutes(LISTEN_TODAY_KEY) + mins);
+  setMinutes(LISTEN_KEY, getMinutes(LISTEN_KEY) + mins);
+
+  updateMinutesUI();
+  const s = $("sessionStatus");
+  if (s) s.textContent = `Saved ${mins} minute(s) ✅`;
+}
+
+function renderMusicLinks(mood){
+  const wrap = $("soundLinks");
+  if (!wrap) return;
+
+  wrap.innerHTML = "";
+  const list = MUSIC_LINKS.filter(x => mood === "all" ? true : (x.mood === mood || x.mood === "all"));
+
+  list.forEach(item=>{
+    const a = document.createElement("a");
+    a.className = "sound-link";
+    a.href = item.url;
+    a.target = "_blank";
+    a.rel = "noopener";
+    a.textContent = item.title;
+
+    // ensure iPhone registers it as direct tap
+    a.addEventListener("click", ()=>{
+      document.querySelectorAll(".sound-link").forEach(x=>x.classList.remove("active"));
+      a.classList.add("active");
+    });
+
+    wrap.appendChild(a);
+  });
+}
+
+function initMusic(){
+  const chips = $("moodChips");
+  const hint = $("moodHint");
+  if (!chips || !hint) return;
+
+  ensureToday();
+  updateMinutesUI();
+
+  let mood = "all";
+  renderMusicLinks(mood);
+
+  chips.querySelectorAll(".chip").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      chips.querySelectorAll(".chip").forEach(x=>x.classList.remove("active"));
+      btn.classList.add("active");
+      mood = btn.dataset.mood || "all";
+      hint.textContent = `Showing: ${mood === "all" ? "All" : mood}`;
+      renderMusicLinks(mood);
+    });
+  });
+
+  const startBtn = $("startSessionBtn");
+  const endBtn = $("endSessionBtn");
+  if (startBtn) startBtn.addEventListener("click", startSession);
+  if (endBtn) endBtn.addEventListener("click", endSession);
+
+  // if session already running:
+  const s = $("sessionStatus");
+  if (s){
+    s.textContent = localStorage.getItem(LISTEN_SESSION_KEY)
+      ? "Session running… press End session when finished."
+      : "No active session.";
+  }
+}
+
+/* =========================================================
+   Boot per page
+========================================================= */
+document.addEventListener("DOMContentLoaded", ()=>{
   initQuotes();
+  initJournal();
+  initBreathe();
   initGame();
+  initMusic();
 });
