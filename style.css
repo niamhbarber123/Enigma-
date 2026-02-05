@@ -4,6 +4,9 @@
    - Bigger tap targets
    - Palette circles (20+)
    - Music links as buttons
+   - Breathe animation smooth + not clipped
+   - Home fits on one screen (body.home)
+   - Quotes scroll-friendly (save button only)
 ========================================================= */
 
 :root{
@@ -21,10 +24,12 @@
 
 *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 html,body{ margin:0; padding:0; height:100%; }
+
 body{
   background:var(--bg);
   color:var(--ink);
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  overflow-x:hidden;
 }
 
 /* ---------- Night mode ---------- */
@@ -66,7 +71,7 @@ body.night .bottom-nav a.active{ color:#fff; }
   width:100%;
   max-width:720px;
   margin:0 auto;
-  padding:12px 18px calc(140px + env(safe-area-inset-bottom));
+  padding:12px 18px calc(120px + env(safe-area-inset-bottom));
 }
 
 /* ---------- Header ---------- */
@@ -235,7 +240,42 @@ input[type="search"], input[type="text"]{
 }
 
 /* =========================================================
-   QUOTES
+   BREATHE — smooth animation + no clipping
+========================================================= */
+.breathe-stage{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:10px 0 2px;
+}
+
+/* ring container must allow scaling without clipping */
+.breathe-ring{
+  width:min(280px, 72vw);
+  height:min(280px, 72vw);
+  border-radius:999px;
+  background:rgba(239,233,248,0.70);
+  border:1px solid rgba(184,166,217,0.20);
+  box-shadow:0 14px 34px rgba(90,75,122,0.10);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:visible; /* important: prevent cut-off */
+}
+
+.breathe-circle{
+  width:72%;
+  height:72%;
+  border-radius:999px;
+  background:radial-gradient(circle at 30% 30%, rgba(255,255,255,0.95), rgba(184,166,217,0.35));
+  box-shadow:0 14px 34px rgba(90,75,122,0.14);
+  transform:scale(1);
+  will-change:transform;
+  transition:transform 3.6s ease-in-out; /* smooth breathing */
+}
+
+/* =========================================================
+   QUOTES — scroll friendly (save button only)
 ========================================================= */
 .quote-grid{
   display:grid;
@@ -243,25 +283,32 @@ input[type="search"], input[type="text"]{
   gap:12px;
   margin-top:14px;
 }
+
 .quote-tile{
   position:relative;
   background:rgba(255,255,255,0.9);
   border-radius:18px;
   padding:14px 14px 12px;
-  padding-right: 102px;
+  padding-right: 112px;
   box-shadow:var(--shadow);
   border:1px solid rgba(184,166,217,0.25);
+  /* IMPORTANT: don’t steal scroll touches */
+  touch-action: pan-y;
 }
+
 .quote-tile small{
   display:block;
   margin-top:8px;
   color:rgba(90,75,122,0.72);
   font-weight:800;
 }
+
 .quote-tile.saved{
   border:2px solid rgba(184,166,217,0.75);
   box-shadow:0 14px 30px rgba(90,75,122,0.14);
 }
+
+/* Only the button should be “tappable” */
 .quote-save-btn{
   position:absolute;
   right:12px;
@@ -274,6 +321,7 @@ input[type="search"], input[type="text"]{
   box-shadow:var(--shadow);
   color:#5a4b7a;
 }
+.quote-save-btn:active{ transform:scale(0.99); }
 .quote-save-btn.saved{
   background: var(--lavender);
   color:#fff;
@@ -321,6 +369,8 @@ input[type="search"], input[type="text"]{
   flex-wrap:wrap;
   gap:10px;
   padding-top:6px;
+  /* prevents overlap under the moon button on small screens */
+  padding-right:60px;
 }
 .color-dot{
   width:34px;
@@ -346,4 +396,46 @@ input[type="search"], input[type="text"]{
   height:1px;
   background:rgba(184,166,217,0.25);
   margin:12px 0;
+}
+
+/* =========================================================
+   HOME — fit on one screen (NO SCROLL)
+   Apply by setting: <body class="page-wrap home">
+========================================================= */
+body.home .page{
+  padding:10px 18px calc(102px + env(safe-area-inset-bottom));
+}
+
+body.home .page-header{
+  padding:46px 20px 10px;
+}
+
+body.home .page-header h1{
+  font-size:28px;
+}
+
+body.home .page-header p{
+  margin-top:6px;
+}
+
+body.home .card,
+body.home .home-card{
+  margin:10px 0;
+}
+
+/* If your home uses large cards/buttons, tighten spacing */
+body.home .tool-row{ margin-top:8px; }
+
+/* Make home tap targets slightly larger without pushing content down */
+body.home .tool-btn{
+  padding:16px 14px;
+}
+
+/* =========================================================
+   Small screen tightening
+========================================================= */
+@media (max-height: 740px){
+  .page-header{ padding:56px 20px 14px; }
+  .page{ padding-bottom:calc(112px + env(safe-area-inset-bottom)); }
+  .card{ padding:14px; }
 }
