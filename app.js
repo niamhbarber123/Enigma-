@@ -1,12 +1,13 @@
 /* =========================================================
-   Enigma • app.js (WORKING + DISTRACTION FIXED)
+   Enigma • app.js (FULL)
    - Theme (night mode)
    - Back navigation
+   - Word of the Day (daily)
    - Breathe animation (Start/Stop)
-   - Quotes (save)
+   - Quotes (internet search + random motivational + save/unsave)
    - Music (moods + links + minutes)
    - Yoga (moods + video links)
-   - Distraction (typing required + Skip allowed + End + answered-only counter)
+   - Distraction (typing required to count “Answered”)
 ========================================================= */
 
 (function () {
@@ -26,6 +27,14 @@
     return new Date().toISOString().split("T")[0];
   }
 
+  function debounce(fn, wait){
+    let t;
+    return (...args)=>{
+      clearTimeout(t);
+      t = setTimeout(()=>fn(...args), wait);
+    };
+  }
+
   /* =========================
      THEME (Night mode)
   ========================= */
@@ -42,6 +51,53 @@
   function initTheme(){
     const btn = $("themeFab");
     if (btn) btn.addEventListener("click", toggleTheme);
+  }
+
+  /* =========================
+     WORD OF THE DAY (daily, local)
+     - deterministic pick by date (no API needed)
+  ========================= */
+  const WORDS = [
+    { w:"Soothe", d:"To gently calm or comfort." },
+    { w:"Steady", d:"Even, stable, not shaken by big feelings." },
+    { w:"Gentle", d:"Soft and kind; not harsh or forceful." },
+    { w:"Ground", d:"To come back to the present moment." },
+    { w:"Breathe", d:"A reminder: slow in, long out." },
+    { w:"Ease", d:"Less effort. More softness." },
+    { w:"Pause", d:"A small stop that creates space." },
+    { w:"Restore", d:"To return strength and calm." },
+    { w:"Light", d:"A little brightness you can notice." },
+    { w:"Safe", d:"Supported, protected, okay in this moment." },
+    { w:"Quiet", d:"A calmer internal volume." },
+    { w:"Release", d:"Let a little tension go." },
+    { w:"Anchor", d:"Something you can return to again and again." },
+    { w:"Kindness", d:"Softness towards yourself counts." },
+    { w:"Patience", d:"Allow time. You’re not behind." },
+    { w:"Balance", d:"Not perfect—just supported." },
+    { w:"Clarity", d:"A little more understanding." },
+    { w:"Courage", d:"Doing the next small thing anyway." },
+    { w:"Hope", d:"A future that can still be okay." },
+    { w:"Enough", d:"You are not required to be more right now." }
+  ];
+
+  function hashDateYYYYMMDD(str){
+    // "2026-02-05" -> 20260205
+    const n = parseInt(String(str).replaceAll("-",""), 10);
+    return Number.isFinite(n) ? n : 20260101;
+  }
+
+  function initWordOfDay(){
+    const wEl = $("wotdWord");
+    const dEl = $("wotdDef");
+    if (!wEl || !dEl) return;
+
+    const seed = hashDateYYYYMMDD(todayKey());
+    const idx = seed % WORDS.length;
+    const item = WORDS[idx];
+
+    wEl.textContent = item.w;
+    // keep your “Your calm space” vibe but show definition underneath
+    dEl.textContent = item.d;
   }
 
   /* =========================
@@ -133,50 +189,188 @@
   }
 
   /* =========================
-     QUOTES (basic save)
+     QUOTES (internet + save/unsave)
+     Uses Quotable API: /quotes/random and /search/quotes  [oai_citation:1‡GitHub](https://github.com/lukePeavey/quotable)
   ========================= */
-  const QUOTES = [
-    {q:"Nothing can dim the light that shines from within.",a:"Maya Angelou"},
-    {q:"No one can make you feel inferior without your consent.",a:"Eleanor Roosevelt"},
-    {q:"Well-behaved women seldom make history.",a:"Laurel Thatcher Ulrich"},
-    {q:"My peace is my priority.",a:"Affirmation"}
-  ];
+  const QUOTABLE_BASE = "https://api.quotable.io";
+  const SAVED_QUOTES_KEY = "enigmaSavedQuotesV3"; // store array of ids
 
-  function initQuotes(){
+  function getSavedSet(){
+    return new Set(JSON.parse(localStorage.getItem(SAVED_QUOTES_KEY) || "[]"));
+  }
+
+  function setSavedSet(set){
+    localStorage.setItem(SAVED_QUOTES_KEY, JSON.stringify(Array.from(set)));
+  }
+
+  function updateSavedCount(){
+    const c = $("savedCount");
+    if (c) c.textContent = String(getSavedSet().size);
+  }
+
+  function quoteTile({ _id, content, author }){
+    const saved = getSavedSet();
+    const isSaved = saved.has(_id);
+
+    const tile = document.createElement("div");
+    tile.className = "quote-tile" + (isSaved ? " saved" : "");
+    tile.innerHTML = `
+      <div style="font-weight:900;color:#5a4b7a; line-height:1.35;">“${escapeHtml(content)}”</div>
+      <small>— ${escapeHtml(author || "Unknown")}</small>
+      <button class="quote-save-btn ${isSaved ? "saved" : ""}" type="button">
+        ${isSaved ? "💜 Saved" : "💜 Save"}
+      </button>
+    `;
+
+    const btn = tile.querySelector("button");
+    btn.addEventListener("click", (e)=>{
+      e.preventDefault();
+      const s = getSavedSet();
+      if (s.has(_id)) s.delete(_id);
+      else s.add(_id);
+      setSavedSet(s);
+      tile.classList.toggle("saved", s.has(_id));
+      btn.classList.toggle("saved", s.has(_id));
+      btn.textContent = s.has(_id) ? "💜 Saved" : "💜 Save";
+      updateSavedCount();
+    }, { passive:false });
+
+    return tile;
+  }
+
+  function escapeHtml(str){
+    return String(str || "")
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
+  async function fetchRandomMotivational(limit=12){
+    // tags are optional; if tags fail, we fallback to unfiltered random
+    const url1 = `${QUOTABLE_BASE}/quotes/random?limit=${limit}&tags=inspirational|motivational|wisdom`;
+    const url2 = `${QUOTABLE_BASE}/quotes/random?limit=${limit}`;
+    try{
+      const r = await fetch(url1, { cache:"no-store" });
+      if (!r.ok) throw new Error("tagged random failed");
+      const data = await r.json();
+      return Array.isArray(data) ? data : [];
+    }catch{
+      const r2 = await fetch(url2, { cache:"no-store" });
+      const data2 = await r2.json();
+      return Array.isArray(data2) ? data2 : [];
+    }
+  }
+
+  async function searchQuotesOnline(query, limit=20){
+    const q = encodeURIComponent(query.trim());
+    const url = `${QUOTABLE_BASE}/search/quotes?query=${q}&fields=content,author,tags&limit=${limit}`;
+    const r = await fetch(url, { cache:"no-store" });
+    if (!r.ok) throw new Error("search failed");
+    const data = await r.json();
+    return Array.isArray(data?.results) ? data.results : [];
+  }
+
+  async function initQuotes(){
     const grid = $("quoteGrid");
     if (!grid) return;
 
-    const saved = new Set(JSON.parse(localStorage.getItem("enigmaQuotes") || "[]"));
-    grid.innerHTML = "";
+    const status = $("quoteStatus");
+    const input = $("quoteSearch");
+    const searchBtn = $("quoteSearchBtn");
+    const randomBtn = $("quoteRandomBtn");
+    const viewSavedBtn = $("viewSavedBtn");
+    const clearSavedBtn = $("clearSavedBtn");
 
-    QUOTES.forEach(item=>{
-      const tile = document.createElement("div");
-      tile.className = "quote-tile" + (saved.has(item.q) ? " saved" : "");
-      tile.innerHTML = `
-        <div style="font-weight:900;color:#5a4b7a; line-height:1.35;">“${item.q}”</div>
-        <small>— ${item.a}</small>
-        <button class="quote-save-btn ${saved.has(item.q) ? "saved" : ""}" type="button">
-          ${saved.has(item.q) ? "💜 Saved" : "💜 Save"}
-        </button>
-      `;
+    updateSavedCount();
 
-      tile.querySelector("button").addEventListener("click", (e)=>{
-        e.preventDefault();
-        if (saved.has(item.q)) saved.delete(item.q);
-        else saved.add(item.q);
-        localStorage.setItem("enigmaQuotes", JSON.stringify([...saved]));
-        initQuotes();
-      }, { passive:false });
+    async function renderList(list){
+      grid.innerHTML = "";
+      if (!list.length){
+        grid.innerHTML = `<div class="gentle-text">No results. Try a different search.</div>`;
+        return;
+      }
+      list.forEach(item=> grid.appendChild(quoteTile(item)));
+    }
 
-      grid.appendChild(tile);
-    });
+    async function loadRandom(){
+      if (status) status.textContent = "Loading motivational quotes…";
+      try{
+        const list = await fetchRandomMotivational(14);
+        await renderList(list);
+        if (status) status.textContent = "Tap 💜 to save any quote you like.";
+      }catch{
+        if (status) status.textContent = "Couldn’t load quotes right now (check connection).";
+        grid.innerHTML = `<div class="gentle-text">Try again in a moment.</div>`;
+      }
+    }
+
+    async function runSearch(){
+      const q = (input?.value || "").trim();
+      if (!q){
+        loadRandom();
+        return;
+      }
+      if (status) status.textContent = `Searching: “${q}”…`;
+      try{
+        const list = await searchQuotesOnline(q, 20);
+        await renderList(list);
+        if (status) status.textContent = `Results for “${q}”. Tap 💜 to save.`;
+      }catch{
+        if (status) status.textContent = "Search failed (API blocked or offline). Showing random instead.";
+        loadRandom();
+      }
+    }
+
+    if (searchBtn) searchBtn.addEventListener("click", (e)=>{ e.preventDefault(); runSearch(); }, { passive:false });
+    if (randomBtn) randomBtn.addEventListener("click", (e)=>{ e.preventDefault(); loadRandom(); }, { passive:false });
+
+    if (input){
+      input.addEventListener("keydown", (e)=>{
+        if (e.key === "Enter") runSearch();
+      });
+      // optional: debounce search while typing (comment out if you don’t want it)
+      input.addEventListener("input", debounce(()=>{}, 250));
+    }
+
+    if (viewSavedBtn){
+      viewSavedBtn.addEventListener("click", async ()=>{
+        const ids = Array.from(getSavedSet());
+        if (!ids.length) return alert("No saved quotes yet.");
+
+        // Quotable supports GET /quotes/:id; we’ll fetch a few quickly
+        if (status) status.textContent = "Loading saved quotes…";
+        const out = [];
+        for (const id of ids.slice(0, 30)){
+          try{
+            const r = await fetch(`${QUOTABLE_BASE}/quotes/${encodeURIComponent(id)}`, { cache:"no-store" });
+            if (!r.ok) continue;
+            out.push(await r.json());
+          }catch{}
+        }
+        await renderList(out);
+        if (status) status.textContent = "Your saved quotes (tap 💜 to unsave).";
+      });
+    }
+
+    if (clearSavedBtn){
+      clearSavedBtn.addEventListener("click", ()=>{
+        if (!confirm("Delete all saved quotes?")) return;
+        localStorage.setItem(SAVED_QUOTES_KEY, "[]");
+        updateSavedCount();
+        loadRandom();
+      });
+    }
+
+    // initial load
+    loadRandom();
   }
 
   /* =========================
      MUSIC (moods + links + minutes)
   ========================= */
   const MUSIC_MOODS = ["All","Anxious","Stressed","Focus","Sleep"];
-
   const TRACKS = [
     {t:"Calm breathing music",m:"Anxious",u:"https://www.youtube.com/watch?v=odADwWzHR24"},
     {t:"Lo-fi focus mix",m:"Focus",u:"https://www.youtube.com/watch?v=jfKfPfyJRdk"},
@@ -332,34 +526,19 @@
   }
 
   /* =========================
-     DISTRACTION (typing required)
-     - Next requires typed text
-     - Skip doesn't count
-     - Progress counts ANSWERED only
-     - End finishes any time
+     DISTRACTION (typing required to count Answered)
   ========================= */
   const DISTRACTION_QUESTIONS = [
     "Name 5 things you can see right now.",
-    "Name 4 things you can feel (touch/texture).",
-    "Name 3 things you can hear.",
-    "Name 2 things you can smell.",
-    "Name 1 thing you can taste (or would like to taste).",
-    "If you could teleport anywhere for 10 minutes, where would you go?",
     "What colour feels calming to you today?",
-    "What’s a tiny ‘safe’ plan for the next 10 minutes?",
-    "What’s something you did recently that you’re glad you did?",
-    "What’s one kind thing you’d say to a friend feeling this way?",
-    "What’s your favourite cosy drink?",
     "If today had a soundtrack, what would it be called?",
+    "What’s one kind thing you’d say to a friend feeling this way?",
+    "What’s a tiny ‘safe’ plan for the next 10 minutes?",
     "What’s a film or series that feels comforting?",
-    "If you could design a calm room, what 3 items are in it?",
-    "What’s one smell that instantly relaxes you?",
-    "What’s your favourite season and why?",
-    "What’s a place you’ve been that felt peaceful?",
+    "Name 3 colours you can spot around you.",
+    "What’s one gentle thing you can say to yourself right now?",
     "What’s a small win you’ve had this week?",
-    "What’s something you’re looking forward to (even small)?",
-    "What’s your favourite snack combination?",
-    "What would your ‘calm alter ego’ do next?"
+    "What’s one thing that’s ‘not urgent’ right now?"
   ];
 
   function shuffleArray(arr){
@@ -376,151 +555,121 @@
     if (!card) return;
 
     const qEl = $("distractionQuestion");
-    const answeredCountEl = $("distractionAnsweredCount");
+    const answeredEl = $("distractionAnsweredCount");
     const input = $("distractionInput");
+    const hint = $("distractionHint");
     const startBtn = $("distractionStartBtn");
     const nextBtn = $("distractionNextBtn");
     const skipBtn = $("distractionSkipBtn");
     const endBtn = $("distractionEndBtn");
 
-    // Must match your NEW index.html ids
-    if (!qEl || !answeredCountEl || !input || !startBtn || !nextBtn || !skipBtn || !endBtn) return;
+    if (!qEl || !answeredEl || !input || !startBtn || !nextBtn || !skipBtn || !endBtn) return;
 
-    const SESSION_KEY = "enigmaDistractionSessionV2";
-    const ANSWERS_KEY = "enigmaDistractionAnswersV2";
+    const KEY = "enigmaDistractionV2";
 
-    function setButtons(running){
-      startBtn.style.display = running ? "none" : "";
-      nextBtn.style.display  = running ? "" : "none";
-      skipBtn.style.display  = running ? "" : "none";
-      endBtn.style.display   = running ? "" : "none";
-      input.disabled = !running;
-      if (!running) input.value = "";
-      refreshNextEnabled();
-    }
-
-    function refreshNextEnabled(){
-      const hasText = (input.value || "").trim().length > 0;
-      nextBtn.disabled = !hasText;
-      nextBtn.style.opacity = hasText ? "1" : "0.55";
-    }
-
-    function loadSession(){
+    function load(){
       try{
-        const raw = localStorage.getItem(SESSION_KEY);
+        const raw = localStorage.getItem(KEY);
         if (!raw) return null;
         const s = JSON.parse(raw);
         if (!s || s.day !== todayKey()) return null;
-        if (!Array.isArray(s.order) || typeof s.i !== "number") return null;
-        if (typeof s.answered !== "number") s.answered = 0;
         return s;
-      }catch{
-        return null;
-      }
+      }catch{ return null; }
     }
 
-    function saveSession(s){
-      localStorage.setItem(SESSION_KEY, JSON.stringify(s));
+    function save(s){
+      localStorage.setItem(KEY, JSON.stringify(s));
     }
 
-    function clearSession(){
-      localStorage.removeItem(SESSION_KEY);
+    function clear(){
+      localStorage.removeItem(KEY);
     }
 
-    function getQuestion(s){
-      const idx = s.order[s.i];
-      return DISTRACTION_QUESTIONS[idx] || "Take one slow breath in… and out.";
+    function setButtons(running){
+      startBtn.style.display = running ? "none" : "";
+      nextBtn.style.display = running ? "" : "none";
+      skipBtn.style.display = running ? "" : "none";
+      endBtn.style.display = running ? "" : "none";
+      input.style.display = running ? "" : "none";
+      hint.style.display = running ? "" : "none";
     }
 
-    function updateUI(s){
-      qEl.textContent = getQuestion(s);
-      answeredCountEl.textContent = String(s.answered || 0);
+    function render(s){
+      qEl.textContent = s.questions[s.i] || "Take one slow breath in… and out.";
+      answeredEl.textContent = String(s.answered);
       input.value = "";
-      input.focus({ preventScroll:true });
+      nextBtn.disabled = true;
+      nextBtn.classList.remove("active");
+    }
+
+    function newSession(){
+      const questions = shuffleArray(DISTRACTION_QUESTIONS).slice(0, 10);
+      const s = { day: todayKey(), questions, i: 0, answered: 0 };
+      save(s);
       setButtons(true);
+      render(s);
     }
 
-    function saveAnswer(question, answer){
-      const store = JSON.parse(localStorage.getItem(ANSWERS_KEY) || "[]");
-      store.unshift({ day: todayKey(), q: question, a: answer, t: Date.now() });
-      localStorage.setItem(ANSWERS_KEY, JSON.stringify(store.slice(0, 120)));
-    }
-
-    function startNew(){
-      const max = Math.min(20, DISTRACTION_QUESTIONS.length);
-      const order = shuffleArray([...Array(DISTRACTION_QUESTIONS.length).keys()]).slice(0, max);
-
-      const s = { day: todayKey(), order, i: 0, answered: 0 };
-      saveSession(s);
-      updateUI(s);
-    }
-
-    function nextQuestion(s){
-      if (s.i >= s.order.length - 1){
-        endSession(s, "You reached the end of the questions ✅");
+    function next(s){
+      if (s.i >= s.questions.length - 1){
+        finish(s);
         return;
       }
       s.i += 1;
-      saveSession(s);
-      updateUI(s);
+      save(s);
+      render(s);
     }
 
-    function endSession(s, message){
-      clearSession();
+    function finish(s){
+      clear();
       setButtons(false);
-      qEl.textContent = message || "Session ended.";
-      answeredCountEl.textContent = String(s?.answered || 0);
+      qEl.textContent = "All done. You can start again any time.";
+      answeredEl.textContent = String(s.answered);
     }
-
-    input.addEventListener("input", refreshNextEnabled);
 
     startBtn.addEventListener("click", (e)=>{
       e.preventDefault();
-      startNew();
+      newSession();
     }, { passive:false });
+
+    input.addEventListener("input", ()=>{
+      const ok = input.value.trim().length > 0;
+      nextBtn.disabled = !ok;
+      nextBtn.classList.toggle("active", ok);
+    });
 
     nextBtn.addEventListener("click", (e)=>{
       e.preventDefault();
-      const s = loadSession();
-      if (!s) return startNew();
-
-      const ans = (input.value || "").trim();
-      if (!ans){
-        alert("Please type something or press Skip.");
-        return;
-      }
-
-      const q = getQuestion(s);
-      saveAnswer(q, ans);
-
-      s.answered = (s.answered || 0) + 1;
-      saveSession(s);
-
-      nextQuestion(s);
+      const s = load() || (newSession(), load());
+      if (!s) return;
+      if (input.value.trim().length === 0) return;
+      s.answered += 1;      // only answered count
+      save(s);
+      next(s);
     }, { passive:false });
 
     skipBtn.addEventListener("click", (e)=>{
       e.preventDefault();
-      const s = loadSession();
-      if (!s) return startNew();
-      // skip DOES NOT count
-      nextQuestion(s);
+      const s = load() || (newSession(), load());
+      if (!s) return;
+      next(s); // does NOT increment answered
     }, { passive:false });
 
     endBtn.addEventListener("click", (e)=>{
       e.preventDefault();
-      const s = loadSession();
-      endSession(s || { answered: Number(answeredCountEl.textContent||0) }, "Session ended. You can start again any time 💜");
+      const s = load();
+      finish(s || { answered: 0 });
     }, { passive:false });
 
-    // resume session
-    const existing = loadSession();
+    // resume if active today
+    const existing = load();
     if (existing){
-      updateUI(existing);
+      setButtons(true);
+      render(existing);
     }else{
       setButtons(false);
       qEl.textContent = "Tap Start to begin.";
-      answeredCountEl.textContent = "0";
+      answeredEl.textContent = "0";
     }
   }
 
@@ -530,6 +679,7 @@
   document.addEventListener("DOMContentLoaded",()=>{
     applyTheme();
     initTheme();
+    initWordOfDay();
     initBreathe();
     initQuotes();
     initMusic();
