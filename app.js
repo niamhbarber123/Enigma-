@@ -1,14 +1,13 @@
 /* =========================================================
-   Enigma Wellbeing • app.js (FULL)
-   - Theme toggle (moon ↔ sun)
+   Enigma Wellbeing • app.js
+   - Theme toggle (moon/sun)
    - Back navigation
    - Word of the Day (deterministic daily pick + modal)
    - Distraction tool
-   - Breathe (timer OR stopwatch + reversed inhale/exhale + slower)
-   - Music (chips + button list)
-   - Yoga (chips + button list)
-   - Quotes (local list + search + save)
-   - Progress (reads local stats)
+   - Quotes save count support
+   - Music session minutes support
+   - Breathing minutes support
+   - Progress page rendering
 ========================================================= */
 
 (function () {
@@ -28,15 +27,37 @@
      DATE HELPERS
   ========================= */
   function todayKey() {
-    return new Date().toISOString().split("T")[0];
+    return new Date().toISOString().split("T")[0]; // YYYY-MM-DD
   }
 
-  function seedFromToday() {
-    const s = todayKey().replaceAll("-", "");
-    const n = parseInt(s, 10);
-    return Number.isFinite(n) ? n : 20260101;
+  /* =========================
+     THEME
+  ========================= */
+  function applyTheme() {
+    const t = localStorage.getItem("enigmaTheme") || "light";
+    document.body.classList.toggle("night", t === "night");
+
+    // Swap icon moon/sun
+    const btn = $("themeFab");
+    if (btn) btn.textContent = (t === "night") ? "☀️" : "🌙";
   }
 
+  function toggleTheme() {
+    const night = document.body.classList.toggle("night");
+    localStorage.setItem("enigmaTheme", night ? "night" : "light");
+    const btn = $("themeFab");
+    if (btn) btn.textContent = night ? "☀️" : "🌙";
+  }
+
+  function initTheme() {
+    const btn = $("themeFab");
+    if (!btn) return;
+    btn.addEventListener("click", toggleTheme);
+  }
+
+  /* =========================
+     DETERMINISTIC RNG (for WOTD)
+  ========================= */
   function mulberry32(seed) {
     return function () {
       let t = (seed += 0x6D2B79F5);
@@ -46,57 +67,28 @@
     };
   }
 
-  /* =========================
-     THEME (moon ↔ sun)
-  ========================= */
-  function setThemeIcon() {
-    const btn = $("themeFab");
-    if (!btn) return;
-    btn.textContent = document.body.classList.contains("night") ? "☀️" : "🌙";
-  }
-
-  function applyTheme() {
-    const t = localStorage.getItem("enigmaTheme") || "light";
-    document.body.classList.toggle("night", t === "night");
-    setThemeIcon();
-  }
-
-  function toggleTheme() {
-    const night = document.body.classList.toggle("night");
-    localStorage.setItem("enigmaTheme", night ? "night" : "light");
-    setThemeIcon();
-  }
-
-  function initTheme() {
-    const btn = $("themeFab");
-    if (btn) btn.addEventListener("click", toggleTheme);
-    setThemeIcon();
+  function seedFromToday() {
+    const s = todayKey().replaceAll("-", "");
+    const n = parseInt(s, 10);
+    return Number.isFinite(n) ? n : 20260101;
   }
 
   /* =========================
-     WORD OF THE DAY (WOTD)
+     WORD OF THE DAY
   ========================= */
   const WOTD = [
-    { w: "Forgiveness", d: "Releasing resentment so you can move forward lighter." },
-    { w: "Honesty", d: "Choosing truth with kindness—to yourself and others." },
-    { w: "Trust", d: "Allowing confidence in yourself, others, or the process." },
-    { w: "Responsibility", d: "Owning your choices and responding with intention." },
-    { w: "Flexibility", d: "Adapting without losing your centre." },
-    { w: "Boldness", d: "Taking brave steps even when you feel unsure." },
-    { w: "Discipline", d: "Doing what helps you—even when motivation fades." },
-    { w: "Compassion", d: "Meeting struggle with warmth instead of judgement." },
-    { w: "Integrity", d: "Aligning actions with values—even in small moments." },
-    { w: "Courage", d: "Feeling fear and still choosing what matters." },
-    { w: "Gentleness", d: "Soft strength—especially with yourself." },
-    { w: "Clarity", d: "Seeing what matters most, without the noise." },
-    { w: "Balance", d: "Making space for rest, effort, joy, and recovery." },
-    { w: "Patience", d: "Letting growth take the time it takes." },
     { w: "Simplicity", d: "Choosing what matters and letting go of the rest." },
-    { w: "Confidence", d: "Trusting your ability to figure things out." },
-    { w: "Authenticity", d: "Being real—no performance required." },
-    { w: "Joy", d: "Noticing what feels bright—even briefly." },
-    { w: "Grace", d: "Moving with softness through imperfect moments." },
-    { w: "Strength", d: "Endurance, boundaries, and quiet resilience." }
+    { w: "Reflection", d: "Pausing to understand and choose wisely." },
+    { w: "Compassion", d: "Meeting struggle with warmth instead of judgement." },
+    { w: "Clarity", d: "Seeing what matters most, without the noise." },
+    { w: "Gentleness", d: "Soft strength—especially with yourself." },
+    { w: "Courage", d: "Feeling fear and still choosing what matters." },
+    { w: "Patience", d: "Letting growth take the time it takes." },
+    { w: "Balance", d: "Making space for rest, effort, joy, and recovery." },
+    { w: "Integrity", d: "Aligning actions with values—even in small moments." },
+    { w: "Serenity", d: "A quiet steadiness, even when life is loud." },
+    { w: "Acceptance", d: "Letting reality be what it is—so you can respond wisely." },
+    { w: "Discretion", d: "Using good judgement about what to share and when." }
   ];
 
   function pickWotd() {
@@ -111,17 +103,20 @@
     const closeBtn = $("wotdCloseBtn");
     const mw = $("wotdModalWord");
     const md = $("wotdModalDesc");
+
     if (!modal || !mw || !md) return;
 
     mw.textContent = word;
     md.textContent = desc;
 
+    modal.style.display = "block";
     modal.classList.add("show");
     modal.setAttribute("aria-hidden", "false");
 
     const close = () => {
       modal.classList.remove("show");
       modal.setAttribute("aria-hidden", "true");
+      modal.style.display = "none";
     };
 
     if (backdrop) backdrop.addEventListener("click", close, { once: true });
@@ -140,6 +135,8 @@
     const dEl = $("wotdDesc");
     const infoBtn = $("wotdInfoBtn");
     const tile = $("wotdTile");
+
+    // Only runs on Home (or any page that has the WOTD IDs)
     if (!wEl || !dEl || !tile) return;
 
     const { w, d } = pickWotd();
@@ -162,7 +159,7 @@
   }
 
   /* =========================
-     DISTRACTION
+     DISRACTION (same as your logic)
   ========================= */
   const DISTRACTION_QUESTIONS = [
     "Name 5 things you can see right now.",
@@ -170,11 +167,7 @@
     "Name 3 things you can hear.",
     "Name 2 things you can smell.",
     "Name 1 thing you can taste (or would like to taste).",
-    "What’s a tiny ‘safe’ plan for the next 10 minutes?",
-    "What colour feels calming to you today?",
-    "What’s one kind thing you’d say to a friend feeling this way?",
-    "What’s the smallest next step you can take?",
-    "What’s one small win you’ve had this week?"
+    "What’s a tiny ‘safe’ plan for the next 10 minutes?"
   ];
 
   function shuffle(arr) {
@@ -219,19 +212,15 @@
         if (!raw) return null;
         const s = JSON.parse(raw);
         if (!s || s.day !== todayKey()) return null;
+        if (!Array.isArray(s.order) || typeof s.i !== "number" || typeof s.answered !== "number") return null;
         return s;
       } catch {
         return null;
       }
     }
 
-    function save(s) {
-      localStorage.setItem(KEY, JSON.stringify(s));
-    }
-
-    function clear() {
-      localStorage.removeItem(KEY);
-    }
+    function save(s) { localStorage.setItem(KEY, JSON.stringify(s)); }
+    function clear() { localStorage.removeItem(KEY); }
 
     function currentQ(s) {
       const idx = s.order[s.i];
@@ -264,18 +253,11 @@
       render(s);
     }
 
-    startBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      startNew();
-    });
+    startBtn.addEventListener("click", (e) => { e.preventDefault(); startNew(); });
 
     nextBtn.addEventListener("click", (e) => {
       e.preventDefault();
-      let s = load();
-      if (!s) {
-        startNew();
-        s = load();
-      }
+      const s = load() || (startNew(), load());
       if (!s) return;
 
       const text = (input.value || "").trim();
@@ -296,11 +278,7 @@
 
     skipBtn.addEventListener("click", (e) => {
       e.preventDefault();
-      let s = load();
-      if (!s) {
-        startNew();
-        s = load();
-      }
+      const s = load() || (startNew(), load());
       if (!s) return;
       advance(s);
     });
@@ -310,7 +288,6 @@
       clear();
       setRunning(false);
       qEl.textContent = "Ended. You can start again any time.";
-      answeredEl.textContent = "0";
     });
 
     const existing = load();
@@ -323,584 +300,93 @@
   }
 
   /* =========================
-     BREATHE (timer OR stopwatch)
+     QUOTES (saved count only)
+     Your existing quotes search can stay — this ensures saved count works everywhere.
   ========================= */
-  function formatMMSS(totalSec) {
-    const m = Math.floor(totalSec / 60);
-    const s = totalSec % 60;
-    return `${m}:${String(s).padStart(2, "0")}`;
+  function getSavedQuotes() {
+    try {
+      const raw = localStorage.getItem("enigmaSavedQuotes") || "[]";
+      const arr = JSON.parse(raw);
+      return Array.isArray(arr) ? arr : [];
+    } catch {
+      return [];
+    }
   }
 
-  function initBreathe() {
-    const page = $("breathePage");
-    if (!page) return;
-
-    const phaseEl = $("breathPhase");
-    const tipEl = $("breathTip");
-    const circle = $("breatheCircle");
-
-    const startBtn = $("breathStartBtn");
-    const stopBtn = $("breathStopBtn");
-    const completeBtn = $("breathCompleteBtn");
-
-    const timerSelect = $("breathLength");
-    const modeSelect = $("breathMode");
-    const timerReadout = $("breathTimer");
-
-    if (!phaseEl || !tipEl || !circle || !startBtn || !stopBtn || !completeBtn) return;
-
-    // Slower + reversed:
-    // INHALE = retract (smaller), EXHALE = expand (bigger)
-    // (Your CSS classes are inhale/exhale; we apply them reversed.)
-    const INHALE_MS = 5200;
-    const EXHALE_MS = 5200;
-    const HOLD_MS = 600;
-
-    let running = false;
-    let interval = null;
-    let cycleTimeout = null;
-
-    // timer/stopwatch
-    let mode = "timer"; // timer | stopwatch
-    let totalSec = 60;
-    let elapsedSec = 0;
-
-    function setButtons(isRunning) {
-      startBtn.disabled = isRunning;
-      stopBtn.disabled = !isRunning;
-    }
-
-    function setTimerText() {
-      if (!timerReadout) return;
-      if (mode === "timer") timerReadout.textContent = `Time left: ${formatMMSS(Math.max(0, totalSec - elapsedSec))}`;
-      else timerReadout.textContent = `Elapsed: ${formatMMSS(elapsedSec)}`;
-    }
-
-    function clearAll() {
-      if (interval) clearInterval(interval);
-      if (cycleTimeout) clearTimeout(cycleTimeout);
-      interval = null;
-      cycleTimeout = null;
-    }
-
-    function stopSession(message) {
-      running = false;
-      clearAll();
-      circle.classList.remove("inhale", "exhale");
-      phaseEl.textContent = "Ready";
-      tipEl.textContent = message || "Tap Start to begin.";
-      elapsedSec = 0;
-      setTimerText();
-      setButtons(false);
-    }
-
-    function markBreathedToday() {
-      // simple daily counter for progress page
-      const key = "enigmaBreatheDone_" + todayKey();
-      const n = parseInt(localStorage.getItem(key) || "0", 10);
-      localStorage.setItem(key, String((Number.isFinite(n) ? n : 0) + 1));
-    }
-
-    function finishSession() {
-      stopSession("Nice work. Completed ✅");
-      markBreathedToday();
-    }
-
-    function startTicker() {
-      setTimerText();
-      interval = setInterval(() => {
-        if (!running) return;
-
-        elapsedSec += 1;
-        setTimerText();
-
-        if (mode === "timer") {
-          if (elapsedSec >= totalSec) finishSession();
-        }
-      }, 1000);
-    }
-
-    function breatheCycle() {
-      if (!running) return;
-
-      // INHALE phase (but visually retract) => apply "exhale" class for smaller
-      phaseEl.textContent = "Breathe in";
-      circle.classList.remove("inhale", "exhale");
-      circle.classList.add("exhale"); // smaller
-      tipEl.textContent = "In… slowly";
-
-      cycleTimeout = setTimeout(() => {
-        if (!running) return;
-
-        // small hold
-        phaseEl.textContent = "Hold";
-        tipEl.textContent = "Hold…";
-        cycleTimeout = setTimeout(() => {
-          if (!running) return;
-
-          // EXHALE phase (but visually expand) => apply "inhale" class for bigger
-          phaseEl.textContent = "Breathe out";
-          circle.classList.remove("inhale", "exhale");
-          circle.classList.add("inhale"); // bigger
-          tipEl.textContent = "Out… gently";
-
-          cycleTimeout = setTimeout(() => {
-            if (!running) return;
-
-            // hold
-            phaseEl.textContent = "Hold";
-            tipEl.textContent = "Hold…";
-            cycleTimeout = setTimeout(() => {
-              if (!running) return;
-              breatheCycle();
-            }, HOLD_MS);
-
-          }, EXHALE_MS);
-
-        }, HOLD_MS);
-      }, INHALE_MS);
-    }
-
-    function readSettings() {
-      if (modeSelect) mode = modeSelect.value || "timer";
-
-      if (timerSelect) {
-        const v = (timerSelect.value || "60").trim();
-        const parsed = parseInt(v, 10);
-        totalSec = Number.isFinite(parsed) ? parsed : 60;
-      } else {
-        totalSec = 60;
-      }
-    }
-
-    startBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      if (running) return;
-
-      readSettings();
-      running = true;
-      elapsedSec = 0;
-
-      setButtons(true);
-      startTicker();
-      breatheCycle();
-    });
-
-    stopBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      stopSession("Stopped. Tap Start to begin again.");
-    });
-
-    completeBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      finishSession();
-    });
-
-    // if dropdowns exist, update readout on change
-    if (timerSelect) timerSelect.addEventListener("change", () => { readSettings(); setTimerText(); });
-    if (modeSelect) modeSelect.addEventListener("change", () => { readSettings(); setTimerText(); });
-
-    // initial state
-    setButtons(false);
-    readSettings();
-    setTimerText();
+  function initSavedCountBadge() {
+    const el = $("savedCount");
+    if (!el) return;
+    el.textContent = String(getSavedQuotes().length);
   }
 
   /* =========================
-     MUSIC
+     MUSIC minutes (for progress)
+     Assumes your sounds page sets minsToday/minsTotal. This provides fallback keys.
   ========================= */
-  const MUSIC_TRACKS = [
-    { mood: "All", title: "Calm breathing music", url: "https://www.youtube.com/results?search_query=calm+breathing+music" },
-    { mood: "Focus", title: "Lo-fi focus mix", url: "https://www.youtube.com/results?search_query=lofi+focus+mix" },
-    { mood: "Sleep", title: "Sleep music", url: "https://www.youtube.com/results?search_query=sleep+music+8+hours" },
-    { mood: "Stressed", title: "Relaxing piano", url: "https://www.youtube.com/results?search_query=relaxing+piano" },
-    { mood: "Anxious", title: "Ocean waves", url: "https://www.youtube.com/results?search_query=ocean+waves+relaxing" }
-  ];
-
-  function initMusic() {
-    const moodWrap = $("moodChips");
-    const list = $("musicList");
-    if (!moodWrap || !list) return;
-
-    const moods = ["All", "Anxious", "Stressed", "Focus", "Sleep"];
-    let active = "All";
-
-    function renderChips() {
-      moodWrap.innerHTML = "";
-      moods.forEach((m) => {
-        const b = document.createElement("button");
-        b.className = "chip" + (m === active ? " active" : "");
-        b.type = "button";
-        b.textContent = m;
-        b.addEventListener("click", () => {
-          active = m;
-          renderChips();
-          renderList();
-        });
-        moodWrap.appendChild(b);
-      });
-    }
-
-    function renderList() {
-      list.innerHTML = "";
-      const items = MUSIC_TRACKS.filter(t => active === "All" ? true : t.mood === active);
-
-      items.forEach((t) => {
-        const a = document.createElement("a");
-        a.className = "music-btn";
-        a.href = t.url;
-        a.target = "_blank";
-        a.rel = "noopener";
-        a.innerHTML = `<span>${t.title}</span><span>▶</span>`;
-        list.appendChild(a);
-      });
-
-      if (items.length === 0) {
-        const p = document.createElement("div");
-        p.className = "gentle-text";
-        p.textContent = "No tracks for this mood yet.";
-        list.appendChild(p);
-      }
-    }
-
-    renderChips();
-    renderList();
-
-    // minutes listened is handled if those ids exist
-    initListeningCounter();
-  }
-
-  function initListeningCounter() {
-    const minsTodayEl = $("minsToday");
-    const minsTotalEl = $("minsTotal");
-    const startBtn = $("startListenBtn");
-    const endBtn = $("endListenBtn");
-    const statusEl = $("listenStatus");
-    if (!minsTodayEl || !minsTotalEl || !startBtn || !endBtn || !statusEl) return;
-
-    const KEY = "enigmaListenSession";
-    const TOTAL_KEY = "enigmaListenTotalMin";
-    const TODAY_KEY = "enigmaListenTodayMin_" + todayKey();
-
-    function readNum(k) {
-      const n = parseInt(localStorage.getItem(k) || "0", 10);
-      return Number.isFinite(n) ? n : 0;
-    }
-
-    function writeNum(k, v) {
-      localStorage.setItem(k, String(v));
-    }
-
-    function render() {
-      minsTodayEl.textContent = String(readNum(TODAY_KEY));
-      minsTotalEl.textContent = String(readNum(TOTAL_KEY));
-    }
-
-    function loadSession() {
-      try {
-        const raw = localStorage.getItem(KEY);
-        if (!raw) return null;
-        const s = JSON.parse(raw);
-        if (!s || typeof s.startedAt !== "number") return null;
-        return s;
-      } catch {
-        return null;
-      }
-    }
-
-    function saveSession(s) {
-      localStorage.setItem(KEY, JSON.stringify(s));
-    }
-
-    function clearSession() {
-      localStorage.removeItem(KEY);
-    }
-
-    function setActive(active) {
-      statusEl.textContent = active ? "Session active…" : "No active session.";
-    }
-
-    startBtn.addEventListener("click", () => {
-      if (loadSession()) return;
-      saveSession({ startedAt: Date.now() });
-      setActive(true);
-    });
-
-    endBtn.addEventListener("click", () => {
-      const s = loadSession();
-      if (!s) return;
-
-      const ms = Date.now() - s.startedAt;
-      const mins = Math.max(0, Math.round(ms / 60000));
-
-      writeNum(TOTAL_KEY, readNum(TOTAL_KEY) + mins);
-      writeNum(TODAY_KEY, readNum(TODAY_KEY) + mins);
-
-      clearSession();
-      setActive(false);
-      render();
-    });
-
-    const existing = loadSession();
-    setActive(!!existing);
-    render();
+  function getMusicTotals() {
+    const today = todayKey();
+    const todayMin = Number(localStorage.getItem("enigmaMusicTodayMin:" + today) || "0") || 0;
+    const totalMin = Number(localStorage.getItem("enigmaMusicTotalMin") || "0") || 0;
+    return { todayMin, totalMin };
   }
 
   /* =========================
-     YOGA
+     BREATHING minutes (for progress)
+     We store seconds totals by day + overall.
   ========================= */
-  const YOGA_VIDEOS = [
-    { mood: "All", title: "10 min Yoga for Anxiety", url: "https://www.youtube.com/results?search_query=10+min+yoga+for+anxiety" },
-    { mood: "Stress", title: "15 min Gentle Yoga for Stress", url: "https://www.youtube.com/results?search_query=15+min+gentle+yoga+for+stress" },
-    { mood: "Sleep", title: "Yoga for Sleep (wind down)", url: "https://www.youtube.com/results?search_query=yoga+for+sleep+wind+down" },
-    { mood: "Morning", title: "Morning Yoga (wake up)", url: "https://www.youtube.com/results?search_query=morning+yoga+wake+up" },
-    { mood: "Stiff body", title: "Yoga for stiff back/hips", url: "https://www.youtube.com/results?search_query=yoga+for+stiff+back+hips" },
-    { mood: "All", title: "Gentle yoga (all levels)", url: "https://www.youtube.com/results?search_query=gentle+yoga+all+levels" }
-  ];
+  function getBreatheTotals() {
+    const today = todayKey();
+    const todaySec = Number(localStorage.getItem("enigmaBreatheTodaySec:" + today) || "0") || 0;
+    const totalSec = Number(localStorage.getItem("enigmaBreatheTotalSec") || "0") || 0;
 
-  function initYoga() {
-    const moodWrap = $("yogaChips") || $("moodChips");
-    const list = $("yogaList") || $("videoList");
-    if (!moodWrap || !list) return;
-
-    const moods = ["All", "Anxiety", "Stress", "Sleep", "Morning", "Stiff body"];
-    let active = "All";
-
-    function renderChips() {
-      moodWrap.innerHTML = "";
-      moods.forEach((m) => {
-        const b = document.createElement("button");
-        b.className = "chip" + (m === active ? " active" : "");
-        b.type = "button";
-        b.textContent = m;
-        b.addEventListener("click", () => {
-          active = m;
-          renderChips();
-          renderList();
-        });
-        moodWrap.appendChild(b);
-      });
+    function fmt(sec) {
+      // show as “X min” if >= 60, else “Y sec”
+      if (sec >= 60) return Math.round(sec / 60) + " min";
+      return sec + " sec";
     }
 
-    function renderList() {
-      list.innerHTML = "";
-      const items = YOGA_VIDEOS.filter(v => active === "All" ? true : v.mood === active);
-
-      items.forEach((v) => {
-        const a = document.createElement("a");
-        a.className = "music-btn";
-        a.href = v.url;
-        a.target = "_blank";
-        a.rel = "noopener";
-        a.innerHTML = `<span>${v.title}</span><span>▶</span>`;
-        list.appendChild(a);
-      });
-
-      if (items.length === 0) {
-        const p = document.createElement("div");
-        p.className = "gentle-text";
-        p.textContent = "No videos for this mood yet.";
-        list.appendChild(p);
-      }
-    }
-
-    renderChips();
-    renderList();
-  }
-
-  /* =========================
-     QUOTES (local)
-  ========================= */
-  const QUOTES = [
-    { text: "Start where you are. Use what you have. Do what you can.", author: "Arthur Ashe" },
-    { text: "You do not have to see the whole staircase, just take the first step.", author: "Martin Luther King Jr." },
-    { text: "It always seems impossible until it’s done.", author: "Nelson Mandela" },
-    { text: "Small steps every day.", author: "Unknown" },
-    { text: "Progress, not perfection.", author: "Unknown" },
-    { text: "Feelings are visitors. Let them come and go.", author: "Mooji" },
-    { text: "You’ve survived 100% of your hardest days.", author: "Unknown" }
-  ];
-
-  function initQuotes() {
-    const grid = $("quoteGrid");
-    const searchInput = $("quoteSearch");
-    const searchBtn = $("quoteSearchBtn");
-    const randomBtn = $("quoteRandomBtn");
-    const savedBtn = $("viewSavedBtn");
-    const clearBtn = $("clearSavedBtn");
-    const savedCount = $("savedCount");
-    const status = $("quoteStatus");
-    if (!grid) return;
-
-    const SAVE_KEY = "enigmaSavedQuotesV1";
-
-    function loadSaved() {
-      try {
-        const raw = localStorage.getItem(SAVE_KEY);
-        const arr = raw ? JSON.parse(raw) : [];
-        return Array.isArray(arr) ? arr : [];
-      } catch {
-        return [];
-      }
-    }
-
-    function saveSaved(arr) {
-      localStorage.setItem(SAVE_KEY, JSON.stringify(arr));
-    }
-
-    function updateCount() {
-      if (!savedCount) return;
-      savedCount.textContent = String(loadSaved().length);
-    }
-
-    function render(list) {
-      grid.innerHTML = "";
-      if (!list || list.length === 0) {
-        const p = document.createElement("div");
-        p.className = "gentle-text";
-        p.textContent = "No quotes found.";
-        grid.appendChild(p);
-        return;
-      }
-
-      const saved = loadSaved();
-      list.forEach((q) => {
-        const tile = document.createElement("div");
-        tile.className = "quote-tile";
-
-        const qt = document.createElement("div");
-        qt.className = "quote-text";
-        qt.textContent = `“${q.text}”`;
-
-        const meta = document.createElement("div");
-        meta.className = "quote-meta";
-
-        const author = document.createElement("div");
-        author.className = "quote-author";
-        author.textContent = `— ${q.author}`;
-
-        const btn = document.createElement("button");
-        btn.className = "quote-save-btn";
-        btn.type = "button";
-
-        const isSaved = saved.some(s => s.text === q.text && s.author === q.author);
-        btn.classList.toggle("saved", isSaved);
-        btn.textContent = isSaved ? "💜 Saved" : "💜 Save";
-
-        btn.addEventListener("click", () => {
-          const cur = loadSaved();
-          const exists = cur.some(s => s.text === q.text && s.author === q.author);
-          const next = exists ? cur.filter(s => !(s.text === q.text && s.author === q.author)) : [...cur, q];
-          saveSaved(next);
-          updateCount();
-          render(list);
-        });
-
-        meta.appendChild(author);
-        meta.appendChild(btn);
-
-        tile.appendChild(qt);
-        tile.appendChild(meta);
-        grid.appendChild(tile);
-      });
-    }
-
-    function search() {
-      const term = (searchInput?.value || "").trim().toLowerCase();
-      if (!term) {
-        status && (status.textContent = "Type a word to search.");
-        render(QUOTES);
-        return;
-      }
-      const res = QUOTES.filter(q =>
-        q.text.toLowerCase().includes(term) || q.author.toLowerCase().includes(term)
-      );
-      status && (status.textContent = `Found ${res.length} result(s).`);
-      render(res);
-    }
-
-    function randomOne() {
-      const r = Math.floor(Math.random() * QUOTES.length);
-      render([QUOTES[r]]);
-      status && (status.textContent = "Random quote.");
-    }
-
-    function showSaved() {
-      const saved = loadSaved();
-      render(saved);
-      status && (status.textContent = "Showing saved quotes.");
-    }
-
-    function clearSaved() {
-      saveSaved([]);
-      updateCount();
-      render(QUOTES);
-      status && (status.textContent = "Saved quotes deleted.");
-    }
-
-    searchBtn && searchBtn.addEventListener("click", search);
-    randomBtn && randomBtn.addEventListener("click", randomOne);
-    savedBtn && savedBtn.addEventListener("click", showSaved);
-    clearBtn && clearBtn.addEventListener("click", clearSaved);
-
-    updateCount();
-    render(QUOTES);
+    return { todaySec, totalSec, todayFmt: fmt(todaySec), totalFmt: fmt(totalSec) };
   }
 
   /* =========================
      PROGRESS
   ========================= */
   function initProgress() {
-    const page = $("progressPage");
-    if (!page) return;
+    const root = $("progressPage");
+    if (!root) return;
 
     const breathedToday = $("pBreathedToday");
     const musicToday = $("pMusicToday");
     const savedQuotes = $("pSavedQuotes");
     const musicTotal = $("pMusicTotal");
+    const breathedTotal = $("pBreathedTotal");
 
-    const breatheKey = "enigmaBreatheDone_" + todayKey();
-    const musicTodayKey = "enigmaListenTodayMin_" + todayKey();
-    const musicTotalKey = "enigmaListenTotalMin";
-    const quoteSaveKey = "enigmaSavedQuotesV1";
+    const b = getBreatheTotals();
+    const m = getMusicTotals();
+    const q = getSavedQuotes();
 
-    function readNum(k) {
-      const n = parseInt(localStorage.getItem(k) || "0", 10);
-      return Number.isFinite(n) ? n : 0;
-    }
+    if (breathedToday) breathedToday.textContent = b.todayFmt;
+    if (breathedTotal) breathedTotal.textContent = b.totalFmt;
 
-    function readSavedCount() {
-      try {
-        const raw = localStorage.getItem(quoteSaveKey);
-        const arr = raw ? JSON.parse(raw) : [];
-        return Array.isArray(arr) ? arr.length : 0;
-      } catch {
-        return 0;
-      }
-    }
+    if (musicToday) musicToday.textContent = String(m.todayMin);
+    if (musicTotal) musicTotal.textContent = String(m.totalMin);
 
-    breathedToday && (breathedToday.textContent = String(readNum(breatheKey)));
-    musicToday && (musicToday.textContent = String(readNum(musicTodayKey)));
-    musicTotal && (musicTotal.textContent = String(readNum(musicTotalKey)));
-    savedQuotes && (savedQuotes.textContent = String(readSavedCount()));
+    if (savedQuotes) savedQuotes.textContent = String(q.length);
   }
 
   /* =========================
      BOOT
   ========================= */
   document.addEventListener("DOMContentLoaded", () => {
-    try { applyTheme(); } catch {}
-    try { initTheme(); } catch {}
+    try { applyTheme(); } catch (e) {}
+    try { initTheme(); } catch (e) {}
 
-    // ✅ This was missing before → fixes WOTD stuck Loading
-    try { initWotd(); } catch {}
+    // ✅ FIX: WOTD was stuck because this wasn’t being called
+    try { initWotd(); } catch (e) {}
 
-    try { initDistraction(); } catch {}
-    try { initBreathe(); } catch {}
-    try { initMusic(); } catch {}
-    try { initYoga(); } catch {}
-    try { initQuotes(); } catch {}
-    try { initProgress(); } catch {}
+    try { initDistraction(); } catch (e) {}
+    try { initSavedCountBadge(); } catch (e) {}
+    try { initProgress(); } catch (e) {}
   });
 
 })();
