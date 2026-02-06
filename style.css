@@ -811,3 +811,66 @@ body.night .distraction-question{
   background: rgba(255,255,255,.08);
   border-color: rgba(255,255,255,.12);
 }
+/* ===============================
+   HOME – HELP CTA BUTTON
+================================ */
+.home-help-cta{
+  display:flex;
+  align-items:center;
+  gap:12px;
+
+  width:100%;
+  margin-top:16px;
+  padding:16px 18px;
+
+  border-radius:20px;
+  text-decoration:none !important;
+  font-weight:700;
+  font-size:16px;
+
+  color:#4a3a63;
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,.9),
+    rgba(245,240,255,.9)
+  );
+
+  border:1px solid rgba(90,70,120,.15);
+  box-shadow: 0 12px 28px rgba(40,25,70,.12);
+
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.home-help-cta:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 16px 34px rgba(40,25,70,.18);
+}
+
+.home-help-cta:active{
+  transform: translateY(0);
+}
+
+.home-help-cta:visited{
+  color:#4a3a63;
+}
+
+.help-ico{
+  font-size:20px;
+  line-height:1;
+}
+
+.help-text{
+  flex:1;
+}
+
+/* NIGHT MODE */
+body.night .home-help-cta{
+  color: rgba(255,255,255,.95);
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,.12),
+    rgba(255,255,255,.06)
+  );
+  border-color: rgba(255,255,255,.18);
+  box-shadow: 0 12px 30px rgba(0,0,0,.45);
+}
