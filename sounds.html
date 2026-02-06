@@ -14,7 +14,7 @@
   <button id="themeFab" class="theme-toggle-top" type="button" aria-label="Toggle night mode">🌙</button>
 
   <header class="page-header">
-    <button class="back-btn" type="button" onclick="enigmaBack()">←</button>
+    <button class="back-btn" type="button" onclick="enigmaHome()">←</button>
     <h1>Music</h1>
     <p>Pick a mood and open calming tracks</p>
   </header>
@@ -22,26 +22,26 @@
   <main class="page">
     <div class="card">
       <div class="section-title">Mood</div>
-      <div id="moodChips" class="chip-row"></div>
+      <div id="musicMoodRow" class="chip-row" style="margin-top:12px;"></div>
     </div>
 
     <div class="card">
       <div class="section-title">Tracks</div>
-      <div id="musicList" class="music-list"></div>
-      <div class="gentle-text">Links open in a new tab.</div>
+      <div id="musicList" class="music-list" style="margin-top:10px;"></div>
+      <div class="gentle-text" style="margin-top:10px;">Links open in a new tab.</div>
     </div>
 
     <div class="card">
       <div class="section-title">Minutes listened</div>
-      <div class="gentle-text">Today: <b><span id="minsToday">0</span></b> min</div>
-      <div class="gentle-text">Total: <b><span id="minsTotal">0</span></b> min</div>
+      <div class="gentle-text">Today: <b><span id="musicTodayMin">0</span></b> min</div>
+      <div class="gentle-text">Total: <b><span id="musicTotalMin">0</span></b> min</div>
 
       <div class="tool-row" style="margin-top:12px;">
-        <button id="startListenBtn" class="tool-btn primary" type="button">Start session</button>
-        <button id="endListenBtn" class="tool-btn danger" type="button">End session</button>
+        <button class="tool-btn primary" id="musicStartBtn" type="button">Start session</button>
+        <button class="tool-btn danger" id="musicEndBtn" type="button">End session</button>
       </div>
 
-      <div class="gentle-text" id="listenStatus" style="margin-top:10px;">No active session.</div>
+      <div class="gentle-text" id="musicStatus" style="margin-top:10px;">No active session.</div>
     </div>
   </main>
 
@@ -51,7 +51,7 @@
     <a href="journal.html"><div class="nav-ico">📖</div><span>Journal</span></a>
     <a href="quotes.html"><div class="nav-ico">💬</div><span>Quotes</span></a>
     <a href="yoga.html"><div class="nav-ico">🧘‍♀️</div><span>Yoga</span></a>
-    <a class="active" href="sounds.html"><div class="nav-ico">🎵</div><span>Music</span></a>
+    <a class="active" href="music.html"><div class="nav-ico">🎵</div><span>Music</span></a>
     <a href="progress.html"><div class="nav-ico">📈</div><span>Progress</span></a>
   </nav>
 
