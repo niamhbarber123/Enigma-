@@ -70,7 +70,12 @@ body.night .bottom-nav a.active{ color:#fff; }
   padding:64px 20px 18px;
   text-align:center;
   position:relative;
+
+  /* ✅ Prevent overlap with the bigger back button */
+  padding-left: 84px;
+  padding-right: 84px;
 }
+
 .page-header h1{
   margin:0;
   font-size:30px;
@@ -99,7 +104,7 @@ body.night .page-header h1{ color:rgba(245,242,255,0.92); }
   font-size:26px;
   font-weight:900;
   color:var(--deep);
-  z-index:60;
+  z-index:80;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -122,7 +127,7 @@ body.night .back-btn{
   background:rgba(255,255,255,0.86);
   box-shadow:var(--shadow);
   font-size:22px;
-  z-index:70;
+  z-index:90;
 }
 .theme-toggle-top:active{ transform:scale(0.98); }
 body.night .theme-toggle-top{
@@ -254,7 +259,7 @@ input[type="search"], input[type="text"], .input{
   height: min(280px, 72vw);
   border-radius: 999px;
   background: rgba(239,233,248,0.70);
-  border: 2px solid rgba(90,75,122,0.30); /* darker line */
+  border: 2px solid rgba(90,75,122,0.30);
   box-shadow: 0 18px 36px rgba(0,0,0,0.10);
   display:flex;
   align-items:center;
@@ -273,25 +278,29 @@ input[type="search"], input[type="text"], .input{
   will-change: transform;
 }
 
-/* inhale expands + slightly cooler colour */
 .breathe-circle.inhale{
   transform: scale(1.16);
   background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.96), rgba(122,170,240,0.60));
 }
 
-/* exhale contracts + slightly warmer colour */
 .breathe-circle.exhale{
   transform: scale(0.82);
   background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.92), rgba(170,120,210,0.55));
 }
 
-/* Bigger, centered “Breathe in/out” text */
-.breath-text{
+/* Larger centered phase text (you’re already setting breathPhase text) */
+#breathPhase{
   text-align:center;
-  font-size:18px;
-  font-weight:900;
+  font-size:24px;
+  font-weight:1000;
   color:var(--deep);
-  margin-top:8px;
+  margin-bottom:10px;
+}
+#breathTip{
+  text-align:center;
+  font-size:15px;
+  font-weight:800;
+  margin-top:10px;
 }
 
 /* =========================================================
@@ -337,7 +346,7 @@ input[type="search"], input[type="text"], .input{
   position:relative;
   background:rgba(255,255,255,0.92);
   border-radius:18px;
-  padding:14px 14px 14px;
+  padding:14px;
   box-shadow:var(--shadow);
   border:1px solid rgba(184,166,217,0.25);
   touch-action: pan-y;
@@ -348,22 +357,19 @@ input[type="search"], input[type="text"], .input{
   color:var(--deep);
   line-height:1.35;
   font-size:16px;
+  margin-bottom:10px;
 }
 
-.quote-meta{
-  margin-top:10px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-}
-
-.quote-author{
+/* If your HTML uses <small> for author, keep it tidy */
+.quote-tile small{
+  display:block;
   color:rgba(90,75,122,0.75);
   font-weight:800;
   font-size:13px;
+  margin-bottom:10px;
 }
 
+/* Save button inside the tile (works even if JS places it absolute) */
 .quote-save-btn{
   border:none;
   border-radius:999px;
@@ -379,15 +385,26 @@ input[type="search"], input[type="text"], .input{
   color:#fff;
 }
 
+/* If JS uses absolute placement, ensure spacing */
+.quote-tile .quote-save-btn{
+  margin-top:6px;
+}
+
 /* =========================================================
-   HOME — tighter to avoid scrolling + WOTD
+   HOME — FIXED: no scroll + WOTD tile
 ========================================================= */
 body.home .page{
   padding:8px 18px calc(98px + env(safe-area-inset-bottom));
 }
 
-.home-header{ padding:52px 20px 10px; }
-.home-header h1{ font-size:28px; }
+/* ✅ THIS was the bug: you used .home-header but HTML uses .page-header */
+body.home .page-header{
+  padding:46px 20px 10px;
+  padding-left: 84px;
+  padding-right: 84px;
+}
+body.home .page-header h1{ font-size:28px; }
+body.home .page-header p{ margin-top:6px; }
 
 .home-page{ position:relative; padding-top:6px !important; }
 
@@ -436,9 +453,8 @@ body.home .page{
   margin:10px auto 10px;
 }
 
-.home-grid-compact{ margin-top:10px; }
-
 .home-pill{
+  position:relative;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -453,59 +469,51 @@ body.home .page{
   padding:12px 12px;
   box-shadow:var(--shadow);
 }
-
 .home-pill:active{ transform:scale(0.99); }
 .pill-ico{ font-size:18px; }
 
-.home-pill-wide{
-  grid-column: 1 / -1;
-  justify-content:space-between;
-  padding-left:16px;
-  padding-right:12px;
+/* Word of the day pill */
+#wotdPill{
+  justify-content:flex-start;
+  gap:12px;
+  padding-right:46px;
 }
-
 .wotd-label{
   display:block;
-  font-size:11px;
+  font-size:12px;
   font-weight:800;
-  opacity:0.75;
+  opacity:0.7;
+  margin-bottom:2px;
   line-height:1.1;
 }
 .wotd-word{
   display:block;
   font-size:16px;
-  font-weight:900;
-  line-height:1.2;
-}
-.wotd-qmark{
-  width:28px;
-  height:28px;
-  border-radius:999px;
-  background:rgba(239,233,248,0.95);
-  border:1px solid rgba(184,166,217,0.25);
-  box-shadow:var(--shadow);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:900;
-  color:var(--deep);
+  font-weight:1000;
+  line-height:1.1;
 }
 
-.wotd-card{ margin-top:8px; }
-.wotd-big{
-  font-weight:900;
-  font-size:22px;
+/* ✅ Make ? button always clickable */
+.wotd-info{
+  position:absolute;
+  right:10px;
+  top:50%;
+  transform:translateY(-50%);
+  width:32px;
+  height:32px;
+  border:none;
+  border-radius:999px;
+  background: rgba(239,233,248,0.95);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.10);
+  font-weight:1000;
   color:var(--deep);
+  z-index:5;
 }
-.wotd-tip{
-  margin-top:12px;
-  padding:12px 12px;
-  border-radius:16px;
-  background:rgba(239,233,248,0.85);
-  border:1px solid rgba(184,166,217,0.20);
-  color:rgba(90,75,122,0.75);
-  font-weight:800;
-  font-size:13px;
+.wotd-info:active{ transform:translateY(-50%) scale(0.98); }
+
+body.night .wotd-info{
+  background: rgba(255,255,255,0.12);
+  color: rgba(245,242,255,0.92);
 }
 
 .home-help{
@@ -525,7 +533,6 @@ body.home .page{
   max-width:680px;
   margin:10px auto 0;
 }
-.home-help-compact{ margin-top:10px; }
 
 /* Distraction */
 .distraction-question{
@@ -537,63 +544,8 @@ body.home .page{
 }
 
 /* =========================================================
-   Small screen tightening
+   WORD OF THE DAY MODAL
 ========================================================= */
-@media (max-height: 740px){
-  .page-header{ padding:56px 20px 14px; }
-  .page{ padding-bottom:calc(112px + env(safe-area-inset-bottom)); }
-  .card{ padding:14px; }
-  .home-hero{ margin: -12px auto -130px; height:min(380px, 64vw); }
-  .home-pill{ padding:11px 12px; font-size:15px; }
-}
-/* =========================
-   WORD OF THE DAY (home pill + modal)
-========================= */
-
-#wotdPill{
-  position: relative;
-  justify-content: flex-start;
-  gap: 12px;
-  padding-right: 44px;
-}
-
-.wotd-label{
-  display:block;
-  font-size:12px;
-  font-weight:800;
-  opacity:0.7;
-  margin-bottom:2px;
-}
-
-.wotd-word{
-  display:block;
-  font-size:16px;
-  font-weight:900;
-  line-height:1.1;
-}
-
-.wotd-info{
-  position:absolute;
-  right:10px;
-  top:50%;
-  transform:translateY(-50%);
-  width:30px;
-  height:30px;
-  border:none;
-  border-radius:999px;
-  background: rgba(239,233,248,0.95);
-  box-shadow: 0 10px 24px rgba(0,0,0,0.10);
-  font-weight:900;
-  color:#5a4b7a;
-}
-.wotd-info:active{ transform:translateY(-50%) scale(0.98); }
-
-body.night .wotd-info{
-  background: rgba(255,255,255,0.12);
-  color: rgba(245,242,255,0.92);
-}
-
-/* Modal */
 .modal{
   position:fixed;
   inset:0;
@@ -643,19 +595,19 @@ body.night .modal-card{
 .modal-word{
   font-weight:1000;
   font-size:22px;
-  color:#5a4b7a;
+  color:var(--deep);
   margin-top:2px;
 }
 body.night .modal-word{ color: rgba(245,242,255,0.92); }
 
 .modal-x{
-  width:40px;
-  height:40px;
+  width:44px;
+  height:44px;
   border:none;
   border-radius:999px;
   background: rgba(239,233,248,0.9);
-  font-weight:900;
-  color:#5a4b7a;
+  font-weight:1000;
+  color:var(--deep);
 }
 .modal-x:active{ transform:scale(0.98); }
 body.night .modal-x{
@@ -679,3 +631,14 @@ body.night .modal-desc{ color: rgba(245,242,255,0.75); }
   line-height:1.4;
 }
 body.night .modal-tip{ color: rgba(245,242,255,0.65); }
+
+/* =========================================================
+   Small screen tightening
+========================================================= */
+@media (max-height: 740px){
+  .page-header{ padding:56px 20px 14px; }
+  .page{ padding-bottom:calc(112px + env(safe-area-inset-bottom)); }
+  .card{ padding:14px; }
+  .home-hero{ margin: -12px auto -130px; height:min(380px, 64vw); }
+  .home-pill{ padding:11px 12px; font-size:15px; }
+}
