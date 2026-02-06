@@ -7,7 +7,6 @@
 
   <link rel="icon" href="icon.png" />
   <link rel="apple-touch-icon" href="icon.png" />
-
   <link rel="stylesheet" href="style.css?v=90001" />
 </head>
 
@@ -34,21 +33,15 @@
       <a class="home-pill" href="sounds.html"><span class="pill-ico">🎵</span><span class="pill-text">Music</span></a>
     </div>
 
-    <!-- ✅ WORD OF THE DAY — FULL WIDTH (LIKE BREATHE TILE) -->
-    <div class="home-card home-tile-wide" id="wotdTile" role="button" tabindex="0" aria-label="Open Word of the day">
+    <!-- WORD OF THE DAY (full width) -->
+    <a class="home-card home-tile-wide" id="wotdTile" href="javascript:void(0)" aria-label="Open Word of the day">
       <div class="home-card-title wotd-title">Word of the day</div>
-
-      <!-- word is NOT bold -->
       <div class="home-card-sub wotd-word" id="wotdWord">Loading…</div>
-
-      <!-- description under the word -->
       <div class="home-card-desc" id="wotdDesc">Please wait.</div>
+      <button id="wotdInfoBtn" class="wotd-info" type="button" aria-label="Info about word of the day">?</button>
+    </a>
 
-      <!-- ? button -->
-      <button id="wotdInfoBtn" class="wotd-info" type="button" aria-label="What to do with affirmations">?</button>
-    </div>
-
-    <!-- ✅ DISTRACTION — FULL WIDTH (LIKE BREATHE TILE) -->
+    <!-- DISTRACTION (full width) -->
     <div class="home-card home-tile-wide" id="distractionCard">
       <div class="home-card-title">Distraction</div>
       <div class="home-card-desc">Gentle questions to interrupt a spiral.</div>
@@ -80,7 +73,7 @@
     </a>
   </main>
 
-  <!-- ✅ WOTD MODAL -->
+  <!-- WOTD MODAL -->
   <div class="modal" id="wotdModal" aria-hidden="true">
     <div class="modal-backdrop" id="wotdBackdrop"></div>
     <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="wotdModalWord">
@@ -95,7 +88,7 @@
       <div class="modal-desc" id="wotdModalDesc">—</div>
 
       <div class="modal-tip">
-        Using these words as affirmations means you can repeat them to yourself, write them down, or think about them regularly to help cultivate those qualities within yourself.
+        Try repeating the word to yourself, writing it down, or reflecting on how it could show up in your day.
       </div>
     </div>
   </div>
