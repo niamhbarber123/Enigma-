@@ -7,6 +7,7 @@
 
   <link rel="icon" href="icon.png" />
   <link rel="apple-touch-icon" href="icon.png" />
+
   <link rel="stylesheet" href="style.css?v=90001" />
 </head>
 
@@ -23,26 +24,26 @@
 
     <a class="home-card" href="breathe.html">
       <div class="home-card-title">Breathe &amp; reset</div>
-      <div class="home-card-sub">A gentle reset for your body</div>
+      <div class="home-card-sub">A gentle 60 seconds</div>
     </a>
 
-    <div class="home-grid">
+    <div class="home-grid home-grid-compact">
       <a class="home-pill" href="journal.html"><span class="pill-ico">📖</span><span class="pill-text">Journal</span></a>
       <a class="home-pill" href="quotes.html"><span class="pill-ico">💬</span><span class="pill-text">Quotes</span></a>
       <a class="home-pill" href="yoga.html"><span class="pill-ico">🧘‍♀️</span><span class="pill-text">Yoga</span></a>
-      <a class="home-pill" href="sounds.html"><span class="pill-ico">🎵</span><span class="pill-text">Music</span></a>
+      <a class="home-pill" href="music.html"><span class="pill-ico">🎵</span><span class="pill-text">Music</span></a>
     </div>
 
-    <!-- WORD OF THE DAY -->
-    <a class="home-card" id="wotdTile" href="javascript:void(0)" aria-label="Open Word of the day">
+    <!-- WORD OF THE DAY (full width) -->
+    <a class="home-card home-tile-wide" id="wotdTile" href="javascript:void(0)" aria-label="Open Word of the day">
       <div class="home-card-title wotd-title">Word of the day</div>
       <div class="home-card-sub wotd-word" id="wotdWord">Loading…</div>
       <div class="home-card-desc" id="wotdDesc">Please wait.</div>
-      <button id="wotdInfoBtn" class="wotd-info" type="button" aria-label="Info">?</button>
+      <button id="wotdInfoBtn" class="wotd-info" type="button" aria-label="What to do with affirmations">?</button>
     </a>
 
-    <!-- DISTRACTION -->
-    <div class="home-card" id="distractionCard">
+    <!-- DISTRACTION (full width) -->
+    <div class="home-card home-tile-wide" id="distractionCard">
       <div class="home-card-title">Distraction</div>
       <div class="home-card-desc">Gentle questions to interrupt a spiral.</div>
 
@@ -55,7 +56,7 @@
       <div id="distractionInputWrap" style="display:none; margin-top:10px;">
         <input id="distractionInput" class="input" type="text"
                placeholder="Type your answer here…" autocomplete="off" inputmode="text" />
-        <div class="gentle-text" id="distractionHint" style="margin-top:8px;">
+        <div class="gentle-text" style="margin-top:8px;">
           Next requires typing. Skip if you’d rather not answer.
         </div>
       </div>
@@ -68,8 +69,8 @@
       </div>
     </div>
 
-    <a class="home-help home-card" href="help.html" style="text-align:center;">
-      <span class="pill-ico">🆘</span> <span class="pill-text">Need help right now?</span>
+    <a class="home-help home-help-compact" href="help.html">
+      <span class="pill-ico">🆘</span><span class="pill-text">Need help right now?</span>
     </a>
   </main>
 
@@ -84,12 +85,9 @@
         </div>
         <button class="modal-x" id="wotdCloseBtn" type="button" aria-label="Close">✕</button>
       </div>
-
       <div class="modal-desc" id="wotdModalDesc">—</div>
-
       <div class="modal-tip">
-        Using these words as affirmations means you can repeat them to yourself, write them down,
-        or reflect on them regularly to help cultivate those qualities within yourself.
+        Using these words as affirmations means you can repeat them to yourself, write them down, or think about them regularly to help cultivate those qualities within yourself.
       </div>
     </div>
   </div>
@@ -100,7 +98,7 @@
     <a href="journal.html"><div class="nav-ico">📖</div><span>Journal</span></a>
     <a href="quotes.html"><div class="nav-ico">💬</div><span>Quotes</span></a>
     <a href="yoga.html"><div class="nav-ico">🧘‍♀️</div><span>Yoga</span></a>
-    <a href="sounds.html"><div class="nav-ico">🎵</div><span>Music</span></a>
+    <a href="music.html"><div class="nav-ico">🎵</div><span>Music</span></a>
     <a href="progress.html"><div class="nav-ico">📈</div><span>Progress</span></a>
   </nav>
 
