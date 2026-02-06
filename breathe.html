@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Breathe • Enigma</title>
+  <title>Breathe • Enigma Wellbeing</title>
 
   <link rel="icon" href="icon.png" />
   <link rel="apple-touch-icon" href="icon.png" />
-  <link rel="stylesheet" href="style.css?v=70001" />
+  <link rel="stylesheet" href="style.css?v=80001" />
 </head>
 
 <body class="page-wrap">
@@ -20,42 +20,38 @@
   </header>
 
   <main class="page" id="breathePage">
-    <div class="card breathe-card">
+    <div class="card">
+      <div class="section-title" id="breathPhase">Ready</div>
 
-      <!-- PHASE TEXT -->
-      <div id="breathPhase" class="breath-phase">Ready</div>
-
-      <!-- CIRCLE -->
       <div class="breathe-stage">
         <div class="breathe-ring">
           <div class="breathe-circle" id="breatheCircle"></div>
         </div>
       </div>
 
-      <!-- TIP -->
-      <div class="breath-tip" id="breathTip">
-        Tap Start to begin.
+      <div class="breath-text" id="breathTip">Tap Start to begin.</div>
+
+      <div class="tool-row" style="margin-top:14px;">
+        <button class="tool-btn primary" id="breathStartBtn" type="button">Start</button>
+        <button class="tool-btn danger" id="breathStopBtn" type="button">Stop</button>
       </div>
 
-      <!-- BUTTONS -->
       <div class="tool-row">
-        <button class="tool-btn primary" id="breathStartBtn">Start</button>
-        <button class="tool-btn danger" id="breathStopBtn">Stop</button>
+        <button class="tool-btn" id="breathCompleteBtn" type="button">Completed ✅</button>
       </div>
-
     </div>
   </main>
 
   <nav class="bottom-nav">
-  <a href="index.html"><div class="nav-ico">🏠</div><span>Home</span></a>
-  <a class="active" href="breathe.html"><div class="nav-ico">🌬️</div><span>Breathe</span></a>
-  <a href="journal.html"><div class="nav-ico">📖</div><span>Journal</span></a>
-  <a href="quotes.html"><div class="nav-ico">💬</div><span>Quotes</span></a>
-  <a href="yoga.html"><div class="nav-ico">🧘‍♀️</div><span>Yoga</span></a>
-  <a href="sounds.html"><div class="nav-ico">🎵</div><span>Music</span></a>
-  <a href="progress.html"><div class="nav-ico">📈</div><span>Progress</span></a>
-</nav>
+    <a href="index.html"><div class="nav-ico">🏠</div><span>Home</span></a>
+    <a class="active" href="breathe.html"><div class="nav-ico">🌬️</div><span>Breathe</span></a>
+    <a href="journal.html"><div class="nav-ico">📖</div><span>Journal</span></a>
+    <a href="quotes.html"><div class="nav-ico">💬</div><span>Quotes</span></a>
+    <a href="yoga.html"><div class="nav-ico">🧘‍♀️</div><span>Yoga</span></a>
+    <a href="sounds.html"><div class="nav-ico">🎵</div><span>Music</span></a>
+    <a href="progress.html"><div class="nav-ico">📈</div><span>Progress</span></a>
+  </nav>
 
-  <script src="app.js?v=70001" defer></script>
+  <script src="app.js?v=80001" defer></script>
 </body>
 </html>
