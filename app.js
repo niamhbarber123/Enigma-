@@ -568,126 +568,98 @@
   }
 
   /* =========================
-     WORD OF THE DAY (daily affirmations + modal)
-  ========================= */
-  const WOTD = [
-    { w:"Forgiveness", d:"Letting go of what weighs you down so you can move forward lighter." },
-    { w:"Honesty", d:"Speaking and living in a way that matches what’s true for you." },
-    { w:"Trust", d:"Allowing yourself to rely on what is steady—step by step." },
-    { w:"Responsibility", d:"Owning your choices with kindness and clarity." },
-    { w:"Flexibility", d:"Adapting without losing your centre." },
-    { w:"Boldness", d:"Taking gentle risks even when you feel unsure." },
-    { w:"Discretion", d:"Choosing what to share, and when, to protect your peace." },
-    { w:"Discipline", d:"Small steady actions that support your future self." },
-    { w:"Detail", d:"Noticing the small things that improve your day." },
-    { w:"Prosperity", d:"Making room for abundance—time, energy, love, and opportunity." },
-    { w:"Acceptance", d:"Meeting this moment as it is, without a fight." },
-    { w:"Surrender", d:"Releasing control of what you can’t carry alone." },
-    { w:"Sincerity", d:"Being real—soft, honest, and wholehearted." },
-    { w:"Serenity", d:"A calm presence that you can return to, again and again." },
-    { w:"Humility", d:"Staying grounded while still valuing yourself." },
-    { w:"Sensitivity", d:"Treating your feelings as information, not a problem." },
-    { w:"Compassion", d:"Offering yourself the care you would give to someone you love." },
-    { w:"Leadership", d:"Guiding yourself with courage and steadiness." },
-    { w:"Integrity", d:"Aligning what you think, say, and do." },
-    { w:"Action", d:"One small step that turns intention into progress." },
-    { w:"Courage", d:"Feeling fear and moving forward gently anyway." },
-    { w:"Creativity", d:"Letting yourself make, imagine, and explore without pressure." },
-    { w:"Gentleness", d:"Soft strength—being kind without giving up." },
-    { w:"Clarity", d:"Choosing what matters most and letting the rest quieten." },
-    { w:"Balance", d:"Making space for effort and rest." },
-    { w:"Fun", d:"Letting yourself enjoy something small, just because." },
-    { w:"Commitment", d:"Keeping a promise to yourself in a realistic way." },
-    { w:"Patience", d:"Trusting the pace of small improvements." },
-    { w:"Freedom", d:"Creating space to breathe, choose, and begin again." },
-    { w:"Reflection", d:"Pausing to understand and choose wisely." },
-    { w:"Giving", d:"Sharing warmth—without abandoning your own needs." },
-    { w:"Enthusiasm", d:"Welcoming energy and interest back into your day." },
-    { w:"Joy", d:"Noticing what is good, even in small doses." },
-    { w:"Satisfaction", d:"Allowing ‘enough’ to be enough." },
-    { w:"Grace", d:"Softening your inner voice and giving yourself room." },
-    { w:"Simplicity", d:"Reducing the noise so the next step feels easier." },
-    { w:"Communication", d:"Saying what you need clearly and kindly." },
-    { w:"Appropriateness", d:"Choosing what fits this moment without overdoing it." },
-    { w:"Strength", d:"Staying with yourself through hard moments." },
-    { w:"Love", d:"Offering warmth to yourself and others, without conditions." },
-    { w:"Tenderness", d:"Treating your heart like it matters." },
-    { w:"Perseverance", d:"Continuing gently, even if it’s slow." },
-    { w:"Reliability", d:"Being someone you can count on—especially to yourself." },
-    { w:"Initiative", d:"Starting small without waiting for perfect." },
-    { w:"Confidence", d:"Trusting your ability to figure it out." },
-    { w:"Authenticity", d:"Letting yourself be real, not perfect." },
-    { w:"Harmony", d:"Creating calm alignment inside and around you." },
-    { w:"Pleasure", d:"Letting comfort and enjoyment be allowed." },
-    { w:"Risk", d:"Trying something new in a safe, manageable way." },
-    { w:"Efficiency", d:"Making the next step simpler and lighter." },
-    { w:"Spontaneity", d:"Letting yourself choose something uplifting in the moment." },
-    { w:"Fulfilment", d:"Building a life that feels meaningful, one piece at a time." }
-  ];
+   WORD OF THE DAY (Home)
+========================= */
+const WOTD_TIP =
+  "Using these words as affirmations means you can repeat them to yourself, write them down, or think about them regularly to help cultivate those qualities within yourself.";
 
-  function hashStr(str){
-    let h = 2166136261;
-    for (let i=0; i<str.length; i++){
-      h ^= str.charCodeAt(i);
-      h = Math.imul(h, 16777619);
-    }
-    return Math.abs(h);
-  }
+const WOTD_WORDS = [
+  { w:"Forgiveness", d:"Letting go of resentment and allowing healing to begin." },
+  { w:"Honesty", d:"Choosing truth with yourself and others, kindly and clearly." },
+  { w:"Trust", d:"Allowing steady confidence to grow, one step at a time." },
+  { w:"Responsibility", d:"Owning your choices and caring for what matters." },
+  { w:"Flexibility", d:"Adapting with ease when plans change or life shifts." },
+  { w:"Boldness", d:"Taking brave steps even when you feel uncertain." },
+  { w:"Discretion", d:"Knowing what to share, and what to keep safely private." },
+  { w:"Discipline", d:"Gently returning to what supports you, again and again." },
+  { w:"Detail", d:"Noticing the small things that improve quality and care." },
+  { w:"Prosperity", d:"Welcoming growth, wellbeing, and enoughness into your life." },
+  { w:"Acceptance", d:"Meeting the moment as it is, without fighting reality." },
+  { w:"Surrender", d:"Releasing control over what you cannot change." },
+  { w:"Sincerity", d:"Showing up with realness, not performance." },
+  { w:"Serenity", d:"A calm steadiness that stays with you through waves." },
+  { w:"Humility", d:"Staying grounded, open, and willing to learn." },
+  { w:"Sensitivity", d:"Listening to your feelings and needs with respect." },
+  { w:"Compassion", d:"Treating yourself with the same kindness you’d offer others." },
+  { w:"Leadership", d:"Guiding with care, clarity, and steady presence." },
+  { w:"Integrity", d:"Being aligned with your values, even when it’s hard." },
+  { w:"Action", d:"One small step that moves you forward." },
+  { w:"Courage", d:"Doing it scared, and doing it anyway." },
+  { w:"Creativity", d:"Letting new ideas and playful thinking flow." },
+  { w:"Gentleness", d:"Softness in your thoughts, words, and pace." },
+  { w:"Clarity", d:"Finding the next right thing without overthinking." },
+  { w:"Balance", d:"Making room for rest, effort, and joy." },
+  { w:"Fun", d:"Allowing lightness and play into your day." },
+  { w:"Commitment", d:"Staying with what matters to you, patiently." },
+  { w:"Patience", d:"Trusting timing and taking pressure off the process." },
+  { w:"Freedom", d:"Creating space to breathe, choose, and live fully." },
+  { w:"Reflection", d:"Pausing to understand and choose wisely." },
+  { w:"Giving", d:"Offering care, time, or support in a way that feels right." },
+  { w:"Enthusiasm", d:"Welcoming energy and interest back into your day." },
+  { w:"Joy", d:"Noticing small bright moments as they appear." },
+  { w:"Satisfaction", d:"Letting ‘enough’ be enough." },
+  { w:"Grace", d:"Giving yourself room to be human." },
+  { w:"Simplicity", d:"Reducing noise and choosing what matters most." },
+  { w:"Communication", d:"Expressing needs clearly and listening with care." },
+  { w:"Appropriateness", d:"Choosing what fits the moment with wisdom." },
+  { w:"Strength", d:"Steady resilience—soft and powerful at once." },
+  { w:"Love", d:"Warmth, care, and connection—starting with you." },
+  { w:"Tenderness", d:"Handling yourself with gentler hands." },
+  { w:"Perseverance", d:"Continuing, even slowly, even imperfectly." },
+  { w:"Reliability", d:"Being someone you can count on—especially to yourself." },
+  { w:"Initiative", d:"Starting small without waiting for perfect readiness." },
+  { w:"Confidence", d:"Trusting your ability to cope and learn." },
+  { w:"Authenticity", d:"Being real, not polished." },
+  { w:"Harmony", d:"Letting different parts of life work together peacefully." },
+  { w:"Pleasure", d:"Allowing good feelings without guilt." },
+  { w:"Risk", d:"Trying something new with care and courage." },
+  { w:"Efficiency", d:"Doing what matters with less strain." },
+  { w:"Spontaneity", d:"Letting yourself be light and flexible in the moment." },
+  { w:"Fulfilment", d:"A sense of meaning built through small, aligned choices." }
+];
 
-  function initWordOfDay(){
-    const pill = $("wotdPill");
-    const wordEl = $("wotdWord");
-    const infoBtn = $("wotdInfoBtn");
+function stableDailyIndex(max){
+  // stable per day (same on refresh) without relying on API
+  const key = todayKey();
+  let hash = 0;
+  for (let i = 0; i < key.length; i++) hash = (hash * 31 + key.charCodeAt(i)) >>> 0;
+  return hash % max;
+}
 
-    const modal = $("wotdModal");
-    const closeBg = $("wotdCloseBg");
-    const closeBtn = $("wotdCloseBtn");
-    const closeBtn2 = $("wotdCloseBtn2");
-    const modalWord = $("wotdModalWord");
-    const modalDesc = $("wotdModalDesc");
+function initWordOfTheDay(){
+  const pill = $("wotdPill");
+  if (!pill) return;
 
-    if (!pill || !wordEl || !infoBtn || !modal || !modalWord || !modalDesc) return;
+  const wordEl = $("wotdWord");
+  const descEl = $("wotdDesc");
+  const infoBtn = $("wotdInfoBtn");
 
-    const idx = hashStr(todayKey()) % WOTD.length;
-    const item = WOTD[idx];
+  const pick = WOTD_WORDS[stableDailyIndex(WOTD_WORDS.length)];
 
-    wordEl.textContent = item.w;
-    modalWord.textContent = item.w;
-    modalDesc.textContent = item.d;
+  if (wordEl) wordEl.textContent = pick.w;
+  if (descEl) descEl.textContent = pick.d;
 
-    function openModal(){
-      modal.classList.add("show");
-      modal.setAttribute("aria-hidden","false");
-    }
-    function closeModal(){
-      modal.classList.remove("show");
-      modal.setAttribute("aria-hidden","true");
-    }
+  // prevent anchor jump
+  pill.addEventListener("click", (e)=> e.preventDefault(), { passive:false });
 
-    // tapping the tile opens
-    pill.addEventListener("click", (e)=>{
-      e.preventDefault();
-      openModal();
-    });
-
-    // ? button tap must NOT trigger the <a>
-    function infoHandler(e){
+  if (infoBtn){
+    infoBtn.addEventListener("click", (e)=>{
       e.preventDefault();
       e.stopPropagation();
-      openModal();
-    }
-    infoBtn.addEventListener("touchstart", infoHandler, { passive:false });
-    infoBtn.addEventListener("click", infoHandler, { passive:false });
-
-    closeBg?.addEventListener("click", closeModal);
-    closeBtn?.addEventListener("click", closeModal);
-    closeBtn2?.addEventListener("click", closeModal);
-
-    document.addEventListener("keydown", (e)=>{
-      if (e.key === "Escape") closeModal();
-    });
+      alert(WOTD_TIP); // ✅ only confirmed sentence
+    }, { passive:false });
   }
-
+}
   /* =========================
      PROGRESS page
   ========================= */
