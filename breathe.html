@@ -23,24 +23,19 @@
     <div class="card">
       <div class="section-title" id="breathPhase">Ready</div>
 
-      <!-- Mode + Timer -->
-      <div class="gentle-text" style="margin-top:6px;">Mode:</div>
-      <select id="breathMode" class="input" style="margin-top:8px;">
-        <option value="timer" selected>Timer</option>
-        <option value="stopwatch">Stopwatch</option>
+      <div class="gentle-text" style="margin-top:6px;">Session length:</div>
+      <select id="breathDuration" aria-label="Session length">
+        <option value="1" selected>1 minute</option>
+        <option value="2">2 minutes</option>
+        <option value="3">3 minutes</option>
+        <option value="5">5 minutes</option>
+        <option value="10">10 minutes</option>
       </select>
 
-      <div class="gentle-text" style="margin-top:10px;">Session length (timer mode):</div>
-      <select id="breathLength" class="input" style="margin-top:8px;">
-        <option value="60" selected>1 minute</option>
-        <option value="120">2 minutes</option>
-        <option value="180">3 minutes</option>
-        <option value="300">5 minutes</option>
-      </select>
+      <div class="gentle-text" style="margin-top:10px;">
+        Time: <b><span id="breathTimerDisplay">1:00</span></b>
+      </div>
 
-      <div class="gentle-text" id="breathTimer" style="margin-top:10px;">Time left: 1:00</div>
-
-      <!-- centred ring -->
       <div class="breathe-stage">
         <div class="breathe-ring">
           <div class="breathe-circle" id="breatheCircle"></div>
@@ -55,6 +50,7 @@
       </div>
 
       <div class="tool-row">
+        <button class="tool-btn" id="breathModeBtn" type="button">⏱ Timer</button>
         <button class="tool-btn" id="breathCompleteBtn" type="button">Completed ✅</button>
       </div>
     </div>
