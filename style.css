@@ -23,72 +23,53 @@ body{
   overflow-x:hidden;
 }
 
-/* ---------- Night mode (improved readability) ---------- */
+/* =========================
+   NIGHT MODE (MORE READABLE)
+========================= */
 body.night{
-  background:#0f0f16;
+  background:#0b0b12;
   color:rgba(255,255,255,0.92);
 }
 
-body.night .page-header h1{
-  color:#ffffff !important;
-}
-body.night .page-header p{
-  color:rgba(255,255,255,0.70) !important;
-}
+body.night .page-header h1{ color:#fff; }
+body.night .page-header p{ color:rgba(255,255,255,0.72); }
 
-/* Cards: slightly lighter so text is readable */
 body.night .card,
 body.night .home-card,
 body.night .home-pill,
 body.night .home-help,
-body.night .quote-tile{
-  background: rgba(255,255,255,0.12) !important;
-  border: 1px solid rgba(255,255,255,0.14) !important;
-  box-shadow: 0 18px 44px rgba(0,0,0,0.45);
-  color: rgba(255,255,255,0.92) !important;
-}
-
-body.night .section-title{
-  color:#ffffff !important;
-}
-body.night .gentle-text{
-  color: rgba(255,255,255,0.70) !important;
-}
-
-/* Inputs */
+body.night .quote-tile,
 body.night input,
-body.night .input,
-body.night select{
-  background: rgba(255,255,255,0.10) !important;
-  border: 1px solid rgba(255,255,255,0.18) !important;
-  color: rgba(255,255,255,0.92) !important;
+body.night .chip,
+body.night .music-btn{
+  background:rgba(255,255,255,0.10) !important;
+  color:rgba(255,255,255,0.92) !important;
+  border-color:rgba(255,255,255,0.14) !important;
+  box-shadow:0 14px 34px rgba(0,0,0,0.40) !important;
 }
 
-/* Buttons */
+body.night .gentle-text{
+  color:rgba(255,255,255,0.70) !important;
+}
+
 body.night .tool-btn{
-  background: rgba(255,255,255,0.14) !important;
-  color: rgba(255,255,255,0.92) !important;
-}
-body.night .tool-btn.primary{
-  background: rgba(184,166,217,0.35) !important;
-}
-body.night .tool-btn.danger{
-  background: rgba(255,213,199,0.28) !important;
+  background:rgba(255,255,255,0.14);
+  color:#fff;
 }
 
-/* Bottom nav */
+body.night .tool-btn.primary{ background:rgba(184,166,217,0.35); }
+body.night .tool-btn.danger{ background:rgba(255,180,160,0.30); }
+
 body.night .bottom-nav{
-  background: rgba(18,16,26,0.92);
-  border-top: 1px solid rgba(255,255,255,0.12);
+  background:rgba(10,10,16,0.92);
+  border-top:1px solid rgba(255,255,255,0.12);
 }
-body.night .bottom-nav a{ color: rgba(255,255,255,0.70); }
-body.night .bottom-nav a.active{ color: #fff; }
+body.night .bottom-nav a{ color:rgba(255,255,255,0.72); }
+body.night .bottom-nav a.active{ color:#fff; }
 
-/* Make link lists NOT look like ugly blue underlines */
-.music-btn{
-  text-decoration: none;
-}
-/* ---------- Layout ---------- */
+/* =========================
+   LAYOUT
+========================= */
 .page-wrap{
   min-height:100vh;
   display:flex;
@@ -102,7 +83,9 @@ body.night .bottom-nav a.active{ color: #fff; }
   padding:12px 18px calc(120px + env(safe-area-inset-bottom));
 }
 
-/* ---------- Header ---------- */
+/* =========================
+   HEADER
+========================= */
 .page-header{
   padding:64px 20px 18px;
   text-align:center;
@@ -122,9 +105,10 @@ body.night .bottom-nav a.active{ color: #fff; }
   font-size:14px;
   color:var(--muted);
 }
-body.night .page-header h1{ color:rgba(245,242,255,0.92); }
 
-/* ---------- Back button ---------- */
+/* =========================
+   BACK BUTTON (BIG)
+========================= */
 .back-btn{
   position:absolute;
   left:14px;
@@ -133,7 +117,7 @@ body.night .page-header h1{ color:rgba(245,242,255,0.92); }
   height:56px;
   border-radius:999px;
   border:none;
-  background:rgba(255,255,255,0.86);
+  background:rgba(255,255,255,0.90);
   box-shadow:var(--shadow);
   font-size:26px;
   font-weight:900;
@@ -145,11 +129,13 @@ body.night .page-header h1{ color:rgba(245,242,255,0.92); }
 }
 .back-btn:active{ transform:scale(0.98); }
 body.night .back-btn{
-  background:rgba(255,255,255,0.12);
-  color:rgba(245,242,255,0.92);
+  background:rgba(255,255,255,0.14);
+  color:#fff;
 }
 
-/* ---------- Theme button ---------- */
+/* =========================
+   THEME BUTTON
+========================= */
 .theme-toggle-top{
   position:fixed;
   right:14px;
@@ -158,20 +144,22 @@ body.night .back-btn{
   height:52px;
   border-radius:999px;
   border:none;
-  background:rgba(255,255,255,0.86);
+  background:rgba(255,255,255,0.90);
   box-shadow:var(--shadow);
   font-size:22px;
   z-index:90;
 }
 .theme-toggle-top:active{ transform:scale(0.98); }
 body.night .theme-toggle-top{
-  background:rgba(255,255,255,0.12);
-  box-shadow:0 10px 24px rgba(0,0,0,0.35);
+  background:rgba(255,255,255,0.14);
+  box-shadow:0 14px 34px rgba(0,0,0,0.45);
 }
 
-/* ---------- Card ---------- */
+/* =========================
+   CARD
+========================= */
 .card{
-  background:rgba(255,255,255,0.90);
+  background:rgba(255,255,255,0.92);
   border-radius:var(--radius-xl);
   padding:16px;
   box-shadow:var(--shadow);
@@ -190,8 +178,10 @@ body.night .theme-toggle-top{
   margin-top:8px;
 }
 
-/* ---------- Inputs & Select ---------- */
-input[type="search"], input[type="text"], .input{
+/* =========================
+   INPUTS
+========================= */
+input[type="search"], input[type="text"], select, .input{
   width:100%;
   padding:14px 14px;
   border-radius:16px;
@@ -200,20 +190,11 @@ input[type="search"], input[type="text"], .input{
   outline:none;
   font-size:16px;
   color:var(--ink);
-}
-select.select{
-  width:100%;
-  padding:14px 14px;
-  border-radius:16px;
-  border:1px solid rgba(184,166,217,0.18);
-  background:rgba(239,233,248,0.65);
-  outline:none;
-  font-size:16px;
-  color:var(--ink);
-  margin-top:8px;
 }
 
-/* ---------- Buttons ---------- */
+/* =========================
+   BUTTONS
+========================= */
 .tool-row{
   display:flex;
   gap:10px;
@@ -236,7 +217,32 @@ select.select{
 .tool-btn.primary{ background:rgba(184,166,217,0.38); }
 .tool-btn.danger{ background:rgba(255,213,199,0.85); color:var(--deep); }
 
-/* ---------- Bottom nav ---------- */
+/* =========================
+   CHIPS
+========================= */
+.chip-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+}
+.chip{
+  border:none;
+  padding:10px 14px;
+  border-radius:999px;
+  background:rgba(239,233,248,0.90);
+  box-shadow:0 6px 16px rgba(0,0,0,0.06);
+  font-weight:900;
+  color:var(--deep);
+}
+.chip.active{
+  background:var(--lavender);
+  color:#fff;
+}
+.chip:active{ transform:scale(0.99); }
+
+/* =========================
+   BOTTOM NAV
+========================= */
 .bottom-nav{
   position:fixed;
   left:0; right:0; bottom:0;
@@ -264,92 +270,16 @@ select.select{
   font-weight:900;
 }
 
-/* =========================================================
-   BREATHE — swapped animation:
-   - inhale = smaller
-   - exhale = bigger
-   Slower rhythm
-========================================================= */
-.breathe-card{
-  min-height:520px;
-  display:flex;
-  flex-direction:column;
-  justify-content:flex-start;
-}
-
-.breathe-stage{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding: 18px 0 8px;
-  width:100%;
-}
-
-.breathe-ring{
-  width: min(300px, 78vw);
-  height: min(300px, 78vw);
-  border-radius: 999px;
-  background: rgba(239,233,248,0.70);
-  border: 2px solid rgba(90,75,122,0.30);
-  box-shadow: 0 18px 36px rgba(0,0,0,0.10);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.breathe-circle{
-  width: 160px;
-  height: 160px;
-  border-radius: 999px;
-  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.92), rgba(124,96,170,0.55));
-  box-shadow: inset 0 18px 36px rgba(0,0,0,0.08), 0 18px 38px rgba(90,75,122,0.18);
-  transform: scale(1.0);
-  transition: transform 5s ease-in-out, background 400ms ease; /* slower */
-  will-change: transform;
-}
-
-/* inhale retracts */
-.breathe-circle.inhale{
-  transform: scale(0.78);
-  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.96), rgba(122,170,240,0.55));
-}
-
-/* exhale expands */
-.breathe-circle.exhale{
-  transform: scale(1.18);
-  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.92), rgba(170,120,210,0.55));
-}
-
-#breathPhase{
-  text-align:center;
-  font-size:24px;
-  font-weight:1000;
-  color:var(--deep);
-  margin-bottom:6px;
-}
-.breath-text{
-  text-align:center;
-  font-size:16px;
-  font-weight:800;
-  color:rgba(90,75,122,0.75);
-  margin-top:8px;
-}
-.breath-timer{
-  text-align:center;
-  font-size:18px;
-  font-weight:900;
-  color:var(--deep);
-  margin-top:6px;
-}
-
-/* =========================================================
-   MUSIC/YOGA list buttons
-========================================================= */
+/* =========================
+   MUSIC/YOGA BUTTON LIST
+========================= */
 .music-list{
   display:flex;
   flex-direction:column;
   gap:12px;
 }
+
+/* turns “blue links” into tiles */
 .music-btn{
   width:100%;
   display:flex;
@@ -371,29 +301,9 @@ select.select{
 }
 .music-btn:active{ transform:scale(0.99); }
 
-/* ---------- Chips ---------- */
-.chip-row{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-}
-.chip{
-  border:none;
-  padding:10px 14px;
-  border-radius:999px;
-  background:rgba(239,233,248,0.90);
-  box-shadow:0 6px 16px rgba(0,0,0,0.06);
-  font-weight:900;
-  color:var(--deep);
-}
-.chip.active{
-  background:var(--lavender);
-  color:#fff;
-}
-
-/* =========================================================
-   QUOTES — tiles
-========================================================= */
+/* =========================
+   QUOTES GRID
+========================= */
 .quote-grid{
   display:grid;
   grid-template-columns:1fr;
@@ -412,14 +322,18 @@ select.select{
   color:var(--deep);
   line-height:1.35;
   font-size:16px;
-  margin-bottom:10px;
 }
-.quote-tile small{
-  display:block;
+.quote-meta{
+  margin-top:10px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+}
+.quote-author{
   color:rgba(90,75,122,0.75);
   font-weight:800;
   font-size:13px;
-  margin-bottom:10px;
 }
 .quote-save-btn{
   border:none;
@@ -435,21 +349,71 @@ select.select{
   color:#fff;
 }
 
-/* =========================================================
-   HOME — tighter and WOTD tile wide
-========================================================= */
+/* =========================
+   BREATHE (CENTRE + INVERTED ANIMATION)
+========================= */
+.breathe-stage{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding: 18px 0 8px;
+}
+
+.breathe-ring{
+  width: min(300px, 78vw);
+  height: min(300px, 78vw);
+  border-radius: 999px;
+  background: rgba(239,233,248,0.70);
+  border: 2px solid rgba(90,75,122,0.30);
+  box-shadow: 0 18px 36px rgba(0,0,0,0.10);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.breathe-circle{
+  width: 160px;
+  height: 160px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.92), rgba(124,96,170,0.55));
+  box-shadow: inset 0 18px 36px rgba(0,0,0,0.08), 0 18px 38px rgba(90,75,122,0.18);
+  transform: scale(1.0);
+  transition: transform 5.5s ease-in-out, background 400ms ease;
+}
+
+/* INHALE = retract (smaller) */
+.breathe-circle.inhale{
+  transform: scale(0.82);
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.96), rgba(122,170,240,0.60));
+}
+
+/* EXHALE = expand (bigger) */
+.breathe-circle.exhale{
+  transform: scale(1.18);
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.92), rgba(170,120,210,0.55));
+}
+
+#breathPhase{
+  text-align:center;
+  font-size:24px;
+  font-weight:900;
+  color:var(--deep);
+  margin-bottom:6px;
+}
+
+#breathTip{
+  text-align:center;
+  font-size:15px;
+  font-weight:800;
+  margin-top:10px;
+}
+
+/* =========================
+   HOME TILES + WOTD MODAL
+========================= */
 body.home .page{
   padding:8px 18px calc(98px + env(safe-area-inset-bottom));
 }
-body.home .page-header{
-  padding:46px 20px 10px;
-  padding-left:84px;
-  padding-right:84px;
-}
-body.home .page-header h1{ font-size:28px; }
-body.home .page-header p{ margin-top:6px; }
-
-.home-page{ position:relative; padding-top:6px !important; }
 
 .home-hero{
   width: min(520px, 92vw);
@@ -468,14 +432,16 @@ body.home .page-header p{ margin-top:6px; }
   display:block;
   text-decoration:none;
   color:var(--ink);
-  background:rgba(255,255,255,0.90);
+  background:rgba(255,255,255,0.92);
   border:1px solid rgba(184,166,217,0.18);
   border-radius:var(--radius-xl);
   padding:14px 16px;
   box-shadow:var(--shadow);
   margin: 0 auto 10px;
   max-width:680px;
+  position:relative;
 }
+
 .home-card-title{
   font-weight:900;
   font-size:20px;
@@ -501,6 +467,7 @@ body.home .page-header p{ margin-top:6px; }
   max-width:680px;
   margin:10px auto 10px;
 }
+
 .home-pill{
   display:flex;
   align-items:center;
@@ -516,22 +483,12 @@ body.home .page-header p{ margin-top:6px; }
   padding:12px 12px;
   box-shadow:var(--shadow);
 }
-.pill-ico{ font-size:18px; }
+.home-pill:active{ transform:scale(0.99); }
 
-.home-tile-wide{
-  position:relative;
-  cursor:pointer;
-}
-
-/* WOTD typography: title bold, word NOT bold */
 .wotd-title{ font-weight:900; }
-.wotd-word{
-  font-weight:600 !important;
-  font-size:17px;
-}
+.wotd-word{ font-weight:600; font-size:17px; }
 
-/* ? button inside tile */
-.wotd-info{
+#wotdInfoBtn.wotd-info{
   position:absolute;
   right:12px;
   top:12px;
@@ -540,44 +497,15 @@ body.home .page-header p{ margin-top:6px; }
   border:none;
   border-radius:999px;
   background: rgba(239,233,248,0.95);
-  box-shadow: 0 10px 24px rgba(0,0,0,0.10);
+  box-shadow: var(--shadow);
   font-weight:900;
   color:var(--deep);
 }
-body.night .wotd-info{
-  background: rgba(255,255,255,0.12);
-  color: rgba(245,242,255,0.92);
+body.night #wotdInfoBtn.wotd-info{
+  background: rgba(255,255,255,0.14);
+  color:#fff;
 }
 
-.home-help{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:10px;
-  text-decoration:none;
-  color:var(--deep);
-  font-weight:900;
-  font-size:16px;
-  background:rgba(239,233,248,0.95);
-  border:1px solid rgba(184,166,217,0.18);
-  border-radius:999px;
-  padding:12px 12px;
-  box-shadow:var(--shadow);
-  max-width:680px;
-  margin:10px auto 0;
-}
-
-.distraction-question{
-  margin-top:8px;
-  font-weight:900;
-  font-size:16px;
-  color:var(--deep);
-  line-height:1.35;
-}
-
-/* =========================================================
-   MODAL
-========================================================= */
 .modal{
   position:fixed;
   inset:0;
@@ -589,7 +517,7 @@ body.night .wotd-info{
 .modal-backdrop{
   position:absolute;
   inset:0;
-  background: rgba(0,0,0,0.25);
+  background: rgba(0,0,0,0.35);
   backdrop-filter: blur(6px);
 }
 
@@ -605,10 +533,9 @@ body.night .wotd-info{
   box-shadow: 0 18px 44px rgba(0,0,0,0.18);
   padding:16px;
 }
-
 body.night .modal-card{
-  background: rgba(18,16,26,0.96);
-  border:1px solid rgba(255,255,255,0.12);
+  background: rgba(20,20,30,0.96);
+  border:1px solid rgba(255,255,255,0.14);
 }
 
 .modal-top{
@@ -619,9 +546,9 @@ body.night .modal-card{
 }
 
 .modal-title{
-  font-weight:1000;
+  font-weight:900;
   font-size:14px;
-  opacity:0.7;
+  opacity:0.8;
 }
 
 .modal-word{
@@ -630,7 +557,7 @@ body.night .modal-card{
   color:var(--deep);
   margin-top:2px;
 }
-body.night .modal-word{ color: rgba(245,242,255,0.92); }
+body.night .modal-word{ color:#fff; }
 
 .modal-x{
   width:44px;
@@ -638,12 +565,12 @@ body.night .modal-word{ color: rgba(245,242,255,0.92); }
   border:none;
   border-radius:999px;
   background: rgba(239,233,248,0.9);
-  font-weight:1000;
+  font-weight:900;
   color:var(--deep);
 }
 body.night .modal-x{
-  background: rgba(255,255,255,0.12);
-  color: rgba(245,242,255,0.92);
+  background: rgba(255,255,255,0.14);
+  color:#fff;
 }
 
 .modal-desc{
@@ -652,22 +579,21 @@ body.night .modal-x{
   color: rgba(90,75,122,0.80);
   line-height:1.4;
 }
-body.night .modal-desc{ color: rgba(245,242,255,0.75); }
+body.night .modal-desc{ color: rgba(255,255,255,0.80); }
 
 .modal-tip{
   margin-top:12px;
   font-size:13px;
   font-weight:700;
-  color: rgba(90,75,122,0.70);
+  color: rgba(90,75,122,0.75);
   line-height:1.4;
 }
-body.night .modal-tip{ color: rgba(245,242,255,0.65); }
+body.night .modal-tip{ color: rgba(255,255,255,0.70); }
 
-/* Small screen tightening */
+/* =========================
+   SMALL SCREEN
+========================= */
 @media (max-height: 740px){
-  .page-header{ padding:56px 20px 14px; padding-left:84px; padding-right:84px; }
+  .page-header{ padding:56px 20px 14px; }
   .page{ padding-bottom:calc(112px + env(safe-area-inset-bottom)); }
-  .card{ padding:14px; }
-  .home-hero{ margin: -12px auto -130px; height:min(380px, 64vw); }
-  .home-pill{ padding:11px 12px; font-size:15px; }
 }
