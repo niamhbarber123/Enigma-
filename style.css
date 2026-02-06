@@ -759,3 +759,36 @@ select.input{
   appearance:none;
   -webkit-appearance:none;
 }
+/* ===== HOME: Help button ===== */
+.home-help{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  width:100%;
+  padding:14px 16px;
+  border-radius:18px;
+  text-decoration:none;
+  color:inherit;
+  font-weight:700;
+
+  background: rgba(255,255,255,.75);
+  border: 1px solid rgba(90,70,120,.14);
+  box-shadow: 0 10px 30px rgba(30,20,50,.10);
+}
+
+.home-help:visited{ color:inherit; }
+.home-help:hover{ text-decoration:none; }
+.home-help:active{ transform: translateY(1px); }
+
+.home-help-compact{
+  margin-top: 14px;
+}
+
+.home-help .pill-ico{
+  font-size: 18px;
+  line-height: 1;
+}
+
+.home-help .pill-text{
+  font-size: 16px;
+}
