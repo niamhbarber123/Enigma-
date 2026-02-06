@@ -7,7 +7,7 @@
 
   <link rel="icon" href="icon.png" />
   <link rel="apple-touch-icon" href="icon.png" />
-  <link rel="stylesheet" href="style.css?v=90001" />
+  <link rel="stylesheet" href="style.css?v=90002" />
 </head>
 
 <body class="page-wrap">
@@ -20,19 +20,30 @@
   </header>
 
   <main class="page" id="breathePage">
-    <div class="card breathe-card">
+    <div class="card">
       <div class="section-title" id="breathPhase">Ready</div>
 
-      <label class="gentle-text" for="breathDuration" style="display:block; margin-top:6px;">
-        Session length:
-      </label>
-      <select id="breathDuration" class="select">
-        <option value="0">Open-ended (no set time)</option>
-        <option value="60" selected>1 minute</option>
-        <option value="120">2 minutes</option>
-        <option value="180">3 minutes</option>
-        <option value="300">5 minutes</option>
-      </select>
+      <!-- MODE: Timer / Stopwatch -->
+      <div class="tool-row" style="margin-top:10px;">
+        <button class="tool-btn primary" id="breathModeTimerBtn" type="button">Timer</button>
+        <button class="tool-btn" id="breathModeStopwatchBtn" type="button">Stopwatch</button>
+      </div>
+
+      <!-- TIMER OPTIONS -->
+      <div id="breathTimerWrap" style="margin-top:10px;">
+        <div class="gentle-text" style="margin-top:6px;">Session length:</div>
+        <select id="breathDuration" class="input" style="margin-top:8px;">
+          <option value="60">1 minute</option>
+          <option value="120">2 minutes</option>
+          <option value="180">3 minutes</option>
+          <option value="300">5 minutes</option>
+        </select>
+      </div>
+
+      <!-- STOPWATCH INFO -->
+      <div id="breathStopwatchWrap" class="gentle-text" style="display:none; margin-top:12px;">
+        Stopwatch mode: no set time — breathe as long as you like.
+      </div>
 
       <div class="breathe-stage">
         <div class="breathe-ring">
@@ -41,7 +52,6 @@
       </div>
 
       <div class="breath-text" id="breathTip">Tap Start to begin.</div>
-      <div class="breath-timer" id="breathTimer" aria-live="polite">00:00</div>
 
       <div class="tool-row" style="margin-top:14px;">
         <button class="tool-btn primary" id="breathStartBtn" type="button">Start</button>
@@ -64,6 +74,6 @@
     <a href="progress.html"><div class="nav-ico">📈</div><span>Progress</span></a>
   </nav>
 
-  <script src="app.js?v=90001" defer></script>
+  <script src="app.js?v=90002" defer></script>
 </body>
 </html>
