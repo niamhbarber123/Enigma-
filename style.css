@@ -874,3 +874,77 @@ body.night .home-help-cta{
   border-color: rgba(255,255,255,.18);
   box-shadow: 0 12px 30px rgba(0,0,0,.45);
 }
+/* ===============================
+   iOS-SAFE HELP CTA (NO BLUE LINE)
+================================ */
+
+.home-help-cta,
+.home-help-cta:link,
+.home-help-cta:visited,
+.home-help-cta:hover,
+.home-help-cta:active {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  width: 100%;
+  margin-top: 16px;
+  padding: 16px 18px;
+
+  border-radius: 20px;
+
+  /* 🔥 kill iOS link styling */
+  color: #4a3a63 !important;
+  text-decoration: none !important;
+  -webkit-text-decoration: none !important;
+  -webkit-text-fill-color: #4a3a63;
+
+  font-weight: 700;
+  font-size: 16px;
+
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,.95),
+    rgba(245,240,255,.95)
+  );
+
+  border: 1px solid rgba(90,70,120,.15);
+  box-shadow: 0 12px 28px rgba(40,25,70,.12);
+
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.home-help-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 16px 34px rgba(40,25,70,.18);
+}
+
+.home-help-cta:active {
+  transform: translateY(0);
+}
+
+.help-ico {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.help-text {
+  flex: 1;
+}
+
+/* 🌙 NIGHT MODE */
+body.night .home-help-cta,
+body.night .home-help-cta:link,
+body.night .home-help-cta:visited {
+  color: rgba(255,255,255,.95) !important;
+  -webkit-text-fill-color: rgba(255,255,255,.95);
+
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,.14),
+    rgba(255,255,255,.08)
+  );
+
+  border-color: rgba(255,255,255,.18);
+  box-shadow: 0 12px 30px rgba(0,0,0,.45);
+}
