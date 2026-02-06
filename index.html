@@ -59,6 +59,30 @@
   </div>
 </section>
 
+    <section class="home-card home-card-thin" id="distractionCard">
+  <div class="home-card-title">Distraction</div>
+
+  <div class="home-card-desc">
+    Gentle questions to interrupt a spiral.
+  </div>
+
+  <div id="distractionQuestion" class="distraction-question">
+    Tap Start to begin.
+  </div>
+
+  <div class="gentle-text">
+    Answered: <span id="distractionAnsweredCount">0</span>
+  </div>
+
+  <input id="distractionInput" class="input"
+         placeholder="Type your answer here…" />
+
+  <div class="tool-row">
+    <button class="tool-btn primary" id="distractionStartBtn">Start</button>
+    <button class="tool-btn" id="distractionNextBtn" style="display:none;">Next</button>
+    <button class="tool-btn" id="distractionSkipBtn" style="display:none;">Skip</button>
+  </div>
+</section> 
       <!-- ✅ Progress: only counts ANSWERED -->
       <div class="gentle-text" id="distractionMeta" style="margin-top:10px;">
         Answered: <span id="distractionAnsweredCount">0</span>
