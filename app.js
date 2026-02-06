@@ -1,14 +1,14 @@
 /* =========================================================
-   Enigma Wellbeing • app.js (FULL WORKING)
-   - Theme toggle (+ moon/sun icon swap)
+   Enigma Wellbeing • app.js (FULL)
+   - Theme toggle (🌙/☀️)
    - Back navigation
-   - Word of the Day (daily deterministic pick + description + modal)
-   - Breathe (Start/Stop + timer duration + slower phases + inhale small / exhale big)
-   - Quotes (search via Quotable API + random + save)
-   - Music (moods + links + session minutes)
-   - Yoga (moods + links)
+   - Breathe (Start/Stop + save completes)
+   - Quotes (search + random + save)
+   - Music (mood chips + button links + minutes)
+   - Yoga (mood chips + button links)
+   - Progress (reads saved stats)
+   - Word of the Day (daily deterministic + modal)
    - Distraction (typed answers required for Next; skip allowed; progress = answered only)
-   - Progress page stats
 ========================================================= */
 
 (function () {
@@ -17,22 +17,509 @@
   const $ = (id) => document.getElementById(id);
 
   /* =========================
-     Back
+     Helpers
   ========================= */
   window.enigmaBack = function () {
     if (history.length > 1) history.back();
     else location.href = "index.html";
   };
 
-  /* =========================
-     Date key
-  ========================= */
   function todayKey() {
     return new Date().toISOString().split("T")[0]; // YYYY-MM-DD
   }
 
+  function safeJSON(raw, fallback) {
+    try { return JSON.parse(raw); } catch { return fallback; }
+  }
+
   /* =========================
-     Deterministic RNG (for WOTD)
+     THEME (🌙 / ☀️)
+  ========================= */
+  function setThemeIcon() {
+    const btn = $("themeFab");
+    if (!btn) return;
+    btn.textContent = document.body.classList.contains("night") ? "☀️" : "🌙";
+  }
+
+  function applyTheme() {
+    const t = localStorage.getItem("enigmaTheme") || "light";
+    document.body.classList.toggle("night", t === "night");
+    setThemeIcon();
+  }
+
+  function toggleTheme() {
+    const night = document.body.classList.toggle("night");
+    localStorage.setItem("enigmaTheme", night ? "night" : "light");
+    setThemeIcon();
+  }
+
+  function initTheme() {
+    const btn = $("themeFab");
+    if (btn) btn.addEventListener("click", toggleTheme);
+    setThemeIcon();
+  }
+
+  /* =========================
+     BREATHE (buttons + cycle)
+     NOTE: Your CSS controls sizes/colours.
+     JS just toggles inhale/exhale classes.
+  ========================= */
+  function initBreathe() {
+    const page = $("breathePage");
+    if (!page) return;
+
+    const circle = $("breatheCircle");
+    const phase = $("breathPhase");
+    const tip = $("breathTip");
+    const start = $("breathStartBtn");
+    const stop = $("breathStopBtn");
+    const done = $("breathCompleteBtn");
+
+    if (!circle || !phase || !tip || !start || !stop) return;
+
+    let running = false;
+    let t1 = null;
+    let t2 = null;
+
+    // Slower rhythm (seconds)
+    const INHALE_MS = 6000; // inhale slower
+    const EXHALE_MS = 6000; // exhale slower
+
+    function setText(p, m) {
+      phase.textContent = p;
+      tip.textContent = m;
+    }
+
+    function clearTimers() {
+      if (t1) clearTimeout(t1);
+      if (t2) clearTimeout(t2);
+      t1 = t2 = null;
+    }
+
+    function reset() {
+      clearTimers();
+      circle.classList.remove("inhale", "exhale");
+      setText("Ready", "Tap Start to begin.");
+    }
+
+    // IMPORTANT: requested behaviour:
+    // - inhale = smaller (retract)
+    // - exhale = bigger (expand)
+    function cycle() {
+      if (!running) return;
+
+      // Inhale (retract)
+      circle.classList.add("inhale");
+      circle.classList.remove("exhale");
+      setText("Breathe in", "Slow inhale…");
+
+      t1 = setTimeout(() => {
+        if (!running) return;
+
+        // Exhale (expand)
+        circle.classList.add("exhale");
+        circle.classList.remove("inhale");
+        setText("Breathe out", "Slow exhale…");
+
+        t2 = setTimeout(() => {
+          if (!running) return;
+          cycle();
+        }, EXHALE_MS);
+      }, INHALE_MS);
+    }
+
+    start.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (running) return;
+      running = true;
+      cycle();
+    });
+
+    stop.addEventListener("click", (e) => {
+      e.preventDefault();
+      running = false;
+      reset();
+    });
+
+    if (done) {
+      done.addEventListener("click", (e) => {
+        e.preventDefault();
+        const key = "enigmaBreatheCompletes";
+        const obj = safeJSON(localStorage.getItem(key) || "{}", {});
+        const day = todayKey();
+        obj[day] = (obj[day] || 0) + 1;
+        localStorage.setItem(key, JSON.stringify(obj));
+        done.textContent = "Saved ✅";
+        setTimeout(() => (done.textContent = "Completed ✅"), 1200);
+      });
+    }
+
+    reset();
+  }
+
+  /* =========================
+     QUOTES (search internet via Quotable)
+     - If fetch fails, falls back to built-ins
+  ========================= */
+  const FALLBACK_QUOTES = [
+    { q: "Start where you are. Use what you have. Do what you can.", a: "Arthur Ashe" },
+    { q: "It always seems impossible until it’s done.", a: "Nelson Mandela" },
+    { q: "Small steps every day.", a: "Unknown" },
+    { q: "Progress, not perfection.", a: "Unknown" }
+  ];
+
+  const QUOTE_SAVED_KEY = "enigmaSavedQuotesV2";
+
+  function getSavedQuotes() {
+    return safeJSON(localStorage.getItem(QUOTE_SAVED_KEY) || "[]", []);
+  }
+
+  function setSavedQuotes(list) {
+    localStorage.setItem(QUOTE_SAVED_KEY, JSON.stringify(list));
+  }
+
+  function isSameQuote(a, b) {
+    return (a.q || "").trim() === (b.q || "").trim() && (a.a || "").trim() === (b.a || "").trim();
+  }
+
+  function renderQuotes(list, { showSave = true } = {}) {
+    const grid = $("quoteGrid");
+    if (!grid) return;
+
+    const saved = getSavedQuotes();
+
+    grid.innerHTML = "";
+    list.forEach((item) => {
+      const tile = document.createElement("div");
+      tile.className = "quote-tile";
+
+      const savedAlready = saved.some((s) => isSameQuote(s, item));
+
+      tile.innerHTML = `
+        <div class="quote-text">“${item.q}”</div>
+        <small>— ${item.a || "Unknown"}</small>
+        ${showSave ? `<button class="quote-save-btn ${savedAlready ? "saved" : ""}" type="button">
+          ${savedAlready ? "💜 Saved" : "💜 Save"}
+        </button>` : ""}
+      `;
+
+      if (showSave) {
+        const btn = tile.querySelector("button");
+        btn.addEventListener("click", (e) => {
+          e.preventDefault();
+          const now = getSavedQuotes();
+          const exists = now.some((s) => isSameQuote(s, item));
+          const next = exists ? now.filter((s) => !isSameQuote(s, item)) : [item, ...now];
+          setSavedQuotes(next);
+          initQuotes(); // re-render (updates Saved count + buttons)
+        });
+      }
+
+      grid.appendChild(tile);
+    });
+  }
+
+  async function fetchQuotesByQuery(query) {
+    // Quotable supports searching by keyword
+    const url = `https://api.quotable.io/search/quotes?query=${encodeURIComponent(query)}&limit=12`;
+    const res = await fetch(url, { cache: "no-store" });
+    if (!res.ok) throw new Error("Quote fetch failed");
+    const data = await res.json();
+    const results = Array.isArray(data.results) ? data.results : [];
+    return results.map((r) => ({ q: r.content, a: r.author }));
+  }
+
+  async function fetchRandomMotivational() {
+    // tag=motivational exists on quotable
+    const url = "https://api.quotable.io/random?tags=motivational|inspirational";
+    const res = await fetch(url, { cache: "no-store" });
+    if (!res.ok) throw new Error("Random quote fetch failed");
+    const r = await res.json();
+    return [{ q: r.content, a: r.author }];
+  }
+
+  function initQuotes() {
+    const grid = $("quoteGrid");
+    if (!grid) return;
+
+    const searchInput = $("quoteSearch");
+    const searchBtn = $("quoteSearchBtn");
+    const randomBtn = $("quoteRandomBtn");
+    const viewSavedBtn = $("viewSavedBtn");
+    const clearSavedBtn = $("clearSavedBtn");
+    const savedCount = $("savedCount");
+    const status = $("quoteStatus");
+
+    const saved = getSavedQuotes();
+    if (savedCount) savedCount.textContent = String(saved.length);
+
+    // Default view: show a few motivational quotes (fallback)
+    if (!grid.dataset.initialized) {
+      grid.dataset.initialized = "1";
+      renderQuotes(FALLBACK_QUOTES);
+    }
+
+    if (searchBtn && searchInput) {
+      searchBtn.addEventListener("click", async () => {
+        const q = (searchInput.value || "").trim();
+        if (!q) return;
+        if (status) status.textContent = "Searching…";
+        try {
+          const list = await fetchQuotesByQuery(q);
+          if (!list.length) {
+            renderQuotes(FALLBACK_QUOTES);
+            if (status) status.textContent = "No results — showing some motivational quotes instead.";
+          } else {
+            renderQuotes(list);
+            if (status) status.textContent = `Showing results for “${q}”. Tap 💜 to save.`;
+          }
+        } catch {
+          renderQuotes(FALLBACK_QUOTES);
+          if (status) status.textContent = "Couldn’t load quotes right now — showing saved/fallback quotes.";
+        }
+      });
+    }
+
+    if (randomBtn) {
+      randomBtn.addEventListener("click", async () => {
+        if (status) status.textContent = "Loading a random quote…";
+        try {
+          const list = await fetchRandomMotivational();
+          renderQuotes(list);
+          if (status) status.textContent = "Random motivational quote. Tap 💜 to save.";
+        } catch {
+          renderQuotes(FALLBACK_QUOTES);
+          if (status) status.textContent = "Couldn’t load a random quote — showing fallback quotes.";
+        }
+      });
+    }
+
+    if (viewSavedBtn) {
+      viewSavedBtn.addEventListener("click", () => {
+        const now = getSavedQuotes();
+        if (!now.length) {
+          renderQuotes(FALLBACK_QUOTES);
+          if (status) status.textContent = "No saved quotes yet. Tap 💜 to save one.";
+        } else {
+          renderQuotes(now);
+          if (status) status.textContent = "Showing your saved quotes.";
+        }
+        const count = $("savedCount");
+        if (count) count.textContent = String(getSavedQuotes().length);
+      });
+    }
+
+    if (clearSavedBtn) {
+      clearSavedBtn.addEventListener("click", () => {
+        setSavedQuotes([]);
+        const count = $("savedCount");
+        if (count) count.textContent = "0";
+        renderQuotes(FALLBACK_QUOTES);
+        if (status) status.textContent = "Saved quotes cleared.";
+      });
+    }
+  }
+
+  /* =========================
+     MUSIC (moods + links + minutes)
+     FIX: renders each link as a separate .music-btn
+  ========================= */
+  const MUSIC_MOODS = ["All", "Anxious", "Stressed", "Focus", "Sleep"];
+  const TRACKS = [
+    { t: "Calm breathing music", m: "Anxious", u: "https://www.youtube.com/watch?v=odADwWzHR24" },
+    { t: "Lo-fi focus mix", m: "Focus", u: "https://www.youtube.com/watch?v=jfKfPfyJRdk" },
+    { t: "Sleep music", m: "Sleep", u: "https://www.youtube.com/watch?v=DWcJFNfaw9c" },
+    { t: "Relaxing piano", m: "Stressed", u: "https://www.youtube.com/watch?v=1ZYbU82GVz4" },
+    { t: "Ocean waves", m: "Sleep", u: "https://www.youtube.com/watch?v=eKFTSSKCzWA" }
+  ];
+
+  function initMusic() {
+    const page = $("musicPage");
+    // music.html doesn't have id="musicPage" in your snippet,
+    // so also detect by required elements:
+    const chipsWrap = $("moodChips");
+    const list = $("musicList");
+    if (!chipsWrap || !list) return;
+
+    const minsTodayEl = $("minsToday");
+    const minsTotalEl = $("minsTotal");
+    const startBtn = $("startListenBtn");
+    const endBtn = $("endListenBtn");
+    const status = $("listenStatus");
+
+    let mood = localStorage.getItem("enigmaMusicMood") || "All";
+    let start = null;
+
+    function renderTracks() {
+      list.innerHTML = "";
+
+      TRACKS
+        .filter((x) => mood === "All" || x.m === mood)
+        .forEach((x) => {
+          const a = document.createElement("a");
+          a.href = x.u;
+          a.target = "_blank";
+          a.rel = "noopener";
+          a.className = "music-btn";
+          a.innerHTML = `<span>${x.t}</span><span>▶</span>`;
+          list.appendChild(a);
+        });
+
+      // If no tracks in that mood, show helpful note
+      if (!list.children.length) {
+        const div = document.createElement("div");
+        div.className = "gentle-text";
+        div.textContent = "No tracks for that mood yet.";
+        list.appendChild(div);
+      }
+    }
+
+    function renderChips() {
+      chipsWrap.innerHTML = "";
+      MUSIC_MOODS.forEach((m) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "chip" + (m === mood ? " active" : "");
+        b.textContent = m;
+        b.addEventListener("click", () => {
+          mood = m;
+          localStorage.setItem("enigmaMusicMood", mood);
+          renderChips();
+          renderTracks();
+        });
+        chipsWrap.appendChild(b);
+      });
+    }
+
+    function loadMinutes() {
+      const day = todayKey();
+      const store = safeJSON(localStorage.getItem("enigmaMusicMinutes") || "{}", {});
+      const today = Number(store[day] || 0);
+      const total = Object.values(store).reduce((a, v) => a + Number(v || 0), 0);
+
+      if (minsTodayEl) minsTodayEl.textContent = String(today);
+      if (minsTotalEl) minsTotalEl.textContent = String(total);
+    }
+
+    function saveMinutes(addMins) {
+      const day = todayKey();
+      const store = safeJSON(localStorage.getItem("enigmaMusicMinutes") || "{}", {});
+      store[day] = Number(store[day] || 0) + addMins;
+      localStorage.setItem("enigmaMusicMinutes", JSON.stringify(store));
+    }
+
+    if (startBtn && status) {
+      startBtn.addEventListener("click", () => {
+        if (start) return;
+        start = Date.now();
+        status.textContent = "Listening… tap End session when finished.";
+      });
+    }
+
+    if (endBtn && status) {
+      endBtn.addEventListener("click", () => {
+        if (!start) return;
+        const mins = Math.max(1, Math.round((Date.now() - start) / 60000));
+        start = null;
+        saveMinutes(mins);
+        loadMinutes();
+        status.textContent = `Saved ${mins} min ✅`;
+        setTimeout(() => (status.textContent = "No active session."), 1400);
+      });
+    }
+
+    renderChips();
+    renderTracks();
+    loadMinutes();
+  }
+
+  /* =========================
+     YOGA (moods + button links)
+     FIX: renders each video as a separate .music-btn
+  ========================= */
+  const YOGA_MOODS = ["All", "Anxiety", "Stress", "Sleep", "Morning", "Stiff body"];
+  const YOGA_VIDEOS = [
+    { t: "10 min Yoga for Anxiety", m: "Anxiety", u: "https://www.youtube.com/results?search_query=10+minute+yoga+for+anxiety" },
+    { t: "15 min Gentle Yoga for Stress", m: "Stress", u: "https://www.youtube.com/results?search_query=15+minute+gentle+yoga+for+stress" },
+    { t: "Yoga for Sleep (wind down)", m: "Sleep", u: "https://www.youtube.com/results?search_query=yoga+for+sleep+bedtime" },
+    { t: "Morning Yoga (wake up)", m: "Morning", u: "https://www.youtube.com/results?search_query=morning+yoga+10+minutes" },
+    { t: "Yoga for stiff back/hips", m: "Stiff body", u: "https://www.youtube.com/results?search_query=yoga+for+stiff+back+hips" },
+    { t: "Gentle yoga (all levels)", m: "All", u: "https://www.youtube.com/results?search_query=gentle+yoga+all+levels" }
+  ];
+
+  function initYoga() {
+    const chipsWrap = $("yogaMoodChips");
+    const list = $("yogaVideoList");
+    if (!chipsWrap || !list) return;
+
+    let mood = localStorage.getItem("enigmaYogaMood") || "All";
+
+    function render() {
+      chipsWrap.innerHTML = "";
+      YOGA_MOODS.forEach((m) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "chip" + (m === mood ? " active" : "");
+        b.textContent = m;
+        b.addEventListener("click", () => {
+          mood = m;
+          localStorage.setItem("enigmaYogaMood", mood);
+          render();
+        });
+        chipsWrap.appendChild(b);
+      });
+
+      list.innerHTML = "";
+      YOGA_VIDEOS
+        .filter((x) => mood === "All" || x.m === mood || x.m === "All")
+        .forEach((x) => {
+          const a = document.createElement("a");
+          a.href = x.u;
+          a.target = "_blank";
+          a.rel = "noopener";
+          a.className = "music-btn";
+          a.innerHTML = `<span>${x.t}</span><span>▶</span>`;
+          list.appendChild(a);
+        });
+    }
+
+    render();
+  }
+
+  /* =========================
+     PROGRESS
+  ========================= */
+  function initProgress() {
+    const page = $("progressPage");
+    if (!page) return;
+
+    const pBreathedToday = $("pBreathedToday");
+    const pMusicToday = $("pMusicToday");
+    const pSavedQuotes = $("pSavedQuotes");
+    const pMusicTotal = $("pMusicTotal");
+
+    const day = todayKey();
+
+    // Breathe completes per day
+    const breatheStore = safeJSON(localStorage.getItem("enigmaBreatheCompletes") || "{}", {});
+    const breathedToday = Number(breatheStore[day] || 0);
+
+    // Music minutes
+    const musicStore = safeJSON(localStorage.getItem("enigmaMusicMinutes") || "{}", {});
+    const musicToday = Number(musicStore[day] || 0);
+    const musicTotal = Object.values(musicStore).reduce((a, v) => a + Number(v || 0), 0);
+
+    // Saved quotes
+    const savedQuotes = getSavedQuotes();
+
+    if (pBreathedToday) pBreathedToday.textContent = String(breathedToday);
+    if (pMusicToday) pMusicToday.textContent = String(musicToday);
+    if (pMusicTotal) pMusicTotal.textContent = String(musicTotal);
+    if (pSavedQuotes) pSavedQuotes.textContent = String(savedQuotes.length);
+  }
+
+  /* =========================
+     WORD OF THE DAY (daily deterministic + modal)
   ========================= */
   function mulberry32(seed) {
     return function () {
@@ -44,40 +531,11 @@
   }
 
   function seedFromToday() {
-    const s = todayKey().split("-").join("");
+    const s = todayKey().replaceAll("-", "");
     const n = parseInt(s, 10);
     return Number.isFinite(n) ? n : 20260101;
   }
 
-  /* =========================
-     THEME (moon <-> sun)
-  ========================= */
-  function updateThemeFabIcon() {
-    const btn = $("themeFab");
-    if (!btn) return;
-    btn.textContent = document.body.classList.contains("night") ? "☀️" : "🌙";
-  }
-
-  function applyTheme() {
-    const t = localStorage.getItem("enigmaTheme") || "light";
-    document.body.classList.toggle("night", t === "night");
-    updateThemeFabIcon();
-  }
-
-  function toggleTheme() {
-    const night = document.body.classList.toggle("night");
-    localStorage.setItem("enigmaTheme", night ? "night" : "light");
-    updateThemeFabIcon();
-  }
-
-  function initTheme() {
-    const btn = $("themeFab");
-    if (btn) btn.addEventListener("click", toggleTheme);
-  }
-
-  /* =========================
-     WORD OF THE DAY
-  ========================= */
   const WOTD = [
     { w: "Forgiveness", d: "Releasing resentment so you can move forward lighter." },
     { w: "Honesty", d: "Choosing truth with kindness—to yourself and others." },
@@ -139,13 +597,12 @@
     return WOTD[i] || { w: "Serenity", d: "A quiet steadiness, even when life is loud." };
   }
 
-  function openWotdModal(word, desc) {
+  function showWotdModal(word, desc) {
     const modal = $("wotdModal");
     const backdrop = $("wotdBackdrop");
     const closeBtn = $("wotdCloseBtn");
     const mw = $("wotdModalWord");
     const md = $("wotdModalDesc");
-
     if (!modal || !mw || !md) return;
 
     mw.textContent = word;
@@ -157,30 +614,20 @@
 
     const close = () => {
       modal.classList.remove("show");
-      modal.style.display = "none";
       modal.setAttribute("aria-hidden", "true");
+      modal.style.display = "none";
     };
 
     if (backdrop) backdrop.addEventListener("click", close, { once: true });
     if (closeBtn) closeBtn.addEventListener("click", close, { once: true });
-
-    window.addEventListener(
-      "keydown",
-      function esc(e) {
-        if (e.key === "Escape") {
-          close();
-          window.removeEventListener("keydown", esc);
-        }
-      }
-    );
   }
 
   function initWotd() {
-    const tile = $("wotdTile");
     const wEl = $("wotdWord");
     const dEl = $("wotdDesc");
     const infoBtn = $("wotdInfoBtn");
-    if (!tile || !wEl || !dEl) return;
+    const tile = $("wotdTile");
+    if (!wEl || !dEl || !tile) return;
 
     const { w, d } = pickWotd();
     wEl.textContent = w;
@@ -189,445 +636,16 @@
     tile.addEventListener("click", (e) => {
       if (e.target && e.target.id === "wotdInfoBtn") return;
       e.preventDefault();
-      openWotdModal(w, d);
+      showWotdModal(w, d);
     });
 
     if (infoBtn) {
       infoBtn.addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
-        openWotdModal(w, d);
+        showWotdModal(w, d);
       });
     }
-  }
-
-  /* =========================
-     BREATHE (timer + slower + inhale small / exhale big)
-  ========================= */
-  function initBreathe() {
-    const page = $("breathePage");
-    if (!page) return;
-
-    const circle = $("breatheCircle");
-    const phase = $("breathPhase");
-    const tip = $("breathTip");
-    const startBtn = $("breathStartBtn");
-    const stopBtn = $("breathStopBtn");
-    const doneBtn = $("breathCompleteBtn");
-
-    const durationSel = $("breathDuration");
-    const timeLeftEl = $("breathTimeLeft");
-
-    if (!circle || !phase || !tip || !startBtn || !stopBtn) return;
-
-    // Slower breathing (seconds)
-    const INHALE_MS = 5500;
-    const EXHALE_MS = 5500;
-
-    let running = false;
-    let t1 = null;
-    let t2 = null;
-
-    let countdownTimer = null;
-    let endAt = null;
-
-    function setText(p, m) {
-      phase.textContent = p;
-      tip.textContent = m;
-    }
-
-    function clearTimers() {
-      if (t1) clearTimeout(t1);
-      if (t2) clearTimeout(t2);
-      t1 = t2 = null;
-    }
-
-    function clearCountdown() {
-      if (countdownTimer) clearInterval(countdownTimer);
-      countdownTimer = null;
-      endAt = null;
-      if (timeLeftEl) timeLeftEl.textContent = "";
-    }
-
-    function stopAll(showMsg) {
-      running = false;
-      clearTimers();
-      clearCountdown();
-      circle.classList.remove("inhale", "exhale");
-      if (showMsg) setText("Ready", showMsg);
-      else setText("Ready", "Tap Start to begin.");
-    }
-
-    function getDurationSeconds() {
-      if (!durationSel) return 60;
-      const v = parseInt(durationSel.value, 10);
-      return Number.isFinite(v) ? v : 60;
-    }
-
-    function startCountdown() {
-      const seconds = getDurationSeconds();
-      endAt = Date.now() + seconds * 1000;
-
-      function renderTime() {
-        if (!timeLeftEl || !endAt) return;
-        const left = Math.max(0, Math.ceil((endAt - Date.now()) / 1000));
-        const m = String(Math.floor(left / 60));
-        const s = String(left % 60).padStart(2, "0");
-        timeLeftEl.textContent = `Time left: ${m}:${s}`;
-
-        if (left <= 0) {
-          // Auto stop + save one complete
-          stopAll("Nice work. You finished ✅");
-          saveBreatheComplete();
-        }
-      }
-
-      renderTime();
-      countdownTimer = setInterval(renderTime, 300);
-    }
-
-    function cycle() {
-      if (!running) return;
-
-      // ✅ INHALE = smaller (retract)
-      circle.classList.add("inhale");
-      circle.classList.remove("exhale");
-      setText("Breathe in", "Inhale gently…");
-
-      t1 = setTimeout(() => {
-        if (!running) return;
-
-        // ✅ EXHALE = bigger (expand)
-        circle.classList.add("exhale");
-        circle.classList.remove("inhale");
-        setText("Breathe out", "Exhale slowly…");
-
-        t2 = setTimeout(() => {
-          if (!running) return;
-          cycle();
-        }, EXHALE_MS);
-      }, INHALE_MS);
-    }
-
-    function saveBreatheComplete() {
-      const key = "enigmaBreatheCompletes";
-      const store = JSON.parse(localStorage.getItem(key) || "{}");
-      const day = todayKey();
-      store[day] = (store[day] || 0) + 1;
-      localStorage.setItem(key, JSON.stringify(store));
-    }
-
-    startBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      if (running) return;
-      running = true;
-      startCountdown();
-      cycle();
-    });
-
-    stopBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      stopAll("Tap Start to begin.");
-    });
-
-    if (doneBtn) {
-      doneBtn.addEventListener("click", (e) => {
-        e.preventDefault();
-        saveBreatheComplete();
-        doneBtn.textContent = "Saved ✅";
-        setTimeout(() => (doneBtn.textContent = "Completed ✅"), 1100);
-      });
-    }
-
-    stopAll("Tap Start to begin.");
-  }
-
-  /* =========================
-     QUOTES (Quotable API + save)
-  ========================= */
-  const QUOTE_SAVE_KEY = "enigmaSavedQuotesV2";
-
-  function loadSavedQuotes() {
-    try {
-      return JSON.parse(localStorage.getItem(QUOTE_SAVE_KEY) || "[]");
-    } catch {
-      return [];
-    }
-  }
-
-  function saveSavedQuotes(arr) {
-    localStorage.setItem(QUOTE_SAVE_KEY, JSON.stringify(arr));
-  }
-
-  function isSameQuote(a, b) {
-    return a && b && a.content === b.content && (a.author || "") === (b.author || "");
-  }
-
-  async function fetchQuotesSearch(query) {
-    const url = "https://api.quotable.io/search/quotes?query=" + encodeURIComponent(query) + "&limit=12";
-    const res = await fetch(url);
-    if (!res.ok) throw new Error("Quote search failed");
-    const data = await res.json();
-    return (data.results || []).map((x) => ({ content: x.content, author: x.author || "Unknown" }));
-  }
-
-  async function fetchRandomMotivational() {
-    // A few tags that usually work well
-    const url = "https://api.quotable.io/random?tags=motivational|inspirational|wisdom|success|happiness";
-    const res = await fetch(url);
-    if (!res.ok) throw new Error("Random quote failed");
-    const x = await res.json();
-    return [{ content: x.content, author: x.author || "Unknown" }];
-  }
-
-  function renderQuotes(list, savedSet) {
-    const grid = $("quoteGrid");
-    if (!grid) return;
-    grid.innerHTML = "";
-
-    list.forEach((q) => {
-      const tile = document.createElement("div");
-      tile.className = "quote-tile";
-
-      const saved = savedSet.some((s) => isSameQuote(s, q));
-
-      tile.innerHTML = `
-        <div class="quote-text">“${q.content}”</div>
-        <small>— ${q.author || "Unknown"}</small>
-        <button class="quote-save-btn ${saved ? "saved" : ""}" type="button">
-          ${saved ? "💜 Saved" : "💜 Save"}
-        </button>
-      `;
-
-      tile.querySelector("button").addEventListener("click", (e) => {
-        e.preventDefault();
-        const current = loadSavedQuotes();
-
-        const exists = current.some((s) => isSameQuote(s, q));
-        let next;
-        if (exists) next = current.filter((s) => !isSameQuote(s, q));
-        else next = [{ content: q.content, author: q.author || "Unknown" }, ...current];
-
-        saveSavedQuotes(next);
-        initQuotes(); // refresh count + view state
-      });
-
-      grid.appendChild(tile);
-    });
-  }
-
-  async function initQuotes() {
-    const grid = $("quoteGrid");
-    if (!grid) return;
-
-    const input = $("quoteSearch");
-    const searchBtn = $("quoteSearchBtn");
-    const randomBtn = $("quoteRandomBtn");
-    const viewSavedBtn = $("viewSavedBtn");
-    const clearSavedBtn = $("clearSavedBtn");
-    const savedCount = $("savedCount");
-    const status = $("quoteStatus");
-
-    const saved = loadSavedQuotes();
-    if (savedCount) savedCount.textContent = String(saved.length);
-
-    async function showSearch() {
-      const q = (input ? input.value : "").trim();
-      if (!q) {
-        if (status) status.textContent = "Type something to search (e.g. courage, hope, Mandela).";
-        return;
-      }
-      if (status) status.textContent = "Searching…";
-      try {
-        const results = await fetchQuotesSearch(q);
-        if (status) status.textContent = results.length ? "Results:" : "No results found. Try another word.";
-        renderQuotes(results, loadSavedQuotes());
-      } catch {
-        if (status) status.textContent = "Couldn’t load quotes right now. Try again.";
-      }
-    }
-
-    async function showRandom() {
-      if (status) status.textContent = "Loading a random quote…";
-      try {
-        const results = await fetchRandomMotivational();
-        if (status) status.textContent = "Random motivational quote:";
-        renderQuotes(results, loadSavedQuotes());
-      } catch {
-        if (status) status.textContent = "Couldn’t load a random quote right now. Try again.";
-      }
-    }
-
-    function showSaved() {
-      const s = loadSavedQuotes();
-      if (savedCount) savedCount.textContent = String(s.length);
-      if (status) status.textContent = s.length ? "Saved quotes:" : "No saved quotes yet.";
-      renderQuotes(s, s);
-    }
-
-    function clearSaved() {
-      saveSavedQuotes([]);
-      if (savedCount) savedCount.textContent = "0";
-      if (status) status.textContent = "Deleted saved quotes.";
-      renderQuotes([], []);
-    }
-
-    if (searchBtn) searchBtn.onclick = showSearch;
-    if (randomBtn) randomBtn.onclick = showRandom;
-    if (viewSavedBtn) viewSavedBtn.onclick = showSaved;
-    if (clearSavedBtn) clearSavedBtn.onclick = clearSaved;
-
-    // default view
-    if (status) status.textContent = "Tip: only the 💜 button saves.";
-  }
-
-  /* =========================
-     MUSIC (moods + links + minutes)
-  ========================= */
-  const MUSIC_MOODS = ["All", "Anxious", "Stressed", "Focus", "Sleep"];
-
-  const TRACKS = [
-    { t: "Calm breathing music", m: "Anxious", u: "https://www.youtube.com/watch?v=odADwWzHR24" },
-    { t: "Lo-fi focus mix", m: "Focus", u: "https://www.youtube.com/watch?v=jfKfPfyJRdk" },
-    { t: "Sleep music", m: "Sleep", u: "https://www.youtube.com/watch?v=DWcJFNfaw9c" },
-    { t: "Relaxing piano", m: "Stressed", u: "https://www.youtube.com/watch?v=1ZYbU82GVz4" },
-    { t: "Ocean waves", m: "Sleep", u: "https://www.youtube.com/watch?v=eKFTSSKCzWA" }
-  ];
-
-  function initMusic() {
-    const chipsWrap = $("moodChips");
-    const list = $("musicList");
-    if (!chipsWrap || !list) return;
-
-    const minsTodayEl = $("minsToday");
-    const minsTotalEl = $("minsTotal");
-    const startBtn = $("startListenBtn");
-    const endBtn = $("endListenBtn");
-    const status = $("listenStatus");
-
-    let mood = localStorage.getItem("enigmaMusicMood") || "All";
-    let start = null;
-
-    function renderTracks() {
-      list.innerHTML = "";
-      TRACKS.filter((x) => mood === "All" || x.m === mood).forEach((x) => {
-        const a = document.createElement("a");
-        a.href = x.u;
-        a.target = "_blank";
-        a.rel = "noopener";
-        a.className = "music-btn";
-        a.innerHTML = `<span>${x.t}</span><span>▶</span>`;
-        list.appendChild(a);
-      });
-    }
-
-    function renderChips() {
-      chipsWrap.innerHTML = "";
-      MUSIC_MOODS.forEach((m) => {
-        const b = document.createElement("button");
-        b.type = "button";
-        b.className = "chip" + (m === mood ? " active" : "");
-        b.textContent = m;
-        b.addEventListener("click", () => {
-          mood = m;
-          localStorage.setItem("enigmaMusicMood", mood);
-          renderChips();
-          renderTracks();
-        });
-        chipsWrap.appendChild(b);
-      });
-    }
-
-    function loadMinutes() {
-      const day = todayKey();
-      const store = JSON.parse(localStorage.getItem("enigmaMusicMinutes") || "{}");
-      const today = Number(store[day] || 0);
-      const total = Object.values(store).reduce((a, v) => a + Number(v || 0), 0);
-
-      if (minsTodayEl) minsTodayEl.textContent = String(today);
-      if (minsTotalEl) minsTotalEl.textContent = String(total);
-    }
-
-    function saveMinutes(addMins) {
-      const day = todayKey();
-      const store = JSON.parse(localStorage.getItem("enigmaMusicMinutes") || "{}");
-      store[day] = Number(store[day] || 0) + addMins;
-      localStorage.setItem("enigmaMusicMinutes", JSON.stringify(store));
-    }
-
-    if (startBtn && status) {
-      startBtn.addEventListener("click", () => {
-        if (start) return;
-        start = Date.now();
-        status.textContent = "Listening… tap End session when finished.";
-      });
-    }
-
-    if (endBtn && status) {
-      endBtn.addEventListener("click", () => {
-        if (!start) return;
-        const mins = Math.max(1, Math.round((Date.now() - start) / 60000));
-        start = null;
-        saveMinutes(mins);
-        loadMinutes();
-        status.textContent = `Saved ${mins} min ✅`;
-        setTimeout(() => (status.textContent = "No active session."), 1400);
-      });
-    }
-
-    renderChips();
-    renderTracks();
-    loadMinutes();
-  }
-
-  /* =========================
-     YOGA (moods + video links)
-  ========================= */
-  const YOGA_MOODS = ["All", "Anxiety", "Stress", "Sleep", "Morning", "Stiff body"];
-  const YOGA_VIDEOS = [
-    { t: "10 min Yoga for Anxiety", m: "Anxiety", u: "https://www.youtube.com/results?search_query=10+minute+yoga+for+anxiety" },
-    { t: "15 min Gentle Yoga for Stress", m: "Stress", u: "https://www.youtube.com/results?search_query=15+minute+gentle+yoga+for+stress" },
-    { t: "Yoga for Sleep (wind down)", m: "Sleep", u: "https://www.youtube.com/results?search_query=yoga+for+sleep+bedtime" },
-    { t: "Morning Yoga (wake up)", m: "Morning", u: "https://www.youtube.com/results?search_query=morning+yoga+10+minutes" },
-    { t: "Yoga for stiff back/hips", m: "Stiff body", u: "https://www.youtube.com/results?search_query=yoga+for+stiff+back+hips" },
-    { t: "Gentle yoga (all levels)", m: "All", u: "https://www.youtube.com/results?search_query=gentle+yoga+all+levels" }
-  ];
-
-  function initYoga() {
-    const chipsWrap = $("yogaMoodChips");
-    const list = $("yogaVideoList");
-    if (!chipsWrap || !list) return;
-
-    let mood = localStorage.getItem("enigmaYogaMood") || "All";
-
-    function render() {
-      chipsWrap.innerHTML = "";
-      YOGA_MOODS.forEach((m) => {
-        const b = document.createElement("button");
-        b.type = "button";
-        b.className = "chip" + (m === mood ? " active" : "");
-        b.textContent = m;
-        b.addEventListener("click", () => {
-          mood = m;
-          localStorage.setItem("enigmaYogaMood", mood);
-          render();
-        });
-        chipsWrap.appendChild(b);
-      });
-
-      list.innerHTML = "";
-      YOGA_VIDEOS.filter((x) => mood === "All" || x.m === mood || x.m === "All").forEach((x) => {
-        const a = document.createElement("a");
-        a.href = x.u;
-        a.target = "_blank";
-        a.rel = "noopener";
-        a.className = "music-btn";
-        a.innerHTML = `<span>${x.t}</span><span>▶</span>`;
-        list.appendChild(a);
-      });
-    }
-
-    render();
   }
 
   /* =========================
@@ -671,10 +689,8 @@
 
     const qEl = $("distractionQuestion");
     const answeredEl = $("distractionAnsweredCount");
-
     const inputWrap = $("distractionInputWrap");
     const input = $("distractionInput");
-
     const startBtn = $("distractionStartBtn");
     const nextBtn = $("distractionNextBtn");
     const skipBtn = $("distractionSkipBtn");
@@ -694,16 +710,12 @@
     }
 
     function load() {
-      try {
-        const raw = localStorage.getItem(KEY);
-        if (!raw) return null;
-        const s = JSON.parse(raw);
-        if (!s || s.day !== todayKey()) return null;
-        if (!Array.isArray(s.order) || typeof s.i !== "number" || typeof s.answered !== "number") return null;
-        return s;
-      } catch {
-        return null;
-      }
+      const raw = localStorage.getItem(KEY);
+      if (!raw) return null;
+      const s = safeJSON(raw, null);
+      if (!s || s.day !== todayKey()) return null;
+      if (!Array.isArray(s.order) || typeof s.i !== "number" || typeof s.answered !== "number") return null;
+      return s;
     }
 
     function save(s) {
@@ -786,45 +798,12 @@
     });
 
     const existing = load();
-    if (existing) {
-      render(existing);
-    } else {
+    if (existing) render(existing);
+    else {
       setRunning(false);
       qEl.textContent = "Tap Start to begin.";
       answeredEl.textContent = "0";
     }
-  }
-
-  /* =========================
-     PROGRESS
-  ========================= */
-  function initProgress() {
-    const page = $("progressPage");
-    if (!page) return;
-
-    const day = todayKey();
-
-    // breathed today
-    const breatheStore = JSON.parse(localStorage.getItem("enigmaBreatheCompletes") || "{}");
-    const breathedToday = Number(breatheStore[day] || 0);
-
-    // music minutes
-    const musicStore = JSON.parse(localStorage.getItem("enigmaMusicMinutes") || "{}");
-    const musicToday = Number(musicStore[day] || 0);
-    const musicTotal = Object.values(musicStore).reduce((a, v) => a + Number(v || 0), 0);
-
-    // saved quotes
-    const savedQuotes = loadSavedQuotes().length;
-
-    const pB = $("pBreathedToday");
-    const pMT = $("pMusicToday");
-    const pSQ = $("pSavedQuotes");
-    const pMTotal = $("pMusicTotal");
-
-    if (pB) pB.textContent = String(breathedToday);
-    if (pMT) pMT.textContent = String(musicToday);
-    if (pSQ) pSQ.textContent = String(savedQuotes);
-    if (pMTotal) pMTotal.textContent = String(musicTotal);
   }
 
   /* =========================
@@ -834,11 +813,9 @@
     applyTheme();
     initTheme();
 
-    // Home
     initWotd();
     initDistraction();
 
-    // Pages
     initBreathe();
     initQuotes();
     initMusic();
