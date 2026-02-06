@@ -22,37 +22,20 @@
   <main class="page" id="breathePage">
     <div class="card">
 
-      <!-- ✅ Controls -->
-      <div class="section-title">Session</div>
-
-      <div class="tool-row" style="margin-top:10px;">
-        <label style="flex:1; min-width:150px;">
-          <div class="gentle-text" style="margin:0 0 6px;">Time</div>
-          <select id="breathSessionSelect" class="input" style="padding:12px 14px;">
-            <option value="60">60 seconds</option>
-            <option value="120">2 minutes</option>
-            <option value="180">3 minutes</option>
-            <option value="300">5 minutes</option>
-          </select>
-        </label>
-
-        <label style="flex:1; min-width:150px;">
-          <div class="gentle-text" style="margin:0 0 6px;">Speed</div>
-          <select id="breathPaceSelect" class="input" style="padding:12px 14px;">
-            <option value="4">Slow (4s)</option>
-            <option value="5" selected>Softer (5s)</option>
-            <option value="6">Very slow (6s)</option>
-          </select>
-        </label>
-      </div>
-
-      <div class="gentle-text" style="margin-top:10px;">
-        Time left: <b><span id="breathTimeLeft">01:00</span></b>
-      </div>
-
-      <div class="hr"></div>
-
       <div class="section-title" id="breathPhase">Ready</div>
+
+      <!-- ✅ Timer -->
+      <div class="gentle-text" style="margin-top:-4px;">
+        Session length:
+      </div>
+      <select id="breathDuration" class="input" style="margin-top:8px;">
+        <option value="60">1 minute</option>
+        <option value="120">2 minutes</option>
+        <option value="180">3 minutes</option>
+        <option value="300">5 minutes</option>
+      </select>
+
+      <div class="gentle-text" id="breathTimeLeft" style="margin-top:10px;"></div>
 
       <div class="breathe-stage">
         <div class="breathe-ring">
