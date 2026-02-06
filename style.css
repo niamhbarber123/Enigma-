@@ -801,3 +801,135 @@ body.night .wotd-info{
 
 /* Modal already in your CSS – keep if present.
    If you don’t have it, paste your existing modal CSS (you posted it earlier). */
+/* =========================================================
+   FINAL OVERRIDES — HOME WOTD + DISTRACTION (match Breathe tile)
+   Paste at END of style.css
+========================================================= */
+
+/* Ensure home header rule targets the actual markup */
+body.home .page-header.home-header{
+  padding:46px 20px 10px;
+  padding-left: 84px;
+  padding-right: 84px;
+}
+
+/* Make page a bit tighter so no scroll */
+body.home .page{
+  padding:8px 18px calc(98px + env(safe-area-inset-bottom));
+}
+
+/* Common wide thin tile styling (same vibe as Breathe tile) */
+.home-tile-wide{
+  display:block;
+  width:100%;
+  max-width:680px;
+  margin:0 auto 10px;
+  padding:14px 16px;
+  border-radius:var(--radius-xl);
+  background:rgba(255,255,255,0.90);
+  border:1px solid rgba(184,166,217,0.18);
+  box-shadow:var(--shadow);
+  text-decoration:none;
+  color:var(--ink);
+}
+
+/* Make WOTD tile clickable but keep the ? button clickable too */
+#wotdTile{ position:relative; }
+
+/* Title bold */
+#wotdTile .home-card-title{
+  font-weight:900;
+  font-size:20px;
+  color:var(--deep);
+}
+
+/* Word NOT bold */
+#wotdTile .home-card-sub{
+  font-weight:600 !important;
+  font-size:17px;
+  color:rgba(90,75,122,0.78);
+  margin-top:6px;
+}
+
+/* Description under the word (normal weight) */
+#wotdTile .home-card-desc{
+  margin-top:6px;
+  font-size:13px;
+  font-weight:600;
+  color:rgba(90,75,122,0.65);
+  line-height:1.35;
+}
+
+/* ? button placement (top-right inside tile) */
+#wotdInfoBtn.wotd-info{
+  position:absolute;
+  right:12px;
+  top:12px;
+  width:34px;
+  height:34px;
+  border:none;
+  border-radius:999px;
+  background:rgba(239,233,248,0.95);
+  box-shadow:var(--shadow);
+  font-weight:900;
+  color:var(--deep);
+  z-index:10;
+}
+#wotdInfoBtn.wotd-info:active{ transform:scale(0.98); }
+
+body.night #wotdInfoBtn.wotd-info{
+  background:rgba(255,255,255,0.12);
+  color:rgba(245,242,255,0.92);
+}
+
+/* Distraction tile should look like a home-card tile (not a "card") */
+#distractionCard.home-tile-wide,
+#distractionCard.home-card.home-tile-wide{
+  padding:14px 16px;
+}
+
+/* Distraction header like home tiles */
+#distractionCard .home-card-title{
+  font-weight:900;
+  font-size:20px;
+  color:var(--deep);
+}
+#distractionCard .home-card-desc{
+  margin-top:6px;
+  font-size:13px;
+  font-weight:700;
+  color:rgba(90,75,122,0.65);
+}
+
+/* Question text */
+#distractionCard .distraction-question{
+  margin-top:8px;
+  font-weight:900;
+  font-size:16px;
+  color:var(--deep);
+  line-height:1.35;
+}
+
+/* Input spacing */
+#distractionCard .input{
+  margin-top:10px;
+}
+
+/* Tighten tool-row inside distraction so it stays thin */
+#distractionCard .tool-row{
+  margin-top:10px;
+}
+
+/* Night mode for tiles */
+body.night .home-tile-wide{
+  background:rgba(255,255,255,0.10) !important;
+  color:rgba(245,242,255,0.92) !important;
+  border-color:rgba(255,255,255,0.12) !important;
+}
+
+/* Make sure modal never hides the nav unless open */
+.modal{ display:none; }
+.modal.show{ display:block; }
+
+/* Optional: keep bottom nav always above normal content */
+.bottom-nav{ z-index:50; }
