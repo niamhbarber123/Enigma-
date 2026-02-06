@@ -11,6 +11,9 @@
   --radius-md:16px;
 
   --deep:#5a4b7a;
+
+  /* ✅ Breathe speed controlled by JS */
+  --breath-sec: 5s;
 }
 
 *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
@@ -70,12 +73,9 @@ body.night .bottom-nav a.active{ color:#fff; }
   padding:64px 20px 18px;
   text-align:center;
   position:relative;
-
-  /* ✅ Prevent overlap with the bigger back button */
-  padding-left: 84px;
-  padding-right: 84px;
+  padding-left:84px;
+  padding-right:84px;
 }
-
 .page-header h1{
   margin:0;
   font-size:30px;
@@ -90,7 +90,7 @@ body.night .bottom-nav a.active{ color:#fff; }
 }
 body.night .page-header h1{ color:rgba(245,242,255,0.92); }
 
-/* ---------- Back button (BIGGER + ALWAYS LEFT) ---------- */
+/* ---------- Back button ---------- */
 .back-btn{
   position:absolute;
   left:14px;
@@ -156,29 +156,15 @@ body.night .theme-toggle-top{
   margin-top:8px;
 }
 
-/* ---------- Chips ---------- */
-.chip-row{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-}
-.chip{
-  border:none;
-  padding:10px 14px;
+.hr{
+  height:1px;
+  background:rgba(184,166,217,0.22);
   border-radius:999px;
-  background:rgba(239,233,248,0.90);
-  box-shadow:0 6px 16px rgba(0,0,0,0.06);
-  font-weight:900;
-  color:var(--deep);
+  margin:14px 0;
 }
-.chip.active{
-  background:var(--lavender);
-  color:#fff;
-}
-.chip:active{ transform:scale(0.99); }
 
 /* ---------- Inputs ---------- */
-input[type="search"], input[type="text"], .input{
+input[type="search"], input[type="text"], .input, select.input{
   width:100%;
   padding:14px 14px;
   border-radius:16px;
@@ -211,10 +197,6 @@ input[type="search"], input[type="text"], .input{
 .tool-btn:active{ transform:scale(0.99); }
 .tool-btn.primary{ background:rgba(184,166,217,0.38); }
 .tool-btn.danger{ background:rgba(255,213,199,0.85); color:var(--deep); }
-.tool-btn.active{
-  background:var(--lavender) !important;
-  color:#fff !important;
-}
 
 /* ---------- Bottom nav ---------- */
 .bottom-nav{
@@ -225,7 +207,7 @@ input[type="search"], input[type="text"], .input{
   display:flex;
   justify-content:space-around;
   padding:10px 6px calc(10px + env(safe-area-inset-bottom));
-  z-index:50;
+  z-index:999; /* ✅ keep visible */
   backdrop-filter: blur(10px);
 }
 .bottom-nav a{
@@ -245,7 +227,7 @@ input[type="search"], input[type="text"], .input{
 }
 
 /* =========================================================
-   BREATHE — colour changes inhale/exhale + better text
+   BREATHE
 ========================================================= */
 .breathe-stage{
   display:flex;
@@ -273,22 +255,23 @@ input[type="search"], input[type="text"], .input{
   border-radius: 999px;
   background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.92), rgba(124,96,170,0.55));
   box-shadow: inset 0 18px 36px rgba(0,0,0,0.08), 0 18px 38px rgba(90,75,122,0.18);
-  transform: scale(0.86);
-  transition: transform 4s ease-in-out, background 400ms ease;
+  transform: scale(0.95);
+  transition: transform var(--breath-sec) ease-in-out, background 400ms ease;
   will-change: transform;
 }
 
+/* ✅ INHALE = smaller */
 .breathe-circle.inhale{
   transform: scale(0.82);
   background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.96), rgba(122,170,240,0.60));
 }
 
+/* ✅ EXHALE = bigger */
 .breathe-circle.exhale{
   transform: scale(1.16);
   background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.92), rgba(170,120,210,0.55));
 }
 
-/* Larger centered phase text (you’re already setting breathPhase text) */
 #breathPhase{
   text-align:center;
   font-size:24px;
@@ -296,112 +279,24 @@ input[type="search"], input[type="text"], .input{
   color:var(--deep);
   margin-bottom:10px;
 }
-#breathTip{
+.breath-text{
   text-align:center;
   font-size:15px;
   font-weight:800;
+  color:rgba(90,75,122,0.75);
   margin-top:10px;
 }
 
 /* =========================================================
-   MUSIC/YOGA list buttons
-========================================================= */
-.music-list{
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-}
-.music-btn{
-  width:100%;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:16px 16px;
-  border-radius:20px;
-  background:rgba(255,255,255,0.92);
-  border:1px solid rgba(184,166,217,0.22);
-  box-shadow:var(--shadow);
-  font-weight:900;
-  font-size:16px;
-  color:var(--deep);
-  text-decoration:none;
-}
-.music-btn span:last-child{
-  font-size:18px;
-  opacity:0.7;
-}
-.music-btn:active{ transform:scale(0.99); }
-
-/* =========================================================
-   QUOTES — each quote in separate box
-========================================================= */
-.quote-grid{
-  display:grid;
-  grid-template-columns:1fr;
-  gap:12px;
-  margin-top:14px;
-}
-
-.quote-tile{
-  position:relative;
-  background:rgba(255,255,255,0.92);
-  border-radius:18px;
-  padding:14px;
-  box-shadow:var(--shadow);
-  border:1px solid rgba(184,166,217,0.25);
-  touch-action: pan-y;
-}
-
-.quote-text{
-  font-weight:900;
-  color:var(--deep);
-  line-height:1.35;
-  font-size:16px;
-  margin-bottom:10px;
-}
-
-/* If your HTML uses <small> for author, keep it tidy */
-.quote-tile small{
-  display:block;
-  color:rgba(90,75,122,0.75);
-  font-weight:800;
-  font-size:13px;
-  margin-bottom:10px;
-}
-
-/* Save button inside the tile (works even if JS places it absolute) */
-.quote-save-btn{
-  border:none;
-  border-radius:999px;
-  padding:10px 12px;
-  font-weight:900;
-  background:rgba(239,233,248,0.95);
-  box-shadow:var(--shadow);
-  color:var(--deep);
-}
-.quote-save-btn:active{ transform:scale(0.99); }
-.quote-save-btn.saved{
-  background: var(--lavender);
-  color:#fff;
-}
-
-/* If JS uses absolute placement, ensure spacing */
-.quote-tile .quote-save-btn{
-  margin-top:6px;
-}
-
-/* =========================================================
-   HOME — FIXED: no scroll + WOTD tile
+   HOME
 ========================================================= */
 body.home .page{
   padding:8px 18px calc(98px + env(safe-area-inset-bottom));
 }
-
-/* ✅ THIS was the bug: you used .home-header but HTML uses .page-header */
 body.home .page-header{
   padding:46px 20px 10px;
-  padding-left: 84px;
-  padding-right: 84px;
+  padding-left:84px;
+  padding-right:84px;
 }
 body.home .page-header h1{ font-size:28px; }
 body.home .page-header p{ margin-top:6px; }
@@ -429,7 +324,7 @@ body.home .page-header p{ margin-top:6px; }
   background:rgba(255,255,255,0.90);
   border:1px solid rgba(184,166,217,0.18);
   border-radius:var(--radius-xl);
-  padding:14px;
+  padding:14px 16px;
   box-shadow:var(--shadow);
   margin: 0 auto 10px;
   max-width:680px;
@@ -443,6 +338,13 @@ body.home .page-header p{ margin-top:6px; }
   margin-top:6px;
   color:rgba(90,75,122,0.65);
   font-weight:700;
+}
+.home-card-desc{
+  margin-top:6px;
+  color:rgba(90,75,122,0.65);
+  font-weight:700;
+  font-size:13px;
+  line-height:1.35;
 }
 
 .home-grid{
@@ -472,45 +374,30 @@ body.home .page-header p{ margin-top:6px; }
 .home-pill:active{ transform:scale(0.99); }
 .pill-ico{ font-size:18px; }
 
-/* Word of the day pill */
-#wotdPill{
-  justify-content:flex-start;
-  gap:12px;
-  padding-right:46px;
-}
-.wotd-label{
-  display:block;
-  font-size:12px;
-  font-weight:800;
-  opacity:0.7;
-  margin-bottom:2px;
-  line-height:1.1;
-}
+/* WOTD typography: title bold, word NOT bold */
+.wotd-title{ font-weight:900; }
 .wotd-word{
-  display:block;
-  font-size:16px;
-  font-weight:1000;
-  line-height:1.1;
+  font-weight:600 !important;
+  font-size:17px;
+  color:var(--deep);
 }
 
-/* ✅ Make ? button always clickable */
+/* ? button inside tile */
+#wotdTile{ position:relative; }
 .wotd-info{
   position:absolute;
-  right:10px;
-  top:50%;
-  transform:translateY(-50%);
-  width:32px;
-  height:32px;
+  right:12px;
+  top:12px;
+  width:34px;
+  height:34px;
   border:none;
   border-radius:999px;
   background: rgba(239,233,248,0.95);
-  box-shadow: 0 10px 24px rgba(0,0,0,0.10);
-  font-weight:1000;
+  box-shadow: var(--shadow);
+  font-weight:900;
   color:var(--deep);
-  z-index:5;
 }
-.wotd-info:active{ transform:translateY(-50%) scale(0.98); }
-
+.wotd-info:active{ transform:scale(0.98); }
 body.night .wotd-info{
   background: rgba(255,255,255,0.12);
   color: rgba(245,242,255,0.92);
@@ -534,7 +421,6 @@ body.night .wotd-info{
   margin:10px auto 0;
 }
 
-/* Distraction */
 .distraction-question{
   margin-top:10px;
   font-weight:900;
@@ -544,12 +430,12 @@ body.night .wotd-info{
 }
 
 /* =========================================================
-   WORD OF THE DAY MODAL
+   MODAL
 ========================================================= */
 .modal{
   position:fixed;
   inset:0;
-  z-index:200;
+  z-index:2000;
   display:none;
 }
 .modal.show{ display:block; }
@@ -593,7 +479,7 @@ body.night .modal-card{
 }
 
 .modal-word{
-  font-weight:1000;
+  font-weight:700;
   font-size:22px;
   color:var(--deep);
   margin-top:2px;
@@ -641,315 +527,4 @@ body.night .modal-tip{ color: rgba(245,242,255,0.65); }
   .card{ padding:14px; }
   .home-hero{ margin: -12px auto -130px; height:min(380px, 64vw); }
   .home-pill{ padding:11px 12px; font-size:15px; }
-}
-/* Word of the day pill — make title bold, word NOT bold */
-#wotdPill .wotd-label{
-  font-weight: 1000 !important;   /* bold title */
-  letter-spacing: 0.2px;
-}
-
-#wotdPill .wotd-word{
-  font-weight: 700 !important;    /* not bold (regular/semibold) */
-  letter-spacing: 0;
-}
-/* Word of the day modal — title bold, word NOT bold */
-.modal-title{
-  font-weight: 1000 !important;
-}
-
-.modal-word{
-  font-weight: 700 !important;
-}
-/* =========================
-   HOME – thin wide tiles
-========================= */
-
-.home-card-thin{
-  padding: 14px 16px;
-}
-
-.home-card-row{
-  display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
-  gap:12px;
-}
-
-.home-card-desc{
-  margin-top:6px;
-  font-size:13px;
-  font-weight:600;
-  color:rgba(90,75,122,0.65);
-  line-height:1.35;
-}
-
-/* Word of the day specifics */
-#wotdTile .home-card-sub{
-  font-weight:600; /* NOT bold */
-}
-
-#wotdTile .home-card-title{
-  font-weight:900; /* bold title only */
-}
-
-/* Distraction spacing */
-#distractionCard .distraction-question{
-  margin-top:8px;
-  font-size:16px;
-  font-weight:800;
-}
-
-#distractionCard .input{
-  margin-top:10px;
-}
-/* =========================
-   HOME – full width tiles
-========================= */
-
-.home-card-wide{
-  width:100%;
-  max-width:680px;
-  margin:0 auto 10px;
-  padding:14px 16px;
-}
-
-/* Word of the day typography */
-#wotdTile .home-card-title{
-  font-weight:900; /* bold title */
-}
-
-#wotdTile .home-card-sub{
-  font-weight:600; /* word NOT bold */
-  font-size:17px;
-}
-
-#wotdTile .home-card-desc{
-  margin-top:6px;
-  font-size:13px;
-  font-weight:600;
-  color:rgba(90,75,122,0.65);
-}
-
-/* Distraction spacing */
-#distractionCard .distraction-question{
-  margin-top:8px;
-  font-size:16px;
-  font-weight:800;
-}
-
-#distractionCard .input{
-  margin-top:10px;
-}
-/* =========================
-   HOME – wide thin tiles like "Breathe & reset"
-========================= */
-.home-card-desc{
-  margin-top:6px;
-  color:rgba(90,75,122,0.65);
-  font-weight:700;
-  font-size:13px;
-  line-height:1.35;
-}
-
-.home-tile-wide{
-  padding:14px 16px;
-  margin: 0 auto 10px;
-  max-width:680px;
-}
-
-/* Word of the day: title bold, word not bold */
-.wotd-title{
-  font-weight:900;
-}
-
-.wotd-word{
-  font-weight:600 !important; /* NOT bold */
-  font-size:17px;
-}
-
-/* place ? button inside the tile top-right */
-#wotdTile{
-  position:relative;
-}
-.wotd-info{
-  position:absolute;
-  right:12px;
-  top:12px;
-  width:34px;
-  height:34px;
-  border:none;
-  border-radius:999px;
-  background: rgba(239,233,248,0.95);
-  box-shadow: 0 10px 24px rgba(0,0,0,0.10);
-  font-weight:900;
-  color:#5a4b7a;
-}
-.wotd-info:active{ transform: scale(0.98); }
-
-body.night .wotd-info{
-  background: rgba(255,255,255,0.12);
-  color: rgba(245,242,255,0.92);
-}
-
-/* Distraction inside a tile (compact) */
-.distraction-question{
-  margin-top:8px;
-  font-weight:900;
-  font-size:16px;
-  color:var(--deep);
-}
-
-/* Modal already in your CSS – keep if present.
-   If you don’t have it, paste your existing modal CSS (you posted it earlier). */
-/* =========================================================
-   FINAL OVERRIDES — HOME WOTD + DISTRACTION (match Breathe tile)
-   Paste at END of style.css
-========================================================= */
-
-/* Ensure home header rule targets the actual markup */
-body.home .page-header.home-header{
-  padding:46px 20px 10px;
-  padding-left: 84px;
-  padding-right: 84px;
-}
-
-/* Make page a bit tighter so no scroll */
-body.home .page{
-  padding:8px 18px calc(98px + env(safe-area-inset-bottom));
-}
-
-/* Common wide thin tile styling (same vibe as Breathe tile) */
-.home-tile-wide{
-  display:block;
-  width:100%;
-  max-width:680px;
-  margin:0 auto 10px;
-  padding:14px 16px;
-  border-radius:var(--radius-xl);
-  background:rgba(255,255,255,0.90);
-  border:1px solid rgba(184,166,217,0.18);
-  box-shadow:var(--shadow);
-  text-decoration:none;
-  color:var(--ink);
-}
-
-/* Make WOTD tile clickable but keep the ? button clickable too */
-#wotdTile{ position:relative; }
-
-/* Title bold */
-#wotdTile .home-card-title{
-  font-weight:900;
-  font-size:20px;
-  color:var(--deep);
-}
-
-/* Word NOT bold */
-#wotdTile .home-card-sub{
-  font-weight:600 !important;
-  font-size:17px;
-  color:rgba(90,75,122,0.78);
-  margin-top:6px;
-}
-
-/* Description under the word (normal weight) */
-#wotdTile .home-card-desc{
-  margin-top:6px;
-  font-size:13px;
-  font-weight:600;
-  color:rgba(90,75,122,0.65);
-  line-height:1.35;
-}
-
-/* ? button placement (top-right inside tile) */
-#wotdInfoBtn.wotd-info{
-  position:absolute;
-  right:12px;
-  top:12px;
-  width:34px;
-  height:34px;
-  border:none;
-  border-radius:999px;
-  background:rgba(239,233,248,0.95);
-  box-shadow:var(--shadow);
-  font-weight:900;
-  color:var(--deep);
-  z-index:10;
-}
-#wotdInfoBtn.wotd-info:active{ transform:scale(0.98); }
-
-body.night #wotdInfoBtn.wotd-info{
-  background:rgba(255,255,255,0.12);
-  color:rgba(245,242,255,0.92);
-}
-
-/* Distraction tile should look like a home-card tile (not a "card") */
-#distractionCard.home-tile-wide,
-#distractionCard.home-card.home-tile-wide{
-  padding:14px 16px;
-}
-
-/* Distraction header like home tiles */
-#distractionCard .home-card-title{
-  font-weight:900;
-  font-size:20px;
-  color:var(--deep);
-}
-#distractionCard .home-card-desc{
-  margin-top:6px;
-  font-size:13px;
-  font-weight:700;
-  color:rgba(90,75,122,0.65);
-}
-
-/* Question text */
-#distractionCard .distraction-question{
-  margin-top:8px;
-  font-weight:900;
-  font-size:16px;
-  color:var(--deep);
-  line-height:1.35;
-}
-
-/* Input spacing */
-#distractionCard .input{
-  margin-top:10px;
-}
-
-/* Tighten tool-row inside distraction so it stays thin */
-#distractionCard .tool-row{
-  margin-top:10px;
-}
-
-/* Night mode for tiles */
-body.night .home-tile-wide{
-  background:rgba(255,255,255,0.10) !important;
-  color:rgba(245,242,255,0.92) !important;
-  border-color:rgba(255,255,255,0.12) !important;
-}
-
-/* Make sure modal never hides the nav unless open */
-.modal{ display:none; }
-.modal.show{ display:block; }
-
-/* Optional: keep bottom nav always above normal content */
-.bottom-nav{ z-index:50; }
-/* =========================
-   FIX: Breathe buttons not clickable (nav overlap)
-   Paste at END of style.css
-========================= */
-
-/* Give the breathe page extra safe space above the fixed bottom nav */
-#breathePage.page{
-  padding-bottom: calc(170px + env(safe-area-inset-bottom)) !important;
-}
-
-/* Ensure the card sits above the nav if they overlap */
-#breathePage .card{
-  position: relative;
-  z-index: 2;
-}
-
-/* Nav stays on top visually, but won't "steal" taps above its area */
-.bottom-nav{
-  z-index: 50;
 }
