@@ -740,3 +740,64 @@ body.night .modal-tip{ color: rgba(245,242,255,0.65); }
 #distractionCard .input{
   margin-top:10px;
 }
+/* =========================
+   HOME – wide thin tiles like "Breathe & reset"
+========================= */
+.home-card-desc{
+  margin-top:6px;
+  color:rgba(90,75,122,0.65);
+  font-weight:700;
+  font-size:13px;
+  line-height:1.35;
+}
+
+.home-tile-wide{
+  padding:14px 16px;
+  margin: 0 auto 10px;
+  max-width:680px;
+}
+
+/* Word of the day: title bold, word not bold */
+.wotd-title{
+  font-weight:900;
+}
+
+.wotd-word{
+  font-weight:600 !important; /* NOT bold */
+  font-size:17px;
+}
+
+/* place ? button inside the tile top-right */
+#wotdTile{
+  position:relative;
+}
+.wotd-info{
+  position:absolute;
+  right:12px;
+  top:12px;
+  width:34px;
+  height:34px;
+  border:none;
+  border-radius:999px;
+  background: rgba(239,233,248,0.95);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.10);
+  font-weight:900;
+  color:#5a4b7a;
+}
+.wotd-info:active{ transform: scale(0.98); }
+
+body.night .wotd-info{
+  background: rgba(255,255,255,0.12);
+  color: rgba(245,242,255,0.92);
+}
+
+/* Distraction inside a tile (compact) */
+.distraction-question{
+  margin-top:8px;
+  font-weight:900;
+  font-size:16px;
+  color:var(--deep);
+}
+
+/* Modal already in your CSS – keep if present.
+   If you don’t have it, paste your existing modal CSS (you posted it earlier). */
