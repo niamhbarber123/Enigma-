@@ -45,21 +45,17 @@
         <span class="pill-ico">🎵</span><span class="pill-text">Music</span>
       </a>
 
-<section class="home-card home-card-thin" id="wotdTile">
-  <div class="home-card-row">
-    <div>
-      <div class="home-card-title">Word of the day</div>
-      <div class="home-card-sub" id="wotdWord">Simplicity</div>
-      <div class="home-card-desc" id="wotdDesc">
-        Choosing what matters and letting go of the rest.
-      </div>
-    </div>
-
-    <button class="wotd-info" id="wotdInfoBtn" type="button">?</button>
+<!-- WORD OF THE DAY (FULL WIDTH, LIKE BREATHE) -->
+<a class="home-card home-card-wide" id="wotdTile" href="javascript:void(0)">
+  <div class="home-card-title">Word of the day</div>
+  <div class="home-card-sub" id="wotdWord">Simplicity</div>
+  <div class="home-card-desc" id="wotdDesc">
+    Choosing what matters and letting go of the rest.
   </div>
-</section>
+</a>
 
-    <section class="home-card home-card-thin" id="distractionCard">
+<!-- DISTRACTION (FULL WIDTH, BELOW WOTD) -->
+<div class="home-card home-card-wide" id="distractionCard">
   <div class="home-card-title">Distraction</div>
 
   <div class="home-card-desc">
@@ -82,7 +78,7 @@
     <button class="tool-btn" id="distractionNextBtn" style="display:none;">Next</button>
     <button class="tool-btn" id="distractionSkipBtn" style="display:none;">Skip</button>
   </div>
-</section> 
+</div>
       <!-- ✅ Progress: only counts ANSWERED -->
       <div class="gentle-text" id="distractionMeta" style="margin-top:10px;">
         Answered: <span id="distractionAnsweredCount">0</span>
