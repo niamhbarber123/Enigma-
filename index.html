@@ -7,13 +7,14 @@
 
   <link rel="icon" href="icon.png" />
   <link rel="apple-touch-icon" href="icon.png" />
-  <link rel="stylesheet" href="style.css?v=70002" />
+
+  <link rel="stylesheet" href="style.css?v=80001" />
 </head>
 
 <body class="page-wrap home">
   <button id="themeFab" class="theme-toggle-top" type="button" aria-label="Toggle night mode">🌙</button>
 
-  <header class="page-header">
+  <header class="page-header home-header">
     <h1>Enigma Wellbeing</h1>
     <p>Your calm space</p>
   </header>
@@ -26,110 +27,77 @@
       <div class="home-card-sub">A gentle 60 seconds</div>
     </a>
 
-    <!-- Home buttons (includes Word of the Day as a tile) -->
-    <div class="home-grid">
+    <div class="home-grid home-grid-compact">
+      <a class="home-pill" href="journal.html"><span class="pill-ico">📖</span><span class="pill-text">Journal</span></a>
+      <a class="home-pill" href="quotes.html"><span class="pill-ico">💬</span><span class="pill-text">Quotes</span></a>
+      <a class="home-pill" href="yoga.html"><span class="pill-ico">🧘‍♀️</span><span class="pill-text">Yoga</span></a>
+      <a class="home-pill" href="sounds.html"><span class="pill-ico">🎵</span><span class="pill-text">Music</span></a>
+    </div>
 
-      <a class="home-pill" href="journal.html">
-        <span class="pill-ico">📖</span><span class="pill-text">Journal</span>
-      </a>
+    <!-- ✅ WORD OF THE DAY — FULL WIDTH (LIKE BREATHE TILE) -->
+    <a class="home-card home-tile-wide" id="wotdTile" href="javascript:void(0)" aria-label="Open Word of the day">
+      <div class="home-card-title wotd-title">Word of the day</div>
 
-      <a class="home-pill" href="quotes.html">
-        <span class="pill-ico">💬</span><span class="pill-text">Quotes</span>
-      </a>
+      <!-- word is NOT bold -->
+      <div class="home-card-sub wotd-word" id="wotdWord">Loading…</div>
 
-      <a class="home-pill" href="yoga.html">
-        <span class="pill-ico">🧘‍♀️</span><span class="pill-text">Yoga</span>
-      </a>
+      <!-- description under the word -->
+      <div class="home-card-desc" id="wotdDesc">Please wait.</div>
 
-      <a class="home-pill" href="sounds.html">
-        <span class="pill-ico">🎵</span><span class="pill-text">Music</span>
-      </a>
+      <!-- ? button (works) -->
+      <button id="wotdInfoBtn" class="wotd-info" type="button" aria-label="What to do with affirmations">?</button>
+    </a>
 
-<!-- WORD OF THE DAY (FULL WIDTH, LIKE BREATHE) -->
-<a class="home-card home-card-wide" id="wotdTile" href="javascript:void(0)">
-  <div class="home-card-title">Word of the day</div>
-  <div class="home-card-sub" id="wotdWord">Simplicity</div>
-  <div class="home-card-desc" id="wotdDesc">
-    Choosing what matters and letting go of the rest.
-  </div>
-</a>
+    <!-- ✅ DISTRACTION — FULL WIDTH (LIKE BREATHE TILE), COMPACT (NO DUPLICATES) -->
+    <div class="home-card home-tile-wide" id="distractionCard">
+      <div class="home-card-title">Distraction</div>
+      <div class="home-card-desc">Gentle questions to interrupt a spiral.</div>
 
-<!-- DISTRACTION (FULL WIDTH, BELOW WOTD) -->
-<div class="home-card home-card-wide" id="distractionCard">
-  <div class="home-card-title">Distraction</div>
+      <div id="distractionQuestion" class="distraction-question">Tap Start to begin.</div>
 
-  <div class="home-card-desc">
-    Gentle questions to interrupt a spiral.
-  </div>
-
-  <div id="distractionQuestion" class="distraction-question">
-    Tap Start to begin.
-  </div>
-
-  <div class="gentle-text">
-    Answered: <span id="distractionAnsweredCount">0</span>
-  </div>
-
-  <input id="distractionInput" class="input"
-         placeholder="Type your answer here…" />
-
-  <div class="tool-row">
-    <button class="tool-btn primary" id="distractionStartBtn">Start</button>
-    <button class="tool-btn" id="distractionNextBtn" style="display:none;">Next</button>
-    <button class="tool-btn" id="distractionSkipBtn" style="display:none;">Skip</button>
-  </div>
-</div>
-      <!-- ✅ Progress: only counts ANSWERED -->
-      <div class="gentle-text" id="distractionMeta" style="margin-top:10px;">
-        Answered: <span id="distractionAnsweredCount">0</span>
+      <div class="gentle-text">
+        Answered: <b><span id="distractionAnsweredCount">0</span></b>
       </div>
 
-      <div style="margin-top:12px;">
+      <div id="distractionInputWrap" style="display:none; margin-top:10px;">
         <input id="distractionInput" class="input" type="text"
                placeholder="Type your answer here…" autocomplete="off" inputmode="text" />
+
         <div class="gentle-text" id="distractionHint" style="margin-top:8px;">
           Next requires typing. Skip if you’d rather not answer.
         </div>
       </div>
 
-      <div class="tool-row" style="margin-top:14px;">
+      <div class="tool-row" style="margin-top:12px;">
         <button class="tool-btn primary" id="distractionStartBtn" type="button">Start</button>
         <button class="tool-btn" id="distractionNextBtn" type="button" style="display:none;">Next</button>
-      </div>
-
-      <div class="tool-row">
         <button class="tool-btn" id="distractionSkipBtn" type="button" style="display:none;">Skip</button>
         <button class="tool-btn danger" id="distractionEndBtn" type="button" style="display:none;">End</button>
       </div>
     </div>
 
-    <a class="home-help" href="help.html">
+    <a class="home-help home-help-compact" href="help.html">
       <span class="pill-ico">🆘</span><span class="pill-text">Need help right now?</span>
     </a>
   </main>
 
-  <!-- Word of the Day modal -->
-  <div id="wotdModal" class="modal" aria-hidden="true">
-    <div class="modal-backdrop" id="wotdCloseBg"></div>
-
-    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="wotdModalTitle">
+  <!-- ✅ WOTD MODAL -->
+  <div class="modal" id="wotdModal" aria-hidden="true">
+    <div class="modal-backdrop" id="wotdBackdrop"></div>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="wotdModalWord">
       <div class="modal-top">
         <div>
-          <div class="modal-title" id="wotdModalTitle">Word of the day</div>
+          <div class="modal-title">Word of the day</div>
           <div class="modal-word" id="wotdModalWord">—</div>
         </div>
-
         <button class="modal-x" id="wotdCloseBtn" type="button" aria-label="Close">✕</button>
       </div>
 
       <div class="modal-desc" id="wotdModalDesc">—</div>
 
       <div class="modal-tip">
-        Using these words as affirmations means you can repeat them to yourself, write them down,
-        or think about them regularly to help cultivate those qualities within yourself.
+        Using these words as affirmations means you can repeat them to yourself, write them down, or think about them regularly to help cultivate those qualities within yourself.
       </div>
-
-      <button class="tool-btn primary" id="wotdCloseBtn2" type="button" style="margin-top:12px;">Got it</button>
     </div>
   </div>
 
@@ -143,6 +111,6 @@
     <a href="progress.html"><div class="nav-ico">📈</div><span>Progress</span></a>
   </nav>
 
-  <script src="app.js?v=70002" defer></script>
+  <script src="app.js?v=80001" defer></script>
 </body>
 </html>
