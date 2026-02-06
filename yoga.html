@@ -7,7 +7,7 @@
 
   <link rel="icon" href="icon.png" />
   <link rel="apple-touch-icon" href="icon.png" />
-  <link rel="stylesheet" href="style.css?v=80001" />
+  <link rel="stylesheet" href="style.css?v=90001" />
 </head>
 
 <body class="page-wrap">
@@ -22,13 +22,15 @@
   <main class="page" id="yogaPage">
     <div class="card">
       <div class="section-title">Choose a mood</div>
-      <div id="yogaMoodChips" class="chip-row"></div>
       <div class="gentle-text">Tap a mood to see videos.</div>
+      <!-- ✅ MUST be this ID for app.js -->
+      <div id="yogaMoodChips" class="chip-row" style="margin-top:12px;"></div>
     </div>
 
     <div class="card">
       <div class="section-title">Videos</div>
-      <div id="yogaVideoList" class="music-list"></div>
+      <!-- ✅ MUST be this ID for app.js -->
+      <div id="yogaList" class="music-list"></div>
       <div class="gentle-text">Opens in YouTube. Pick something gentle and go at your pace.</div>
     </div>
   </main>
@@ -43,6 +45,6 @@
     <a href="progress.html"><div class="nav-ico">📈</div><span>Progress</span></a>
   </nav>
 
-  <script src="app.js?v=80001" defer></script>
+  <script src="app.js?v=90001" defer></script>
 </body>
 </html>
