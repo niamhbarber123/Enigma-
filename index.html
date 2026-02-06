@@ -8,7 +8,7 @@
   <link rel="icon" href="icon.png" />
   <link rel="apple-touch-icon" href="icon.png" />
 
-  <link rel="stylesheet" href="style.css?v=80001" />
+  <link rel="stylesheet" href="style.css?v=80002" />
 </head>
 
 <body class="page-wrap home">
@@ -44,11 +44,11 @@
       <!-- description under the word -->
       <div class="home-card-desc" id="wotdDesc">Please wait.</div>
 
-      <!-- ? button (works) -->
+      <!-- ? button (opens modal) -->
       <button id="wotdInfoBtn" class="wotd-info" type="button" aria-label="What to do with affirmations">?</button>
     </a>
 
-    <!-- ✅ DISTRACTION — FULL WIDTH (LIKE BREATHE TILE), COMPACT (NO DUPLICATES) -->
+    <!-- ✅ DISTRACTION — FULL WIDTH (LIKE BREATHE TILE) -->
     <div class="home-card home-tile-wide" id="distractionCard">
       <div class="home-card-title">Distraction</div>
       <div class="home-card-desc">Gentle questions to interrupt a spiral.</div>
@@ -62,7 +62,6 @@
       <div id="distractionInputWrap" style="display:none; margin-top:10px;">
         <input id="distractionInput" class="input" type="text"
                placeholder="Type your answer here…" autocomplete="off" inputmode="text" />
-
         <div class="gentle-text" id="distractionHint" style="margin-top:8px;">
           Next requires typing. Skip if you’d rather not answer.
         </div>
@@ -84,33 +83,4 @@
   <!-- ✅ WOTD MODAL -->
   <div class="modal" id="wotdModal" aria-hidden="true">
     <div class="modal-backdrop" id="wotdBackdrop"></div>
-    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="wotdModalWord">
-      <div class="modal-top">
-        <div>
-          <div class="modal-title">Word of the day</div>
-          <div class="modal-word" id="wotdModalWord">—</div>
-        </div>
-        <button class="modal-x" id="wotdCloseBtn" type="button" aria-label="Close">✕</button>
-      </div>
-
-      <div class="modal-desc" id="wotdModalDesc">—</div>
-
-      <div class="modal-tip">
-        Using these words as affirmations means you can repeat them to yourself, write them down, or think about them regularly to help cultivate those qualities within yourself.
-      </div>
-    </div>
-  </div>
-
-  <nav class="bottom-nav">
-    <a class="active" href="index.html"><div class="nav-ico">🏠</div><span>Home</span></a>
-    <a href="breathe.html"><div class="nav-ico">🌬️</div><span>Breathe</span></a>
-    <a href="journal.html"><div class="nav-ico">📖</div><span>Journal</span></a>
-    <a href="quotes.html"><div class="nav-ico">💬</div><span>Quotes</span></a>
-    <a href="yoga.html"><div class="nav-ico">🧘‍♀️</div><span>Yoga</span></a>
-    <a href="sounds.html"><div class="nav-ico">🎵</div><span>Music</span></a>
-    <a href="progress.html"><div class="nav-ico">📈</div><span>Progress</span></a>
-  </nav>
-
-  <script src="app.js?v=80001" defer></script>
-</body>
-</html>
+    <div class="modal-card" role="dialog"
