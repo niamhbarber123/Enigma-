@@ -642,3 +642,21 @@ body.night .modal-tip{ color: rgba(245,242,255,0.65); }
   .home-hero{ margin: -12px auto -130px; height:min(380px, 64vw); }
   .home-pill{ padding:11px 12px; font-size:15px; }
 }
+/* Word of the day pill — make title bold, word NOT bold */
+#wotdPill .wotd-label{
+  font-weight: 1000 !important;   /* bold title */
+  letter-spacing: 0.2px;
+}
+
+#wotdPill .wotd-word{
+  font-weight: 700 !important;    /* not bold (regular/semibold) */
+  letter-spacing: 0;
+}
+/* Word of the day modal — title bold, word NOT bold */
+.modal-title{
+  font-weight: 1000 !important;
+}
+
+.modal-word{
+  font-weight: 700 !important;
+}
