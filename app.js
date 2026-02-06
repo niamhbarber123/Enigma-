@@ -1,10 +1,11 @@
 /* =========================================================
    Enigma Wellbeing • app.js (FULL)
-   - Theme toggle (🌙 light / ☀️ night)
+   - Theme toggle (🌙 / ☀️)
    - Back navigation
    - Breathe: timer + time select + pace select + inhale smaller / exhale bigger
    - Word of the Day: daily deterministic + description + modal
-   - Distraction: typed answers required for Next; skip allowed; answered count only
+   - Distraction
+   - Quotes: search + random + save + view saved + clear saved
 ========================================================= */
 
 (function () {
@@ -93,18 +94,20 @@
     const paceSel = $("breathPaceSelect");
     const timeLeftEl = $("breathTimeLeft");
 
-    if (!circle || !phaseEl || !tipEl || !startBtn || !stopBtn || !sessionSel || !paceSel || !timeLeftEl) return;
+    // if breathe page is older (no selects), don't crash:
+    if (!circle || !phaseEl || !tipEl || !startBtn || !stopBtn) return;
 
     let running = false;
     let tCycle = null;
     let tTick = null;
 
-    let paceSec = Number(paceSel.value || 5);
-    let sessionTotal = Number(sessionSel.value || 60);
+    // defaults if selects aren't present
+    let paceSec = paceSel ? Number(paceSel.value || 5) : 5;
+    let sessionTotal = sessionSel ? Number(sessionSel.value || 60) : 60;
     let remaining = sessionTotal;
 
     function applyPaceCSS() {
-      paceSec = Number(paceSel.value || 5);
+      paceSec = paceSel ? Number(paceSel.value || 5) : 5;
       document.documentElement.style.setProperty("--breath-sec", `${paceSec}s`);
     }
 
@@ -123,9 +126,11 @@
     function resetUI() {
       clearTimers();
       circle.classList.remove("inhale", "exhale");
-      sessionTotal = Number(sessionSel.value || 60);
+
+      sessionTotal = sessionSel ? Number(sessionSel.value || 60) : 60;
       remaining = sessionTotal;
-      timeLeftEl.textContent = formatMMSS(remaining);
+
+      if (timeLeftEl) timeLeftEl.textContent = formatMMSS(remaining);
       setText("Ready", "Tap Start to begin.");
     }
 
@@ -141,14 +146,12 @@
       running = false;
       clearTimers();
       circle.classList.remove("inhale", "exhale");
-      if (message) {
-        setText("Done ✅", message);
-      } else {
-        resetUI();
-      }
+      if (message) setText("Done ✅", message);
+      else resetUI();
     }
 
     function startCountdown() {
+      if (!timeLeftEl) return;
       timeLeftEl.textContent = formatMMSS(remaining);
 
       tTick = setInterval(() => {
@@ -188,23 +191,27 @@
       }, paceSec * 1000);
     }
 
-    // Update preview when not running
-    sessionSel.addEventListener("change", () => {
-      if (running) return;
-      resetUI();
-    });
+    if (sessionSel) {
+      sessionSel.addEventListener("change", () => {
+        if (running) return;
+        resetUI();
+      });
+    }
 
-    paceSel.addEventListener("change", () => {
-      applyPaceCSS();
-      if (!running) resetUI();
-    });
+    if (paceSel) {
+      paceSel.addEventListener("change", () => {
+        applyPaceCSS();
+        if (!running) resetUI();
+      });
+    }
 
     startBtn.addEventListener("click", (e) => {
       e.preventDefault();
       if (running) return;
 
       applyPaceCSS();
-      sessionTotal = Number(sessionSel.value || 60);
+
+      sessionTotal = sessionSel ? Number(sessionSel.value || 60) : 60;
       remaining = sessionTotal;
 
       running = true;
@@ -232,7 +239,7 @@
   }
 
   /* =========================
-     WORD OF THE DAY
+     WORD OF THE DAY (HOME)
   ========================= */
   const WOTD = [
     { w: "Forgiveness", d: "Releasing resentment so you can move forward lighter." },
@@ -241,22 +248,13 @@
     { w: "Responsibility", d: "Owning your choices and responding with intention." },
     { w: "Flexibility", d: "Adapting without losing your centre." },
     { w: "Boldness", d: "Taking brave steps even when you feel unsure." },
-    { w: "Discretion", d: "Using good judgement about what to share and when." },
     { w: "Discipline", d: "Doing what helps you—even when motivation fades." },
-    { w: "Detail", d: "Noticing the small things that improve the whole." },
-    { w: "Prosperity", d: "Growing resources and wellbeing in a healthy way." },
     { w: "Acceptance", d: "Letting reality be what it is—so you can respond wisely." },
-    { w: "Surrender", d: "Loosening the grip on what you can’t control." },
-    { w: "Sincerity", d: "Being genuine—your real self is enough." },
     { w: "Serenity", d: "A quiet steadiness, even when life is loud." },
     { w: "Compassion", d: "Meeting struggle with warmth instead of judgement." },
-    { w: "Integrity", d: "Aligning actions with values—even in small moments." },
     { w: "Courage", d: "Feeling fear and still choosing what matters." },
-    { w: "Gentleness", d: "Soft strength—especially with yourself." },
-    { w: "Clarity", d: "Seeing what matters most, without the noise." },
-    { w: "Balance", d: "Making space for rest, effort, joy, and recovery." },
-    { w: "Joy", d: "Noticing what feels bright—even briefly." },
-    { w: "Simplicity", d: "Reducing the load—one less thing at a time." }
+    { w: "Simplicity", d: "Reducing the load—one less thing at a time." },
+    { w: "Reflection", d: "Looking back kindly to learn and reset." }
   ];
 
   function pickWotd() {
@@ -317,7 +315,7 @@
   }
 
   /* =========================
-     DISTRACTION
+     DISTRACTION (HOME)
   ========================= */
   const DISTRACTION_QUESTIONS = [
     "Name 5 things you can see right now.",
@@ -326,7 +324,6 @@
     "Name 2 things you can smell.",
     "Name 1 thing you can taste (or would like to taste).",
     "What colour feels calming to you today?",
-    "What’s a tiny ‘safe’ plan for the next 10 minutes?",
     "What’s one kind thing you’d say to a friend feeling this way?"
   ];
 
@@ -460,6 +457,199 @@
   }
 
   /* =========================
+     QUOTES
+  ========================= */
+  const QUOTE_KEY = "enigmaSavedQuotesV1";
+
+  // fallback quotes if API fails
+  const FALLBACK_QUOTES = [
+    { content: "Start where you are. Use what you have. Do what you can.", author: "Arthur Ashe" },
+    { content: "It always seems impossible until it’s done.", author: "Nelson Mandela" },
+    { content: "Small steps every day.", author: "Unknown" },
+    { content: "Progress, not perfection.", author: "Unknown" },
+    { content: "You’ve survived 100% of your hardest days.", author: "Unknown" }
+  ];
+
+  function loadSavedQuotes() {
+    try {
+      const arr = JSON.parse(localStorage.getItem(QUOTE_KEY) || "[]");
+      return Array.isArray(arr) ? arr : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function saveSavedQuotes(arr) {
+    localStorage.setItem(QUOTE_KEY, JSON.stringify(arr));
+  }
+
+  function quoteId(q) {
+    return (q.content || "").trim() + " — " + (q.author || "").trim();
+  }
+
+  function isSaved(q, savedArr) {
+    const id = quoteId(q);
+    return savedArr.some((x) => quoteId(x) === id);
+  }
+
+  function renderQuotes(list, modeLabel) {
+    const grid = $("quoteGrid");
+    const status = $("quoteStatus");
+    const savedCount = $("savedCount");
+    if (!grid) return;
+
+    const saved = loadSavedQuotes();
+    if (savedCount) savedCount.textContent = String(saved.length);
+
+    grid.innerHTML = "";
+
+    if (!list || list.length === 0) {
+      grid.innerHTML = `<div class="gentle-text">No results found.</div>`;
+      if (status && modeLabel) status.textContent = modeLabel;
+      return;
+    }
+
+    list.forEach((q) => {
+      const tile = document.createElement("div");
+      tile.className = "quote-tile";
+
+      const qt = document.createElement("div");
+      qt.className = "quote-text";
+      qt.textContent = `“${q.content}”`;
+
+      const meta = document.createElement("div");
+      meta.className = "quote-meta";
+
+      const author = document.createElement("div");
+      author.className = "quote-author";
+      author.textContent = `— ${q.author || "Unknown"}`;
+
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "quote-save-btn";
+      const already = isSaved(q, saved);
+      btn.textContent = already ? "💜 Saved" : "💜 Save";
+      if (already) btn.classList.add("saved");
+
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const current = loadSavedQuotes();
+        const exists = isSaved(q, current);
+
+        if (exists) {
+          // remove
+          const id = quoteId(q);
+          const next = current.filter((x) => quoteId(x) !== id);
+          saveSavedQuotes(next);
+          btn.textContent = "💜 Save";
+          btn.classList.remove("saved");
+          if (savedCount) savedCount.textContent = String(next.length);
+        } else {
+          current.unshift({ content: q.content, author: q.author || "Unknown" });
+          saveSavedQuotes(current);
+          btn.textContent = "💜 Saved";
+          btn.classList.add("saved");
+          if (savedCount) savedCount.textContent = String(current.length);
+        }
+      });
+
+      meta.appendChild(author);
+      meta.appendChild(btn);
+
+      tile.appendChild(qt);
+      tile.appendChild(meta);
+      grid.appendChild(tile);
+    });
+
+    if (status && modeLabel) status.textContent = modeLabel;
+  }
+
+  async function fetchQuotesFromAPI(query) {
+    // Using Quotable-compatible endpoint; if it fails, fallback is used.
+    const url = `https://api.quotable.io/search/quotes?query=${encodeURIComponent(query)}&limit=10`;
+    const r = await fetch(url);
+    if (!r.ok) throw new Error("Quote API failed");
+    const data = await r.json();
+    const results = (data && data.results) ? data.results : [];
+    return results.map((x) => ({ content: x.content, author: x.author }));
+  }
+
+  async function fetchRandomQuoteFromAPI() {
+    const url = `https://api.quotable.io/random`;
+    const r = await fetch(url);
+    if (!r.ok) throw new Error("Random quote API failed");
+    const x = await r.json();
+    return [{ content: x.content, author: x.author }];
+  }
+
+  function initQuotes() {
+    const grid = $("quoteGrid");
+    if (!grid) return;
+
+    const input = $("quoteSearch");
+    const searchBtn = $("quoteSearchBtn");
+    const randomBtn = $("quoteRandomBtn");
+    const viewSavedBtn = $("viewSavedBtn");
+    const clearSavedBtn = $("clearSavedBtn");
+    const status = $("quoteStatus");
+    const savedCount = $("savedCount");
+
+    const saved = loadSavedQuotes();
+    if (savedCount) savedCount.textContent = String(saved.length);
+
+    // default view
+    renderQuotes(FALLBACK_QUOTES, "Tip: only the 💜 button saves.");
+
+    const doSearch = async () => {
+      const q = (input ? input.value : "").trim();
+      if (!q) {
+        renderQuotes(FALLBACK_QUOTES, "Type something to search (e.g. courage, hope).");
+        return;
+      }
+      if (status) status.textContent = "Searching…";
+      try {
+        const results = await fetchQuotesFromAPI(q);
+        renderQuotes(results, `Results for: ${q}`);
+      } catch (e) {
+        renderQuotes(FALLBACK_QUOTES, "Couldn’t reach the quote search right now — showing suggestions.");
+      }
+    };
+
+    if (searchBtn) searchBtn.addEventListener("click", (e) => { e.preventDefault(); doSearch(); });
+    if (input) input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") doSearch();
+    });
+
+    if (randomBtn) randomBtn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      if (status) status.textContent = "Loading random…";
+      try {
+        const one = await fetchRandomQuoteFromAPI();
+        renderQuotes(one, "Random quote");
+      } catch {
+        // fallback random
+        const i = Math.floor(Math.random() * FALLBACK_QUOTES.length);
+        renderQuotes([FALLBACK_QUOTES[i]], "Random quote");
+      }
+    });
+
+    if (viewSavedBtn) viewSavedBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      const s = loadSavedQuotes();
+      renderQuotes(s, s.length ? "Your saved quotes" : "No saved quotes yet.");
+    });
+
+    if (clearSavedBtn) clearSavedBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      saveSavedQuotes([]);
+      if (savedCount) savedCount.textContent = "0";
+      renderQuotes(FALLBACK_QUOTES, "Saved quotes cleared.");
+    });
+  }
+
+  /* =========================
      BOOT
   ========================= */
   document.addEventListener("DOMContentLoaded", () => {
@@ -468,6 +658,7 @@
     try { initBreathe(); } catch(e) {}
     try { initWotd(); } catch(e) {}
     try { initDistraction(); } catch(e) {}
+    try { initQuotes(); } catch(e) {}
   });
 
 })();
