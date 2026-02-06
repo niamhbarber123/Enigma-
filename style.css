@@ -229,62 +229,27 @@ input[type="search"], input[type="text"], .input, select.input{
 /* =========================================================
    BREATHE
 ========================================================= */
-.breathe-stage{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding: 18px 0 8px;
-}
-
-.breathe-ring{
-  width: min(280px, 72vw);
-  height: min(280px, 72vw);
-  border-radius: 999px;
-  background: rgba(239,233,248,0.70);
-  border: 2px solid rgba(90,75,122,0.30);
-  box-shadow: 0 18px 36px rgba(0,0,0,0.10);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  overflow: visible;
-}
-
 .breathe-circle{
   width: 150px;
   height: 150px;
   border-radius: 999px;
   background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.92), rgba(124,96,170,0.55));
   box-shadow: inset 0 18px 36px rgba(0,0,0,0.08), 0 18px 38px rgba(90,75,122,0.18);
-  transform: scale(0.95);
-  transition: transform var(--breath-sec) ease-in-out, background 400ms ease;
+  transform: scale(0.90);
+  transition: transform 5.5s ease-in-out, background 400ms ease;
   will-change: transform;
 }
 
-/* ✅ INHALE = smaller */
+/* ✅ INHALE = smaller (retract) */
 .breathe-circle.inhale{
-  transform: scale(0.82);
+  transform: scale(0.78);
   background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.96), rgba(122,170,240,0.60));
 }
 
-/* ✅ EXHALE = bigger */
+/* ✅ EXHALE = bigger (expand) */
 .breathe-circle.exhale{
-  transform: scale(1.16);
+  transform: scale(1.18);
   background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.92), rgba(170,120,210,0.55));
-}
-
-#breathPhase{
-  text-align:center;
-  font-size:24px;
-  font-weight:1000;
-  color:var(--deep);
-  margin-bottom:10px;
-}
-.breath-text{
-  text-align:center;
-  font-size:15px;
-  font-weight:800;
-  color:rgba(90,75,122,0.75);
-  margin-top:10px;
 }
 
 /* =========================================================
