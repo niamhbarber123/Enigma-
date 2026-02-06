@@ -23,11 +23,13 @@ body{
   overflow-x:hidden;
 }
 
-/* ---------- Night mode ---------- */
+/* ---------- Night mode (more readable) ---------- */
 body.night{
-  background:#0f0e14;
-  color:rgba(245,242,255,0.92);
+  background:#101018;
+  color:rgba(250,248,255,0.92);
 }
+
+/* Panels/cards */
 body.night .card,
 body.night .home-card,
 body.night .home-pill,
@@ -37,21 +39,56 @@ body.night input,
 body.night select,
 body.night .chip,
 body.night .music-btn{
-  background:rgba(255,255,255,0.10) !important;
-  color:rgba(245,242,255,0.92) !important;
-  border-color:rgba(255,255,255,0.12) !important;
+  background:rgba(255,255,255,0.14) !important;
+  color:rgba(250,248,255,0.92) !important;
+  border-color:rgba(255,255,255,0.18) !important;
 }
-body.night .gentle-text,
-body.night .page-header p{
-  color:rgba(245,242,255,0.65) !important;
-}
-body.night .bottom-nav{
-  background:rgba(18,16,26,0.92);
-  border-top:1px solid rgba(255,255,255,0.10);
-}
-body.night .bottom-nav a{ color:rgba(245,242,255,0.65); }
-body.night .bottom-nav a.active{ color:#fff; }
 
+/* Titles + headings */
+body.night .section-title,
+body.night .home-card-title,
+body.night .page-header h1{
+  color:rgba(255,255,255,0.95) !important;
+}
+
+/* Subtext */
+body.night .gentle-text,
+body.night .page-header p,
+body.night .home-card-sub,
+body.night .home-card-desc{
+  color:rgba(255,255,255,0.72) !important;
+}
+
+/* Buttons */
+body.night .tool-btn{
+  background:rgba(255,255,255,0.16) !important;
+  color:rgba(255,255,255,0.92) !important;
+}
+
+body.night .tool-btn.primary{
+  background:rgba(184,166,217,0.35) !important;
+  color:#fff !important;
+}
+
+body.night .tool-btn.danger{
+  background:rgba(255,170,150,0.28) !important;
+  color:#fff !important;
+}
+
+/* Bottom nav */
+body.night .bottom-nav{
+  background:rgba(16,16,24,0.94);
+  border-top:1px solid rgba(255,255,255,0.12);
+}
+body.night .bottom-nav a{ color:rgba(255,255,255,0.70); }
+body.night .bottom-nav a.active{ color:#fff; font-weight:900; }
+
+/* Back + theme buttons */
+body.night .back-btn,
+body.night .theme-toggle-top{
+  background:rgba(255,255,255,0.18);
+  color:#fff;
+}
 /* ---------- Layout ---------- */
 .page-wrap{
   min-height:100vh;
