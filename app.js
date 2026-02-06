@@ -896,22 +896,34 @@
      PROGRESS (simple)
   ========================= */
   function initProgress() {
-    const wrap = $("progressWrap");
-    if (!wrap) return;
+  const wrap = $("progressWrap");
+  if (!wrap) return;
 
-    const breatheMin = $("progressBreatheMin");
-    const musicMin = $("progressMusicMin");
-    const quotesSaved = $("progressSavedQuotes");
+  const breatheTotalEl = $("progressBreatheMin");
+  const musicTotalEl = $("progressMusicMin");
+  const savedQuotesEl = $("progressSavedQuotes");
 
-    const b = readJSON("enigmaBreatheLog", { totalMin: 0 });
-    const m = readJSON("enigmaMusic", { totalMin: 0, today: todayKey(), todayMin: 0 });
-    const s = readJSON("enigmaSavedQuotes", []);
+  const breatheTodayEl = $("progressBreatheToday");
+  const musicTodayEl = $("progressMusicToday");
 
-    if (breatheMin) breatheMin.textContent = String(b.totalMin || 0);
-    if (musicMin) musicMin.textContent = String(m.totalMin || 0);
-    if (quotesSaved) quotesSaved.textContent = String(s.length || 0);
-  }
+  const b = readJSON("enigmaBreatheLog", { totalMin: 0, byDay: {} });
+  const m = readJSON("enigmaMusic", { totalMin: 0, today: todayKey(), todayMin: 0 });
+  const s = readJSON("enigmaSavedQuotes", []);
 
+  const breatheTotal = Number(b.totalMin || 0);
+  const breatheToday = Number((b.byDay && b.byDay[todayKey()]) || 0);
+
+  const musicTotal = Number(m.totalMin || 0);
+  const musicToday = (m.today === todayKey()) ? Number(m.todayMin || 0) : 0;
+
+  if (breatheTotalEl) breatheTotalEl.textContent = String(breatheTotal);
+  if (breatheTodayEl) breatheTodayEl.textContent = String(breatheToday);
+
+  if (musicTotalEl) musicTotalEl.textContent = String(musicTotal);
+  if (musicTodayEl) musicTodayEl.textContent = String(musicToday);
+
+  if (savedQuotesEl) savedQuotesEl.textContent = String(s.length || 0);
+}
   /* =========================
      BOOT
   ========================= */
