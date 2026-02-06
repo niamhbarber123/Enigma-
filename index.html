@@ -7,7 +7,7 @@
 
   <link rel="icon" href="icon.png" />
   <link rel="apple-touch-icon" href="icon.png" />
-  <link rel="stylesheet" href="style.css?v=60020" />
+  <link rel="stylesheet" href="style.css?v=80001" />
 </head>
 
 <body class="page-wrap home">
@@ -26,36 +26,75 @@
       <div class="home-card-sub">A gentle 60 seconds</div>
     </a>
 
-    <!-- Buttons moved up + includes Word of the day as an option -->
-    <div class="home-grid home-grid-tight">
-      <a class="home-pill-btn" href="journal.html">
-        <span class="pill-ico">📖</span><span class="pill-text">Journal</span>
-      </a>
+    <!-- Home pills (word of the day now lives here) -->
+    <div class="home-grid home-grid-compact">
+      <a class="home-pill" href="journal.html"><span class="pill-ico">📖</span><span class="pill-text">Journal</span></a>
+      <a class="home-pill" href="quotes.html"><span class="pill-ico">💬</span><span class="pill-text">Quotes</span></a>
+      <a class="home-pill" href="yoga.html"><span class="pill-ico">🧘‍♀️</span><span class="pill-text">Yoga</span></a>
+      <a class="home-pill" href="sounds.html"><span class="pill-ico">🎵</span><span class="pill-text">Music</span></a>
 
-      <a class="home-pill-btn" href="quotes.html">
-        <span class="pill-ico">💬</span><span class="pill-text">Quotes</span>
-      </a>
-
-      <a class="home-pill-btn" href="yoga.html">
-        <span class="pill-ico">🧘‍♀️</span><span class="pill-text">Yoga</span>
-      </a>
-
-      <a class="home-pill-btn" href="sounds.html">
-        <span class="pill-ico">🎵</span><span class="pill-text">Music</span>
-      </a>
-
-      <!-- Word of the day tile (takes 2 columns) -->
-      <a class="home-pill-btn wotd-tile" href="word.html">
+      <!-- ✅ Word of the day pill -->
+      <button class="home-pill home-pill-wide" id="wotdOpenBtn" type="button">
         <span class="pill-ico">✨</span>
         <span class="pill-text">
-          Word of the day
-          <span class="wotd-mini" id="wotdHomeWord">Loading…</span>
+          <span class="wotd-label">Word of the day</span>
+          <span class="wotd-word" id="wotdWord">—</span>
         </span>
-        <span class="wotd-qmark" aria-hidden="true">?</span>
-      </a>
+        <span class="wotd-qmark" id="wotdHelpBtn" aria-label="What is this?" title="What is this?">?</span>
+      </button>
     </div>
 
-    <a class="home-help" href="help.html">
+    <!-- ✅ Word of day details (compact, no scrolling) -->
+    <div class="card wotd-card" id="wotdCard" style="display:none;">
+      <div class="section-title">Word of the day</div>
+      <div class="wotd-big" id="wotdWordBig">—</div>
+      <div class="gentle-text" id="wotdDesc">—</div>
+
+      <div class="tool-row" style="margin-top:12px;">
+        <button class="tool-btn primary" id="wotdCloseBtn" type="button">Close</button>
+      </div>
+
+      <div class="wotd-tip" id="wotdTip" style="display:none;">
+        Using these words as affirmations means you can repeat them to yourself, write them down, or think about them regularly to help cultivate those qualities within yourself.
+      </div>
+    </div>
+
+    <!-- ✅ Distraction Section -->
+    <div class="card" id="distractionCard">
+      <div class="section-title">Distraction</div>
+      <div class="gentle-text" id="distractionIntro">
+        Gentle questions to interrupt a spiral. Type any answer (even one word) to continue — or Skip.
+      </div>
+
+      <div id="distractionQuestion" class="distraction-question">
+        Tap Start to begin.
+      </div>
+
+      <!-- ✅ Progress: only counts ANSWERED -->
+      <div class="gentle-text" id="distractionMeta">
+        Answered: <span id="distractionAnsweredCount">0</span>
+      </div>
+
+      <div style="margin-top:12px;">
+        <input id="distractionInput" class="input" type="text"
+               placeholder="Type your answer here…" autocomplete="off" inputmode="text" />
+        <div class="gentle-text" id="distractionHint" style="margin-top:8px;">
+          Next requires typing. Skip if you’d rather not answer.
+        </div>
+      </div>
+
+      <div class="tool-row" style="margin-top:14px;">
+        <button class="tool-btn primary" id="distractionStartBtn" type="button">Start</button>
+        <button class="tool-btn" id="distractionNextBtn" type="button" style="display:none;">Next</button>
+      </div>
+
+      <div class="tool-row">
+        <button class="tool-btn" id="distractionSkipBtn" type="button" style="display:none;">Skip</button>
+        <button class="tool-btn danger" id="distractionEndBtn" type="button" style="display:none;">End</button>
+      </div>
+    </div>
+
+    <a class="home-help home-help-compact" href="help.html">
       <span class="pill-ico">🆘</span><span class="pill-text">Need help right now?</span>
     </a>
   </main>
@@ -70,6 +109,6 @@
     <a href="progress.html"><div class="nav-ico">📈</div><span>Progress</span></a>
   </nav>
 
-  <script src="app.js?v=60020" defer></script>
+  <script src="app.js?v=80001" defer></script>
 </body>
 </html>
